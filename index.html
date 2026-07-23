@@ -316,20 +316,20 @@
     <p class="section-label reveal">The Problem</p>
     <h2 class="reveal" style="transition-delay:0.07s">Binary markets <em>discard</em> your knowledge.</h2>
     <p class="section-sub reveal" style="transition-delay:0.13s;max-width:560px;margin-top:0.9rem">
-      Ask "Will the Lakers–Celtics game go over 220?" and you're forced into yes or no. But you know far more than that.
+      Ask "Will tomorrow's ERCOT peak price top $100/MWh?" and you're forced into yes or no. But you know far more than that.
     </p>
     <div class="problem-grid">
       <div class="prob-card bad reveal" style="transition-delay:0.17s">
-        <div class="prob-tag bad">Standard sportsbook</div>
+        <div class="prob-tag bad">Fixed-line book</div>
         <h3>Forced binary, buried vig</h3>
-        <p>You think the total will land around 224. The line is fixed at 220.5 with a ~5% house edge baked in. You can't say how confident you are or where you think it truly peaks.</p>
-        <div class="prob-example">Lakers vs Celtics — Total<br>Over 220.5 &nbsp;<strong>−115</strong>&nbsp; (house: 53.5%)<br>Under 220.5 &nbsp;<strong>−105</strong>&nbsp; (house: 51.2%)</div>
+        <p>You think the peak will clear around $104/MWh. The line is fixed at $100 with a ~5% house edge baked in. You can't say how confident you are or where you think it truly peaks.</p>
+        <div class="prob-example">ERCOT peak — $/MWh<br>Over $100 &nbsp;<strong>−115</strong>&nbsp; (house: 53.5%)<br>Under $100 &nbsp;<strong>−105</strong>&nbsp; (house: 51.2%)</div>
       </div>
       <div class="prob-card good reveal" style="transition-delay:0.23s">
         <div class="prob-tag good">Parabola</div>
         <h3>Express your full belief</h3>
         <p>Submit the distribution you actually believe. The closer your distribution to the realized outcome, the higher your payout. Your confidence (σ) matters just as much as your direction (μ).</p>
-        <div class="prob-example">Lakers vs Celtics — Total<br>Your estimate &nbsp;<strong>μ = 224 &nbsp; σ = 5.8</strong><br>Crowd &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>μ = 219 &nbsp; σ = 9.4</strong></div>
+        <div class="prob-example">ERCOT peak — $/MWh<br>Your estimate &nbsp;<strong>μ = $104 &nbsp; σ = 7</strong><br>Crowd &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>μ = $92 &nbsp; σ = 15</strong></div>
       </div>
     </div>
   </div>
@@ -351,7 +351,7 @@
       <div>
         <!-- NBA concrete example -->
         <div class="reveal" style="transition-delay:0.15s">
-          <div class="section-label" style="margin-bottom:0.6rem">NBA example · same game, same information</div>
+          <div class="section-label" style="margin-bottom:0.6rem">Power example · same grid hour, same information</div>
           <table class="compare-table">
             <thead>
               <tr>
@@ -361,7 +361,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="row-head"><td colspan="3">You believe: total lands around 224, probably 218–230</td></tr>
+              <tr class="row-head"><td colspan="3">You believe: the peak lands around $104/MWh, probably $90–$118</td></tr>
               <tr>
                 <td>Direction (over/under)</td>
                 <td>✓ yes/no</td>
@@ -373,7 +373,7 @@
                 <td>✓</td>
               </tr>
               <tr>
-                <td>"Likely between 218–230"</td>
+                <td>"Likely between $90–$118"</td>
                 <td>✗ no market</td>
                 <td>✓</td>
               </tr>
@@ -394,7 +394,7 @@
         <!-- Is CI better? -->
         <div class="mkt-note reveal" style="transition-delay:0.22s;margin-top:1.6rem">
           <strong style="color:var(--text)">Can a confidence interval beat an over/under?</strong><br><br>
-          Yes. If you submit <code>N(224, σ=5)</code> and the crowd is at <code>N(219, σ=9)</code>, you're implicitly saying the total lands between 215–230 with <strong style="color:var(--rose-bright)">85%</strong> probability. The crowd says only <strong style="color:var(--text-sec)">56%</strong>. That gap — on a range the sportsbook doesn't even offer — is pure captured value. You earn for being right about the range, not just the side.
+          Yes. If you submit <code>N($104, σ=7)</code> and the crowd is at <code>N($92, σ=15)</code>, you're implicitly saying the peak lands between $90–$118 with <strong style="color:var(--rose-bright)">95%</strong> probability. The crowd says only <strong style="color:var(--text-sec)">51%</strong>. That gap — on a range no utility tariff even offers — is pure captured value. You earn for being right about the range, not just the side.
         </div>
 
         <!-- New market types -->
@@ -424,7 +424,7 @@
       <!-- Right column: animated CI canvas -->
       <div class="reveal" style="transition-delay:0.18s">
         <div class="ci-box">
-          <div class="ci-label">Live comparison — Lakers vs Celtics total</div>
+          <div class="ci-label">Live comparison — ERCOT peak price ($/MWh)</div>
           <canvas id="ci-demo" height="220"></canvas>
         </div>
 
@@ -444,7 +444,7 @@
             This shows log scoring is <strong style="color:var(--text)">strictly proper</strong>: the unique best strategy is to report your true belief. Ordinary fixed-payoff binary bets do not automatically have this property — they reward being directionally right, not reporting a calibrated probability. A binary contract <em>can</em> be made proper (e.g. via log-score or Brier-score payoffs), but a standard over/under payout is not one of those.
           </p>
           <p style="font-size:0.78rem;color:var(--text-dim);margin-top:0.7rem;line-height:1.6">
-            NBA example: KL(N(224,5) ‖ N(219,9)) = log(9/5) + (25+25)/162 − ½ ≈ <span style="color:var(--rose-bright)">0.40</span> — a single number capturing both the mean shift and the tighter certainty.
+            Power example: KL(N(104,7) ‖ N(92,15)) = log(15/7) + (49+144)/450 − ½ ≈ <span style="color:var(--rose-bright)">0.69</span> — a single number capturing both the mean shift and the tighter certainty.
           </p>
         </div>
       </div>
@@ -463,7 +463,7 @@
       <div class="step reveal" style="transition-delay:0.10s">
         <div class="step-num">01</div>
         <h3>Pick a market</h3>
-        <p>Sports totals, macro data releases, crypto prices, election margins — any outcome with a numeric realization.</p>
+        <p>ERCOT/PJM/CAISO power prices, grid demand, cooling-degree days, carbon, GPU-compute costs — any outcome with a numeric realization.</p>
       </div>
       <div class="step reveal" style="transition-delay:0.16s">
         <div class="step-num">02</div>
@@ -546,7 +546,7 @@
 
 <!-- API -->
 <section id="api" class="section pad" style="position:relative;overflow:hidden">
-  <canvas id="electric" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0.55;z-index:0"></canvas>
+  <canvas id="electric" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0.8;z-index:0"></canvas>
   <div class="container" style="position:relative;z-index:1">
     <p class="section-label reveal">Developer API</p>
     <h2 class="reveal" style="transition-delay:0.07s">Trade power markets <em>from code — or a text.</em></h2>
@@ -631,12 +631,12 @@
   if (!cv) return;
   const ct = cv.getContext('2d');
 
-  // Distributions: crowd N(219,9), you N(224,5)
-  const MU_C = 219, SIG_C = 9;
-  const MU_Y = 224, SIG_Y = 5;
-  const CI_LO = 215, CI_HI = 230;
-  const LINE  = 220.5;
-  const X_MIN = 191, X_MAX = 255;
+  // Distributions: crowd N($92,15), you N($104,7) — ERCOT peak price $/MWh
+  const MU_C = 92, SIG_C = 15;
+  const MU_Y = 104, SIG_Y = 7;
+  const CI_LO = 90, CI_HI = 118;
+  const LINE  = 100;
+  const X_MIN = 50, X_MAX = 150;
 
   // Normalise so "you" peak reaches 1.0
   const NORM = 1 / (SIG_Y * Math.sqrt(2 * Math.PI));
@@ -665,9 +665,9 @@
   // Continuous video-like animation: 4 states, each with internal animation + cross-fade
   const STATES = [
     { label: 'Binary: one line, forced choice',        duration: 3000 },
-    { label: 'Crowd estimate  μ=219  σ=9',             duration: 3000 },
-    { label: 'Your estimate  μ=224  σ=5',              duration: 3000 },
-    { label: 'Confidence interval  215–230',           duration: 3600 },
+    { label: 'Crowd estimate  μ=$92  σ=15',            duration: 3000 },
+    { label: 'Your estimate  μ=$104  σ=7',             duration: 3000 },
+    { label: 'Confidence interval  $90–$118',          duration: 3600 },
   ];
   let stateIdx = 0, stateStart = performance.now();
   const FADE = 600; // cross-fade duration ms
@@ -754,7 +754,7 @@
     ct.lineTo(cv.width - 16, cv.height - 36);
     ct.stroke();
     // tick labels
-    [200, 210, 220, 230, 240, 250].forEach(v => {
+    [50, 70, 90, 110, 130, 150].forEach(v => {
       if (v < X_MIN || v > X_MAX) return;
       const px = toX(v);
       ct.fillStyle = 'rgba(255,255,255,0.25)';
@@ -767,7 +767,7 @@
     ct.fillStyle = 'rgba(255,255,255,0.18)';
     ct.font = '9px Syne, sans-serif';
     ct.textAlign = 'center';
-    ct.fillText('Game total (pts)', cv.width / 2, cv.height - 2);
+    ct.fillText('Peak price ($/MWh)', cv.width / 2, cv.height - 2);
     ct.restore();
   }
 
@@ -827,11 +827,11 @@
       ct.fillStyle = 'rgba(201,152,42,1)';
       ct.fillRect(lx, 8, W - 16 - lx, H - 44);
       ct.restore();
-      drawLabel('Over 220.5', lx + 5, 22, 'rgba(201,152,42,0.85)', alpha, 'left', 11);
-      drawLabel('Under 220.5', lx - 5, 22, 'rgba(158,148,100,0.6)', alpha, 'right', 11);
+      drawLabel('Over $100', lx + 5, 22, 'rgba(201,152,42,0.85)', alpha, 'left', 11);
+      drawLabel('Under $100', lx - 5, 22, 'rgba(158,148,100,0.6)', alpha, 'right', 11);
       // question mark rises in
       const qy = 65 + (1 - Math.min(t * 3, 1)) * 20;
-      drawLabel('?', toX(227), qy, 'rgba(201,152,42,' + (0.25 + pulse * 0.15) + ')', alpha, 'center', 36);
+      drawLabel('?', toX(108), qy, 'rgba(201,152,42,' + (0.25 + pulse * 0.15) + ')', alpha, 'center', 36);
       drawLabel('Only yes or no. Your full belief is discarded.', W / 2, H - 52, 'rgba(158,148,100,0.75)', alpha * Math.min(t * 4, 1), 'center', 10);
     }
 
@@ -842,9 +842,9 @@
       drawVLine(LINE, '#c9982a', 0.35 * alpha, false);
       const cpx = toX(MU_C);
       const labelA = Math.min(t * 3, 1) * alpha;
-      drawLabel('Crowd  μ=219  σ=9', cpx, 20, 'rgba(184,152,56,0.9)', labelA, 'center', 11);
+      drawLabel('Crowd  μ=$92  σ=15', cpx, 20, 'rgba(184,152,56,0.9)', labelA, 'center', 11);
       drawLabel('wide, uncertain', cpx, 32, 'rgba(184,152,56,0.5)', labelA, 'center', 9);
-      drawLabel('P(over 220.5): ' + Math.round(OVER_PROB_C * 100) + '%', W / 2, H - 52, 'rgba(158,148,100,0.75)', labelA, 'center', 10);
+      drawLabel('P(over $100): ' + Math.round(OVER_PROB_C * 100) + '%', W / 2, H - 52, 'rgba(158,148,100,0.75)', labelA, 'center', 10);
     }
 
     if (s === 2) {
@@ -855,23 +855,23 @@
       drawBell(youMu, SIG_Y, 'rgba(201,152,42,0.16)', 'rgba(201,152,42,0.88)', alpha * slideT);
       drawVLine(LINE, 'rgba(201,152,42,0.4)', 0.4 * alpha, false);
       const labelA = Math.min(slideT * 2, 1) * alpha;
-      drawLabel('You  μ=224  σ=5', toX(MU_Y), 20, 'rgba(232,201,106,0.9)', labelA, 'center', 11);
+      drawLabel('You  μ=$104  σ=7', toX(MU_Y), 20, 'rgba(232,201,106,0.9)', labelA, 'center', 11);
       drawLabel('precise, confident', toX(MU_Y), 32, 'rgba(232,201,106,0.5)', labelA, 'center', 9);
-      drawLabel('P(over 220.5): ' + Math.round(OVER_PROB_Y * 100) + '% vs crowd ' + Math.round(OVER_PROB_C * 100) + '%', W / 2, H - 52, 'rgba(232,201,106,0.8)', labelA, 'center', 10);
+      drawLabel('P(over $100): ' + Math.round(OVER_PROB_Y * 100) + '% vs crowd ' + Math.round(OVER_PROB_C * 100) + '%', W / 2, H - 52, 'rgba(232,201,106,0.8)', labelA, 'center', 10);
     }
 
     if (s === 3) {
       // State 3: CI interval expands from centre, bars count up
       const expandT = Math.min(t * 1.8, 1);
-      const ciLo  = 222.5 - (222.5 - CI_LO) * expandT;
-      const ciHi  = 222.5 + (CI_HI - 222.5) * expandT;
+      const ciLo  = 104 - (104 - CI_LO) * expandT;
+      const ciHi  = 104 + (CI_HI - 104) * expandT;
       drawShade(ciLo, ciHi, 'rgba(184,152,56,0.09)', alpha);
       drawBell(MU_C, SIG_C, 'rgba(184,152,56,0.07)', 'rgba(184,152,56,0.30)', alpha * 0.65);
       drawBell(MU_Y, SIG_Y, 'rgba(201,152,42,0.16)', 'rgba(201,152,42,0.82)', alpha);
       drawVLine(ciLo, 'rgba(184,152,56,0.5)', 0.7 * alpha, true);
       drawVLine(ciHi, 'rgba(184,152,56,0.5)', 0.7 * alpha, true);
       const cx = (toX(ciLo) + toX(ciHi)) / 2;
-      drawLabel('215–230', cx, 18, 'rgba(212,176,80,0.8)', alpha * Math.min(t * 3, 1), 'center', 10);
+      drawLabel('$90–$118', cx, 18, 'rgba(212,176,80,0.8)', alpha * Math.min(t * 3, 1), 'center', 10);
       // animated prob bars (count up)
       const barT = Math.min(t * 1.5, 1);
       drawProbBar('Crowd', CI_PROB_C * barT, 'rgba(184,152,56,0.65)', H - 66, alpha);
@@ -1146,13 +1146,13 @@
       ctx.clearRect(0, 0, W, H);
       ctx.globalCompositeOperation = 'lighter';
       ctx.lineCap = 'round';
-      ctx.shadowBlur = 14; ctx.shadowColor = 'rgba(232,201,106,0.7)';
+      ctx.shadowBlur = 18; ctx.shadowColor = 'rgba(232,201,106,0.85)';
       const tx = mx != null ? mx : W * 0.5 + Math.sin(t * 0.5) * W * 0.22;
       const ty = my != null ? my : H * 0.42 + Math.cos(t * 0.4) * H * 0.18;
       for (let k = 0; k < NUM; k++) {
         const x0 = W * (k + 0.5) / NUM, y0 = H;
-        ctx.strokeStyle = 'rgba(201,152,42,' + (0.10 + 0.07 * Math.sin(t + k)) + ')';
-        ctx.lineWidth = 1.1;
+        ctx.strokeStyle = 'rgba(214,170,88,' + (0.22 + 0.12 * Math.sin(t + k)) + ')';
+        ctx.lineWidth = 1.5;
         bolt(x0, y0, tx, ty, t + k * 1.3);
       }
       ctx.shadowBlur = 0;
