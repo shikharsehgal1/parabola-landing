@@ -63,6 +63,10 @@
     .nav-pilot { color:var(--rose-bright)!important; border:1px solid var(--border-mid); padding:6px 13px; border-radius:var(--r-sm); }
     .nav-pilot:hover { border-color:var(--rose); background:rgba(201,152,42,0.07); }
     .mono { font-family:'JetBrains Mono',monospace; font-size:0.86em; color:var(--rose-bright); }
+    /* Page-wide electric background canvas */
+    #electric { position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:0.95; }
+    #hero { z-index:1; }
+    hr, footer { position:relative; z-index:1; }
     @media(max-width:580px){ .nav-links a:not(:last-child){display:none} }
 
     /* ── Layout ───────────────────────────────────────────────────── */
@@ -243,6 +247,7 @@
 <body>
 
 <!-- Nav -->
+<canvas id="electric" aria-hidden="true"></canvas>
 <nav>
   <a href="#" class="nav-logo">
     <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
@@ -546,7 +551,6 @@
 
 <!-- API -->
 <section id="api" class="section pad" style="position:relative;overflow:hidden">
-  <canvas id="electric" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0.8;z-index:0"></canvas>
   <div class="container" style="position:relative;z-index:1">
     <p class="section-label reveal">Developer API</p>
     <h2 class="reveal" style="transition-delay:0.07s">Trade power markets <em>from code — or a text.</em></h2>
@@ -995,22 +999,22 @@
       if (r2 < 0.4) continue;
       ctx.beginPath();
       ctx.arc(trailX[idx], trailY[idx], r2, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(201,152,42,${((1 - age) * 0.28).toFixed(3)})`;
+      ctx.fillStyle = `rgba(74,208,96,${((1 - age) * 0.30).toFixed(3)})`;
       ctx.fill();
     }
 
     // Ball outer glow
     const gg = ctx.createRadialGradient(ball.x, ball.y, BALL_R * 0.5, ball.x, ball.y, BALL_R * 2.8);
-    gg.addColorStop(0, 'rgba(201,152,42,0.20)');
-    gg.addColorStop(1, 'rgba(201,152,42,0)');
+    gg.addColorStop(0, 'rgba(74,208,96,0.26)');
+    gg.addColorStop(1, 'rgba(74,208,96,0)');
     ctx.beginPath(); ctx.arc(ball.x, ball.y, BALL_R * 2.8, 0, Math.PI * 2);
     ctx.fillStyle = gg; ctx.fill();
 
     // Ball body
     const bg2 = ctx.createRadialGradient(ball.x - BALL_R * 0.3, ball.y - BALL_R * 0.35, 1, ball.x, ball.y, BALL_R);
-    bg2.addColorStop(0, '#f0e0a8');
-    bg2.addColorStop(0.5, '#c9982a');
-    bg2.addColorStop(1, 'rgba(110,50,66,0.85)');
+    bg2.addColorStop(0, '#d8f7b4');
+    bg2.addColorStop(0.5, '#3fb24f');
+    bg2.addColorStop(1, 'rgba(18,66,28,0.9)');
     ctx.beginPath(); ctx.arc(ball.x, ball.y, BALL_R, 0, Math.PI * 2);
     ctx.fillStyle = bg2; ctx.fill();
 
@@ -1097,33 +1101,28 @@
   })();
 </script>
 <script>
-  // Electric interaction — gold lightning tendrils in the API section that
-  // reach toward the cursor (inspired by akashtripathiiiii/Electric-Strings).
+  // Page-wide electric interaction — RED lightning tendrils that reach toward
+  // the cursor across the whole page (inspired by akashtripathiiiii/Electric-Strings).
   (function () {
     const cv = document.getElementById('electric');
     if (!cv || !cv.getContext) return;
     const ctx = cv.getContext('2d');
-    const host = cv.parentElement;
     let W = 0, H = 0, dpr = 1;
     function size() {
       dpr = Math.min(2, window.devicePixelRatio || 1);
-      const r = host.getBoundingClientRect();
-      W = Math.max(1, r.width); H = Math.max(1, r.height);
+      W = window.innerWidth; H = window.innerHeight;
       cv.width = W * dpr; cv.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     size();
     window.addEventListener('resize', size);
 
+    // Canvas is position:fixed to the viewport, so client coords map directly.
     let mx = null, my = null;
-    window.addEventListener('mousemove', (e) => {
-      const r = cv.getBoundingClientRect();
-      if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
-        mx = e.clientX - r.left; my = e.clientY - r.top;
-      } else { mx = null; my = null; }
-    });
+    window.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; });
+    window.addEventListener('mouseout', () => { mx = null; my = null; });
 
-    const NUM = 7, SEG = 16;
+    const SEG = 18;
     function bolt(x0, y0, x1, y1, t) {
       ctx.beginPath();
       ctx.moveTo(x0, y0);
@@ -1132,8 +1131,8 @@
       const px = -dy / nrm, py = dx / nrm;
       for (let i = 1; i < SEG; i++) {
         const f = i / SEG;
-        const amp = Math.sin(Math.PI * f) * 30;
-        const off = Math.sin(f * 9 + t) * amp + (Math.random() - 0.5) * amp * 0.9;
+        const amp = Math.sin(Math.PI * f) * 34;
+        const off = Math.sin(f * 9 + t) * amp + (Math.random() - 0.5) * amp;
         ctx.lineTo(x0 + dx * f + px * off, y0 + dy * f + py * off);
       }
       ctx.lineTo(x1, y1);
@@ -1146,12 +1145,13 @@
       ctx.clearRect(0, 0, W, H);
       ctx.globalCompositeOperation = 'lighter';
       ctx.lineCap = 'round';
-      ctx.shadowBlur = 18; ctx.shadowColor = 'rgba(232,201,106,0.85)';
-      const tx = mx != null ? mx : W * 0.5 + Math.sin(t * 0.5) * W * 0.22;
-      const ty = my != null ? my : H * 0.42 + Math.cos(t * 0.4) * H * 0.18;
+      ctx.shadowBlur = 16; ctx.shadowColor = 'rgba(255,60,50,0.9)';
+      const NUM = Math.max(6, Math.round(W / 150));
+      const tx = mx != null ? mx : W * 0.5 + Math.sin(t * 0.5) * W * 0.28;
+      const ty = my != null ? my : H * 0.45 + Math.cos(t * 0.4) * H * 0.25;
       for (let k = 0; k < NUM; k++) {
         const x0 = W * (k + 0.5) / NUM, y0 = H;
-        ctx.strokeStyle = 'rgba(214,170,88,' + (0.22 + 0.12 * Math.sin(t + k)) + ')';
+        ctx.strokeStyle = 'rgba(255,54,44,' + (0.34 + 0.16 * Math.sin(t + k)) + ')';
         ctx.lineWidth = 1.5;
         bolt(x0, y0, tx, ty, t + k * 1.3);
       }
@@ -1159,14 +1159,10 @@
       ctx.globalCompositeOperation = 'source-over';
       raf = requestAnimationFrame(loop);
     }
-    // Only animate while the section is on screen (saves CPU).
-    const io = new IntersectionObserver((es) => {
-      es.forEach((e) => {
-        if (e.isIntersecting && !raf) raf = requestAnimationFrame(loop);
-        else if (!e.isIntersecting && raf) { cancelAnimationFrame(raf); raf = 0; }
-      });
-    }, { threshold: 0.02 });
-    io.observe(host);
+    function start() { if (!raf) raf = requestAnimationFrame(loop); }
+    function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
+    document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+    start();
   })();
 </script>
 </body>
