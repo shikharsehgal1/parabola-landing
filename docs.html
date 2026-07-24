@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Parabola Trading API — Reference</title>
+  <meta name="description" content="Interactive reference for the Parabola Trading API — market data, backtesting, strategies, risk-checked execution, and natural-language trading." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,700&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#0b0a07; --rose:#c9982a; --text:#ede8d8; --border:rgba(255,255,255,0.08); }
+    html,body { margin:0; background:var(--bg); color:var(--text); font-family:'Syne',system-ui,sans-serif; }
+    .topbar {
+      position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+      gap:12px; padding:12px clamp(1rem,4vw,2.4rem); background:rgba(13,12,8,0.92);
+      backdrop-filter:blur(18px); border-bottom:1px solid var(--border);
+    }
+    .topbar a { text-decoration:none; color:var(--text); }
+    .brand { display:flex; align-items:center; gap:10px; font-family:'Bodoni Moda',Georgia,serif; font-size:1.05rem; }
+    .brand small { font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:0.12em; color:var(--rose); text-transform:uppercase; }
+    .topbar .links { display:flex; gap:10px; align-items:center; }
+    .topbar .links a { font-size:0.82rem; padding:7px 14px; border:1px solid var(--border); border-radius:8px; color:#c9b98a; }
+    .topbar .links a.pilot { color:#0b0a07; background:linear-gradient(135deg,#e8c96a,#c9982a); border:none; font-weight:600; }
+    #redoc { }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a class="brand" href="index.html">
+      <svg width="26" height="26" viewBox="0 0 34 34" fill="none"><path d="M4 28 Q17 4 30 28" stroke="#c9982a" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="17" cy="9.5" r="2.2" fill="#c9982a"/></svg>
+      Parabola <small>API Reference</small>
+    </a>
+    <div class="links">
+      <a href="index.html">← Landing</a>
+      <a class="pilot" href="https://pilot.parabolamarkets.xyz" target="_blank" rel="noopener">Open the Pilot ↗</a>
+    </div>
+  </div>
+
+  <div id="redoc"></div>
+  <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+  <script>
+    Redoc.init('openapi.json', {
+      hideDownloadButton: false,
+      expandResponses: '200',
+      requiredPropsFirst: true,
+      theme: {
+        colors: {
+          primary: { main: '#c9982a' },
+          text: { primary: '#20180a', secondary: '#5e5438' },
+          http: { get: '#3a7', post: '#c9982a', delete: '#d05', put: '#38b' },
+        },
+        typography: {
+          fontFamily: 'Syne, system-ui, sans-serif',
+          headings: { fontFamily: 'Bodoni Moda, Georgia, serif', fontWeight: '700' },
+          code: { fontFamily: 'JetBrains Mono, monospace' },
+        },
+        sidebar: { backgroundColor: '#0f0d09', textColor: '#ede8d8', activeTextColor: '#e8c96a' },
+        rightPanel: { backgroundColor: '#12100a', textColor: '#ede8d8' },
+      },
+    }, document.getElementById('redoc'));
+  </script>
+</body>
+</html>
