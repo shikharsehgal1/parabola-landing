@@ -1,0 +1,3732 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Parabola Trading API",
+    "description": "Comprehensive algorithmic-trading API \u2014 4-layer architecture (Data \u00b7 Research/Backtesting \u00b7 Strategy \u00b7 Execution/Risk), verified wallet/JWT identity, and natural-language trading. Runs behind the Parabola pilot.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/system/health": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Health",
+        "operationId": "health_api_v1_system_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/info": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Info",
+        "operationId": "info_api_v1_system_info_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/guest": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Guest",
+        "operationId": "guest_api_v1_auth_guest_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionTokenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/wallet/challenge": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Wallet Challenge",
+        "operationId": "wallet_challenge_api_v1_auth_wallet_challenge_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WalletChallengeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletChallengeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/wallet/verify": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Wallet Verify",
+        "operationId": "wallet_verify_api_v1_auth_wallet_verify_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WalletVerifyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionTokenResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/privy": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Privy Exchange",
+        "operationId": "privy_exchange_api_v1_auth_privy_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenExchangeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionTokenResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/supabase": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Supabase Exchange",
+        "operationId": "supabase_exchange_api_v1_auth_supabase_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenExchangeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionTokenResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Me",
+        "operationId": "me_api_v1_auth_me_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/market/candles": {
+      "get": {
+        "tags": [
+          "market-data"
+        ],
+        "summary": "Candles",
+        "operationId": "candles_api_v1_market_candles_get",
+        "parameters": [
+          {
+            "name": "symbol",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "AAPL"
+              ],
+              "title": "Symbol"
+            }
+          },
+          {
+            "name": "timeframe",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Timeframe",
+              "default": "1d"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 5000,
+              "minimum": 1,
+              "default": 500,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandlesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/market/quote": {
+      "get": {
+        "tags": [
+          "market-data"
+        ],
+        "summary": "Quote",
+        "operationId": "quote_api_v1_market_quote_get",
+        "parameters": [
+          {
+            "name": "symbol",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "BTC-USD"
+              ],
+              "title": "Symbol"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/market/symbols": {
+      "get": {
+        "tags": [
+          "market-data"
+        ],
+        "summary": "Symbols",
+        "operationId": "symbols_api_v1_market_symbols_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SymbolsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/account/balance": {
+      "get": {
+        "tags": [
+          "account"
+        ],
+        "summary": "Balance",
+        "operationId": "balance_api_v1_account_balance_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/account/positions": {
+      "get": {
+        "tags": [
+          "account"
+        ],
+        "summary": "Positions",
+        "operationId": "positions_api_v1_account_positions_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PositionsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/place": {
+      "post": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Place",
+        "description": "Submit a market/limit/stop order. Runs full pre-trade risk validation\nbefore execution. Set `dry_run: true` to preview without executing.",
+        "operationId": "place_api_v1_orders_place_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/validate": {
+      "post": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Validate",
+        "description": "Dry-run: run the risk engine and return every check without executing.",
+        "operationId": "validate_api_v1_orders_validate_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskAssessmentOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/status": {
+      "get": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Status",
+        "operationId": "status_api_v1_orders_status_get",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Order Id"
+            }
+          },
+          {
+            "name": "client_order_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Client Order Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders": {
+      "get": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "List Orders",
+        "operationId": "list_orders_api_v1_orders_get",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/OrderStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "symbol",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Symbol"
+            }
+          },
+          {
+            "name": "open_only",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Open Only"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 100,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{order_id}": {
+      "delete": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Cancel",
+        "operationId": "cancel_api_v1_orders__order_id__delete",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Order Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CancelResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/strategy/list": {
+      "get": {
+        "tags": [
+          "strategy"
+        ],
+        "summary": "List Strategies",
+        "operationId": "list_strategies_api_v1_strategy_list_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StrategyListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/strategy/indicators": {
+      "get": {
+        "tags": [
+          "strategy"
+        ],
+        "summary": "List Indicators",
+        "operationId": "list_indicators_api_v1_strategy_indicators_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IndicatorListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/strategy/backtests": {
+      "get": {
+        "tags": [
+          "strategy"
+        ],
+        "summary": "List Backtests",
+        "operationId": "list_backtests_api_v1_strategy_backtests_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BacktestListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/strategy/backtest/{run_id}": {
+      "get": {
+        "tags": [
+          "strategy"
+        ],
+        "summary": "Get Backtest",
+        "operationId": "get_backtest_api_v1_strategy_backtest__run_id__get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BacktestReport"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/strategy/backtest": {
+      "post": {
+        "tags": [
+          "strategy"
+        ],
+        "summary": "Run Backtest",
+        "description": "Run a strategy across historical OHLCV and return a full performance\nreport (returns, Sharpe/Sortino, drawdown, trades, equity curve).",
+        "operationId": "run_backtest_api_v1_strategy_backtest_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BacktestRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BacktestReport"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/strategy/{strategy_id}": {
+      "get": {
+        "tags": [
+          "strategy"
+        ],
+        "summary": "Get Strategy",
+        "operationId": "get_strategy_api_v1_strategy__strategy_id__get",
+        "parameters": [
+          {
+            "name": "strategy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Strategy Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StrategyInfo"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/nl/interpret": {
+      "post": {
+        "tags": [
+          "natural-language"
+        ],
+        "summary": "Interpret",
+        "operationId": "interpret_api_v1_nl_interpret_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NLRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NLIntentOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/nl/command": {
+      "post": {
+        "tags": [
+          "natural-language"
+        ],
+        "summary": "Command",
+        "operationId": "command_api_v1_nl_command_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          },
+          {
+            "name": "x-client-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Client-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NLRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NLResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Root",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/healthz": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Healthz",
+        "operationId": "healthz_healthz_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AssetClass": {
+        "type": "string",
+        "enum": [
+          "equity",
+          "crypto",
+          "forex",
+          "future",
+          "index"
+        ],
+        "title": "AssetClass"
+      },
+      "AssetOut": {
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "title": "Symbol"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "asset_class": {
+            "$ref": "#/components/schemas/AssetClass"
+          },
+          "tradable": {
+            "type": "boolean",
+            "title": "Tradable"
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency",
+            "default": "USD"
+          }
+        },
+        "type": "object",
+        "required": [
+          "symbol",
+          "name",
+          "asset_class",
+          "tradable"
+        ],
+        "title": "AssetOut"
+      },
+      "BacktestListResponse": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "runs": {
+            "items": {
+              "$ref": "#/components/schemas/BacktestRunSummary"
+            },
+            "type": "array",
+            "title": "Runs"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count",
+          "runs"
+        ],
+        "title": "BacktestListResponse"
+      },
+      "BacktestMetrics": {
+        "properties": {
+          "total_return_pct": {
+            "type": "number",
+            "title": "Total Return Pct"
+          },
+          "cagr_pct": {
+            "type": "number",
+            "title": "Cagr Pct"
+          },
+          "volatility_pct": {
+            "type": "number",
+            "title": "Volatility Pct"
+          },
+          "sharpe": {
+            "type": "number",
+            "title": "Sharpe"
+          },
+          "sortino": {
+            "type": "number",
+            "title": "Sortino"
+          },
+          "max_drawdown_pct": {
+            "type": "number",
+            "title": "Max Drawdown Pct"
+          },
+          "calmar": {
+            "type": "number",
+            "title": "Calmar"
+          },
+          "win_rate_pct": {
+            "type": "number",
+            "title": "Win Rate Pct"
+          },
+          "profit_factor": {
+            "type": "number",
+            "title": "Profit Factor"
+          },
+          "num_trades": {
+            "type": "integer",
+            "title": "Num Trades"
+          },
+          "avg_trade_pnl": {
+            "type": "number",
+            "title": "Avg Trade Pnl"
+          },
+          "best_day_pct": {
+            "type": "number",
+            "title": "Best Day Pct"
+          },
+          "worst_day_pct": {
+            "type": "number",
+            "title": "Worst Day Pct"
+          },
+          "exposure_pct": {
+            "type": "number",
+            "title": "Exposure Pct"
+          },
+          "final_equity": {
+            "type": "number",
+            "title": "Final Equity"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_return_pct",
+          "cagr_pct",
+          "volatility_pct",
+          "sharpe",
+          "sortino",
+          "max_drawdown_pct",
+          "calmar",
+          "win_rate_pct",
+          "profit_factor",
+          "num_trades",
+          "avg_trade_pnl",
+          "best_day_pct",
+          "worst_day_pct",
+          "exposure_pct",
+          "final_equity"
+        ],
+        "title": "BacktestMetrics"
+      },
+      "BacktestReport": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "strategy_id": {
+            "type": "string",
+            "title": "Strategy Id"
+          },
+          "symbol": {
+            "type": "string",
+            "title": "Symbol"
+          },
+          "timeframe": {
+            "$ref": "#/components/schemas/Timeframe"
+          },
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End"
+          },
+          "bars": {
+            "type": "integer",
+            "title": "Bars"
+          },
+          "params": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Params"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/BacktestMetrics"
+          },
+          "equity_curve": {
+            "items": {
+              "$ref": "#/components/schemas/EquityPoint"
+            },
+            "type": "array",
+            "title": "Equity Curve"
+          },
+          "trades": {
+            "items": {
+              "$ref": "#/components/schemas/TradeOut"
+            },
+            "type": "array",
+            "title": "Trades"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id",
+          "strategy_id",
+          "symbol",
+          "timeframe",
+          "start",
+          "end",
+          "bars",
+          "params",
+          "metrics",
+          "equity_curve",
+          "trades",
+          "created_at"
+        ],
+        "title": "BacktestReport"
+      },
+      "BacktestRequest": {
+        "properties": {
+          "strategy_id": {
+            "type": "string",
+            "title": "Strategy Id",
+            "examples": [
+              "sma_crossover"
+            ]
+          },
+          "symbol": {
+            "type": "string",
+            "title": "Symbol",
+            "examples": [
+              "AAPL"
+            ]
+          },
+          "timeframe": {
+            "$ref": "#/components/schemas/Timeframe",
+            "default": "1d"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
+          },
+          "lookback": {
+            "type": "integer",
+            "maximum": 5000.0,
+            "minimum": 10.0,
+            "title": "Lookback",
+            "description": "Bars if start/end omitted.",
+            "default": 500
+          },
+          "starting_cash": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Starting Cash",
+            "default": 100000
+          },
+          "params": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Params"
+          },
+          "commission_bps": {
+            "type": "number",
+            "title": "Commission Bps",
+            "default": 1.0
+          },
+          "slippage_bps": {
+            "type": "number",
+            "title": "Slippage Bps",
+            "default": 2.0
+          },
+          "allow_short": {
+            "type": "boolean",
+            "title": "Allow Short",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "strategy_id",
+          "symbol"
+        ],
+        "title": "BacktestRequest"
+      },
+      "BacktestRunSummary": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "strategy_id": {
+            "type": "string",
+            "title": "Strategy Id"
+          },
+          "symbol": {
+            "type": "string",
+            "title": "Symbol"
+          },
+          "timeframe": {
+            "$ref": "#/components/schemas/Timeframe"
+          },
+          "total_return_pct": {
+            "type": "number",
+            "title": "Total Return Pct"
+          },
+          "sharpe": {
+            "type": "number",
+            "title": "Sharpe"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id",
+          "strategy_id",
+          "symbol",
+          "timeframe",
+          "total_return_pct",
+          "sharpe",
+          "created_at"
+        ],
+        "title": "BacktestRunSummary"
+      },
+      "BalanceResponse": {
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "title": "Account Id"
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency",
+            "default": "USD"
+          },
+          "cash": {
+            "type": "number",
+            "title": "Cash"
+          },
+          "equity": {
+            "type": "number",
+            "title": "Equity",
+            "description": "cash + market value of positions"
+          },
+          "positions_value": {
+            "type": "number",
+            "title": "Positions Value"
+          },
+          "unrealized_pnl": {
+            "type": "number",
+            "title": "Unrealized Pnl"
+          },
+          "realized_pnl": {
+            "type": "number",
+            "title": "Realized Pnl"
+          },
+          "buying_power": {
+            "type": "number",
+            "title": "Buying Power",
+            "description": "cash * max leverage \u2212 used margin"
+          },
+          "gross_leverage": {
+            "type": "number",
+            "title": "Gross Leverage"
+          },
+          "day_start_equity": {
+            "type": "number",
+            "title": "Day Start Equity"
+          },
+          "day_pnl": {
+            "type": "number",
+            "title": "Day Pnl"
+          },
+          "open_orders": {
+            "type": "integer",
+            "title": "Open Orders"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "account_id",
+          "cash",
+          "equity",
+          "positions_value",
+          "unrealized_pnl",
+          "realized_pnl",
+          "buying_power",
+          "gross_leverage",
+          "day_start_equity",
+          "day_pnl",
+          "open_orders",
+          "updated_at"
+        ],
+        "title": "BalanceResponse"
+      },
+      "CancelResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "canceled": {
+            "type": "boolean",
+            "title": "Canceled"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "canceled"
+        ],
+        "title": "CancelResponse"
+      },
+      "CandleOut": {
+        "properties": {
+          "ts": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ts"
+          },
+          "open": {
+            "type": "number",
+            "title": "Open"
+          },
+          "high": {
+            "type": "number",
+            "title": "High"
+          },
+          "low": {
+            "type": "number",
+            "title": "Low"
+          },
+          "close": {
+            "type": "number",
+            "title": "Close"
+          },
+          "volume": {
+            "type": "number",
+            "title": "Volume"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ts",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume"
+        ],
+        "title": "CandleOut"
+      },
+      "CandlesResponse": {
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "title": "Symbol"
+          },
+          "timeframe": {
+            "$ref": "#/components/schemas/Timeframe"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "candles": {
+            "items": {
+              "$ref": "#/components/schemas/CandleOut"
+            },
+            "type": "array",
+            "title": "Candles"
+          }
+        },
+        "type": "object",
+        "required": [
+          "symbol",
+          "timeframe",
+          "provider",
+          "count",
+          "candles"
+        ],
+        "title": "CandlesResponse"
+      },
+      "ComponentStatus": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "ok": {
+            "type": "boolean",
+            "title": "Ok"
+          },
+          "detail": {
+            "type": "string",
+            "title": "Detail",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "ok"
+        ],
+        "title": "ComponentStatus"
+      },
+      "EquityPoint": {
+        "properties": {
+          "ts": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ts"
+          },
+          "equity": {
+            "type": "number",
+            "title": "Equity"
+          },
+          "drawdown": {
+            "type": "number",
+            "title": "Drawdown"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ts",
+          "equity",
+          "drawdown"
+        ],
+        "title": "EquityPoint"
+      },
+      "FillOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "ts": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ts"
+          },
+          "qty": {
+            "type": "number",
+            "title": "Qty"
+          },
+          "price": {
+            "type": "number",
+            "title": "Price"
+          },
+          "fee": {
+            "type": "number",
+            "title": "Fee"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "ts",
+          "qty",
+          "price",
+          "fee"
+        ],
+        "title": "FillOut"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "default": "ok"
+          },
+          "service": {
+            "type": "string",
+            "title": "Service"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "environment": {
+            "type": "string",
+            "title": "Environment"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Time"
+          }
+        },
+        "type": "object",
+        "required": [
+          "service",
+          "version",
+          "environment",
+          "time"
+        ],
+        "title": "HealthResponse"
+      },
+      "IdentityMethod": {
+        "type": "string",
+        "enum": [
+          "guest",
+          "api_key",
+          "session",
+          "privy",
+          "supabase",
+          "wallet"
+        ],
+        "title": "IdentityMethod"
+      },
+      "IdentityOut": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "method": {
+            "$ref": "#/components/schemas/IdentityMethod"
+          },
+          "wallet_address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wallet Address"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "is_guest": {
+            "type": "boolean",
+            "title": "Is Guest",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "method"
+        ],
+        "title": "IdentityOut"
+      },
+      "IndicatorInfo": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "params": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Params"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "params"
+        ],
+        "title": "IndicatorInfo"
+      },
+      "IndicatorListResponse": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "indicators": {
+            "items": {
+              "$ref": "#/components/schemas/IndicatorInfo"
+            },
+            "type": "array",
+            "title": "Indicators"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count",
+          "indicators"
+        ],
+        "title": "IndicatorListResponse"
+      },
+      "LevelOut": {
+        "properties": {
+          "price": {
+            "type": "number",
+            "title": "Price"
+          },
+          "size": {
+            "type": "number",
+            "title": "Size"
+          }
+        },
+        "type": "object",
+        "required": [
+          "price",
+          "size"
+        ],
+        "title": "LevelOut"
+      },
+      "NLIntentOut": {
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/NLIntentType"
+          },
+          "confidence": {
+            "type": "number",
+            "title": "Confidence"
+          },
+          "order": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrderRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symbol"
+          },
+          "parsed_by": {
+            "type": "string",
+            "title": "Parsed By",
+            "default": "rules"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Notes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "confidence"
+        ],
+        "title": "NLIntentOut"
+      },
+      "NLIntentType": {
+        "type": "string",
+        "enum": [
+          "place_order",
+          "close_position",
+          "cancel_order",
+          "quote",
+          "balance",
+          "positions",
+          "orders",
+          "help",
+          "unknown"
+        ],
+        "title": "NLIntentType"
+      },
+      "NLRequest": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "title": "Text",
+            "examples": [
+              "buy 10 AAPL",
+              "short $5k of BTC if it breaks 90k",
+              "how's my account?"
+            ]
+          },
+          "execute": {
+            "type": "boolean",
+            "title": "Execute",
+            "description": "If false (default), parse + preview only.",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "NLRequest"
+      },
+      "NLResponse": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "intent": {
+            "$ref": "#/components/schemas/NLIntentOut"
+          },
+          "reply": {
+            "type": "string",
+            "title": "Reply",
+            "description": "Human-friendly confirmation / answer."
+          },
+          "executed": {
+            "type": "boolean",
+            "title": "Executed",
+            "default": false
+          },
+          "order": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrderOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "data": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "text",
+          "intent",
+          "reply"
+        ],
+        "title": "NLResponse"
+      },
+      "OrderListResponse": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "orders": {
+            "items": {
+              "$ref": "#/components/schemas/OrderOut"
+            },
+            "type": "array",
+            "title": "Orders"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count",
+          "orders"
+        ],
+        "title": "OrderListResponse"
+      },
+      "OrderOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "account_id": {
+            "type": "string",
+            "title": "Account Id"
+          },
+          "client_order_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Order Id"
+          },
+          "symbol": {
+            "type": "string",
+            "title": "Symbol"
+          },
+          "side": {
+            "$ref": "#/components/schemas/OrderSide"
+          },
+          "type": {
+            "$ref": "#/components/schemas/OrderType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "qty": {
+            "type": "number",
+            "title": "Qty"
+          },
+          "filled_qty": {
+            "type": "number",
+            "title": "Filled Qty"
+          },
+          "avg_fill_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Fill Price"
+          },
+          "limit_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limit Price"
+          },
+          "stop_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stop Price"
+          },
+          "time_in_force": {
+            "$ref": "#/components/schemas/TimeInForce"
+          },
+          "notional": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notional"
+          },
+          "reject_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reject Reason"
+          },
+          "strategy_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strategy Id"
+          },
+          "broker_order_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Broker Order Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "fills": {
+            "items": {
+              "$ref": "#/components/schemas/FillOut"
+            },
+            "type": "array",
+            "title": "Fills"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "account_id",
+          "client_order_id",
+          "symbol",
+          "side",
+          "type",
+          "status",
+          "qty",
+          "filled_qty",
+          "avg_fill_price",
+          "limit_price",
+          "stop_price",
+          "time_in_force",
+          "notional",
+          "reject_reason",
+          "strategy_id",
+          "broker_order_id",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "OrderOut"
+      },
+      "OrderRequest": {
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "title": "Symbol",
+            "examples": [
+              "AAPL",
+              "BTC-USD"
+            ]
+          },
+          "side": {
+            "$ref": "#/components/schemas/OrderSide"
+          },
+          "type": {
+            "$ref": "#/components/schemas/OrderType",
+            "default": "market"
+          },
+          "qty": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Qty",
+            "description": "Units. Provide qty OR notional."
+          },
+          "notional": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notional",
+            "description": "Dollar amount; converted to qty at quote."
+          },
+          "limit_price": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limit Price"
+          },
+          "stop_price": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stop Price"
+          },
+          "time_in_force": {
+            "$ref": "#/components/schemas/TimeInForce",
+            "default": "day"
+          },
+          "client_order_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Order Id"
+          },
+          "strategy_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strategy Id"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "title": "Dry Run",
+            "description": "Validate + risk-check only; do not execute.",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "symbol",
+          "side"
+        ],
+        "title": "OrderRequest"
+      },
+      "OrderSide": {
+        "type": "string",
+        "enum": [
+          "buy",
+          "sell"
+        ],
+        "title": "OrderSide"
+      },
+      "OrderStatus": {
+        "type": "string",
+        "enum": [
+          "pending_new",
+          "accepted",
+          "working",
+          "partially_filled",
+          "filled",
+          "canceled",
+          "rejected",
+          "expired"
+        ],
+        "title": "OrderStatus"
+      },
+      "OrderType": {
+        "type": "string",
+        "enum": [
+          "market",
+          "limit",
+          "stop",
+          "stop_limit"
+        ],
+        "title": "OrderType"
+      },
+      "PositionOut": {
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "title": "Symbol"
+          },
+          "side": {
+            "$ref": "#/components/schemas/PositionSide"
+          },
+          "qty": {
+            "type": "number",
+            "title": "Qty"
+          },
+          "avg_price": {
+            "type": "number",
+            "title": "Avg Price"
+          },
+          "mark_price": {
+            "type": "number",
+            "title": "Mark Price"
+          },
+          "market_value": {
+            "type": "number",
+            "title": "Market Value"
+          },
+          "unrealized_pnl": {
+            "type": "number",
+            "title": "Unrealized Pnl"
+          },
+          "realized_pnl": {
+            "type": "number",
+            "title": "Realized Pnl"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "symbol",
+          "side",
+          "qty",
+          "avg_price",
+          "mark_price",
+          "market_value",
+          "unrealized_pnl",
+          "realized_pnl",
+          "updated_at"
+        ],
+        "title": "PositionOut"
+      },
+      "PositionSide": {
+        "type": "string",
+        "enum": [
+          "long",
+          "short",
+          "flat"
+        ],
+        "title": "PositionSide"
+      },
+      "PositionsResponse": {
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "title": "Account Id"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "positions": {
+            "items": {
+              "$ref": "#/components/schemas/PositionOut"
+            },
+            "type": "array",
+            "title": "Positions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "account_id",
+          "count",
+          "positions"
+        ],
+        "title": "PositionsResponse"
+      },
+      "QuoteResponse": {
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "title": "Symbol"
+          },
+          "ts": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ts"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "bid": {
+            "type": "number",
+            "title": "Bid"
+          },
+          "ask": {
+            "type": "number",
+            "title": "Ask"
+          },
+          "last": {
+            "type": "number",
+            "title": "Last"
+          },
+          "mid": {
+            "type": "number",
+            "title": "Mid"
+          },
+          "spread": {
+            "type": "number",
+            "title": "Spread"
+          },
+          "bid_size": {
+            "type": "number",
+            "title": "Bid Size",
+            "default": 0.0
+          },
+          "ask_size": {
+            "type": "number",
+            "title": "Ask Size",
+            "default": 0.0
+          },
+          "volume": {
+            "type": "number",
+            "title": "Volume",
+            "default": 0.0
+          },
+          "bids": {
+            "items": {
+              "$ref": "#/components/schemas/LevelOut"
+            },
+            "type": "array",
+            "title": "Bids",
+            "description": "Level II depth"
+          },
+          "asks": {
+            "items": {
+              "$ref": "#/components/schemas/LevelOut"
+            },
+            "type": "array",
+            "title": "Asks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "symbol",
+          "ts",
+          "provider",
+          "bid",
+          "ask",
+          "last",
+          "mid",
+          "spread"
+        ],
+        "title": "QuoteResponse"
+      },
+      "RiskAssessmentOut": {
+        "properties": {
+          "approved": {
+            "type": "boolean",
+            "title": "Approved"
+          },
+          "checks": {
+            "items": {
+              "$ref": "#/components/schemas/RiskCheck"
+            },
+            "type": "array",
+            "title": "Checks"
+          },
+          "projected_notional": {
+            "type": "number",
+            "title": "Projected Notional"
+          },
+          "projected_buying_power": {
+            "type": "number",
+            "title": "Projected Buying Power"
+          },
+          "projected_gross_leverage": {
+            "type": "number",
+            "title": "Projected Gross Leverage"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "approved",
+          "checks",
+          "projected_notional",
+          "projected_buying_power",
+          "projected_gross_leverage"
+        ],
+        "title": "RiskAssessmentOut"
+      },
+      "RiskCheck": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "passed": {
+            "type": "boolean",
+            "title": "Passed"
+          },
+          "detail": {
+            "type": "string",
+            "title": "Detail",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "passed"
+        ],
+        "title": "RiskCheck"
+      },
+      "ServiceInfo": {
+        "properties": {
+          "service": {
+            "type": "string",
+            "title": "Service"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "data_provider": {
+            "type": "string",
+            "title": "Data Provider"
+          },
+          "broker": {
+            "type": "string",
+            "title": "Broker"
+          },
+          "auth_enabled": {
+            "type": "boolean",
+            "title": "Auth Enabled"
+          },
+          "components": {
+            "items": {
+              "$ref": "#/components/schemas/ComponentStatus"
+            },
+            "type": "array",
+            "title": "Components"
+          },
+          "layers": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Layers"
+          }
+        },
+        "type": "object",
+        "required": [
+          "service",
+          "version",
+          "data_provider",
+          "broker",
+          "auth_enabled",
+          "components",
+          "layers"
+        ],
+        "title": "ServiceInfo"
+      },
+      "SessionTokenResponse": {
+        "properties": {
+          "session_token": {
+            "type": "string",
+            "title": "Session Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "Bearer"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          },
+          "identity": {
+            "$ref": "#/components/schemas/IdentityOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "session_token",
+          "expires_at",
+          "identity"
+        ],
+        "title": "SessionTokenResponse"
+      },
+      "StrategyInfo": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "params": {
+            "items": {
+              "$ref": "#/components/schemas/StrategyParam"
+            },
+            "type": "array",
+            "title": "Params"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "params"
+        ],
+        "title": "StrategyInfo"
+      },
+      "StrategyListResponse": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "strategies": {
+            "items": {
+              "$ref": "#/components/schemas/StrategyInfo"
+            },
+            "type": "array",
+            "title": "Strategies"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count",
+          "strategies"
+        ],
+        "title": "StrategyListResponse"
+      },
+      "StrategyParam": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "default": {
+            "title": "Default"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "type",
+          "default"
+        ],
+        "title": "StrategyParam"
+      },
+      "SymbolsResponse": {
+        "properties": {
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "assets": {
+            "items": {
+              "$ref": "#/components/schemas/AssetOut"
+            },
+            "type": "array",
+            "title": "Assets"
+          }
+        },
+        "type": "object",
+        "required": [
+          "provider",
+          "count",
+          "assets"
+        ],
+        "title": "SymbolsResponse"
+      },
+      "TimeInForce": {
+        "type": "string",
+        "enum": [
+          "day",
+          "gtc",
+          "ioc",
+          "fok"
+        ],
+        "title": "TimeInForce"
+      },
+      "Timeframe": {
+        "type": "string",
+        "enum": [
+          "1m",
+          "5m",
+          "15m",
+          "30m",
+          "1h",
+          "4h",
+          "1d",
+          "1w"
+        ],
+        "title": "Timeframe"
+      },
+      "TokenExchangeRequest": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token",
+            "description": "Privy or Supabase access token (JWT)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token"
+        ],
+        "title": "TokenExchangeRequest"
+      },
+      "TradeOut": {
+        "properties": {
+          "ts": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ts"
+          },
+          "side": {
+            "$ref": "#/components/schemas/OrderSide"
+          },
+          "qty": {
+            "type": "number",
+            "title": "Qty"
+          },
+          "price": {
+            "type": "number",
+            "title": "Price"
+          },
+          "fee": {
+            "type": "number",
+            "title": "Fee"
+          },
+          "pnl": {
+            "type": "number",
+            "title": "Pnl",
+            "default": 0.0
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "ts",
+          "side",
+          "qty",
+          "price",
+          "fee"
+        ],
+        "title": "TradeOut"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "WalletChallengeRequest": {
+        "properties": {
+          "wallet": {
+            "type": "string",
+            "title": "Wallet",
+            "description": "base58 Solana public key"
+          }
+        },
+        "type": "object",
+        "required": [
+          "wallet"
+        ],
+        "title": "WalletChallengeRequest"
+      },
+      "WalletChallengeResponse": {
+        "properties": {
+          "wallet": {
+            "type": "string",
+            "title": "Wallet"
+          },
+          "nonce": {
+            "type": "string",
+            "title": "Nonce"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Sign this exact string with your wallet."
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "wallet",
+          "nonce",
+          "message",
+          "expires_at"
+        ],
+        "title": "WalletChallengeResponse"
+      },
+      "WalletVerifyRequest": {
+        "properties": {
+          "wallet": {
+            "type": "string",
+            "title": "Wallet"
+          },
+          "signature": {
+            "type": "string",
+            "title": "Signature",
+            "description": "base58 ed25519 signature of the challenge message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "wallet",
+          "signature"
+        ],
+        "title": "WalletVerifyRequest"
+      }
+    }
+  }
+}
