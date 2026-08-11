@@ -1,0 +1,110 @@
+{
+  "instrument_id": "power-pjm-west-da-he18-2026-08-31",
+  "model_version": "synthetic_reference_v2.0",
+  "fixture": false,
+  "source_label": "pjm-dataminer2-da_hrl_lmps-pnode-51288",
+  "generated_at_utc": "2026-07-29T23:14:06.407086+00:00",
+  "source_evidence": {
+    "feed": "da_hrl_lmps",
+    "pnode_id": 51288,
+    "pnode_name": "WESTERN HUB",
+    "consolidated_sha256": "2a3312d062e5c811223b7fd835ba6dbc46d58724e45dfa38e4330e3e3dde8107",
+    "records": 27141,
+    "page_hashes": [
+      "68e119aea50a7003b026eeda88a54f66108ac48dcc5e865b5d6db7642062b00e",
+      "edc79e632b55766a0220bc2580eddfb742dc7ee3fd6a73ec0272eb1620f3748e",
+      "5d48ffa469619ba4c6fa8ef6af0ce55e54af720dbdd936b00577b702616b35aa",
+      "bd254a796571687e5a758e8015ad76e6de506360894687471697b2a37ab4d99a",
+      "51095cb9dea2045b2ab350fe9744740fc7b476c04ed77004b22c5ddcf02f1cf8",
+      "ee1ae5a8154a38da9072fa87551df4f51ade024d2ed501863995a8da17f5a4b6",
+      "8d08209aad2a1f9a9384f8ffa454d309f708a8b09f66cf9abf8d95e4f7c7cd22"
+    ]
+  },
+  "backtests": {
+    "h1_last_365d": {
+      "days": 365,
+      "mean_crps": 37.16267425331404,
+      "mean_crps_climatology": 44.801127011885846,
+      "mean_crps_persistence": 34.29170088015535,
+      "crps_skill_vs_climatology": 0.1704968885391055,
+      "coverage_50": 0.4684931506849315,
+      "coverage_80": 0.7863013698630137,
+      "coverage_95": 0.947945205479452,
+      "coverage_99": 0.989041095890411,
+      "pit_ks_distance": 0.04433535003390354,
+      "spike_250_brier": 0.05199972034388978,
+      "spike_250_brier_climatology": 0.05904297241508743,
+      "spike_500_brier": 0.0186965862534635,
+      "gates": {
+        "crps_beats_climatology": true,
+        "coverage_95_in_band": true,
+        "coverage_99_floor": true,
+        "spike_brier_beats_climatology": true,
+        "no_settlement_off_grid": true,
+        "all_pass": true
+      }
+    },
+    "h1_last_730d": {
+      "days": 730,
+      "mean_crps": 29.725137988524537,
+      "mean_crps_climatology": 32.598330342916924,
+      "mean_crps_persistence": 25.365690770316753,
+      "crps_skill_vs_climatology": 0.08813924897894909,
+      "coverage_50": 0.4958904109589041,
+      "coverage_80": 0.7945205479452054,
+      "coverage_95": 0.9356164383561644,
+      "coverage_99": 0.9849315068493151,
+      "pit_ks_distance": 0.023058405050594866,
+      "spike_250_brier": 0.03476723570568516,
+      "spike_250_brier_climatology": 0.03814787014449264,
+      "spike_500_brier": 0.011430305174346355,
+      "gates": {
+        "crps_beats_climatology": true,
+        "coverage_95_in_band": true,
+        "coverage_99_floor": true,
+        "spike_brier_beats_climatology": true,
+        "no_settlement_off_grid": true,
+        "all_pass": true
+      }
+    },
+    "h33_last_365d": {
+      "days": 365,
+      "mean_crps": 44.990132314960974,
+      "mean_crps_climatology": 45.194522395945626,
+      "mean_crps_persistence": 70.10900302857772,
+      "crps_skill_vs_climatology": 0.004522452504177488,
+      "coverage_50": 0.5123287671232877,
+      "coverage_80": 0.7753424657534247,
+      "coverage_95": 0.947945205479452,
+      "coverage_99": 0.9917808219178083,
+      "pit_ks_distance": 0.12621398825618624,
+      "spike_250_brier": 0.06071101019592558,
+      "spike_250_brier_climatology": 0.05904297241508743,
+      "spike_500_brier": 0.01936230044979208,
+      "gates": {
+        "crps_beats_climatology": true,
+        "coverage_95_in_band": true,
+        "coverage_99_floor": true,
+        "spike_brier_beats_climatology": false,
+        "no_settlement_off_grid": true,
+        "all_pass": false
+      }
+    }
+  },
+  "artifact": {
+    "operating_day": "2026-08-31",
+    "hour_ending": 18,
+    "horizon_days": 33,
+    "sigma_h_multiplier": 2.0,
+    "p_neg": 0.02150631607944986,
+    "p_spike_250": 0.13816499166769902,
+    "p_spike_500": 0.07035758180893126,
+    "floors_applied": [],
+    "calibration": {
+      "pit_count": 365,
+      "shrink_applied": 0.958904109589041,
+      "widen_only": true
+    },
+    "grid_size": 96
+  }
+}

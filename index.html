@@ -1,253 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Parabola Markets — Estimation Markets</title>
-  <meta name="description" content="The first on-chain estimation market. Stake a full probability distribution on any outcome. Built on Solana." />
-  <meta property="og:site_name" content="Parabola Markets" />
-  <meta property="og:title" content="Parabola Markets" />
-  <meta property="og:description" content="Markets where you bet the full distribution, not just yes or no." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://parabolamarkets.xyz" />
-  <meta property="og:image" content="https://raw.githubusercontent.com/shikharsehgal1/parabola-landing/main/og-image.png" />
-  <meta property="og:image:secure_url" content="https://raw.githubusercontent.com/shikharsehgal1/parabola-landing/main/og-image.png" />
-  <meta property="og:image:type" content="image/png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Parabola — bet the full distribution, not just yes or no. On-chain estimation markets on Solana." />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Parabola Markets · Power price protection</title>
+<meta name="description" content="Parabola publishes a daily probability curve for the price of power and quotes protection against the scarcity hours that drive budget variance." />
+<meta property="og:site_name" content="Parabola Markets" />
+<meta property="og:title" content="Parabola Markets · Power price protection" />
+<meta property="og:description" content="Cover the hours that spike your power bill. Daily calibrated probability curve for PJM Western Hub day-ahead power, and protection quoted against the scarcity hours." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://parabolamarkets.xyz" />
+<meta property="og:image" content="https://raw.githubusercontent.com/shikharsehgal1/parabola-landing/main/og-image.png" />
+<meta property="og:image:secure_url" content="https://raw.githubusercontent.com/shikharsehgal1/parabola-landing/main/og-image.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Parabola Markets" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@parabolamarkets" />
+<meta name="twitter:creator" content="@parabolamarkets" />
+<meta name="twitter:title" content="Parabola Markets · Power price protection" />
+<meta name="twitter:description" content="Cover the hours that spike your power bill. Daily calibrated probability curve for PJM Western Hub day-ahead power, and protection quoted against the scarcity hours." />
+<meta name="twitter:image" content="https://raw.githubusercontent.com/shikharsehgal1/parabola-landing/main/og-image.png" />
+<meta name="twitter:image:alt" content="Parabola Markets" />
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600&family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0908;
+    --ink: #f4efe6;
+    --gold: #c9982a;
+    --gold-lt: #e8c96a;
+    --green: #20e6b0;
+    --red: #ff8b6a;
+    --line: rgba(244,239,230,.12);
+    --panel: rgba(244,239,230,.03);
+    --label: rgba(244,239,230,.58);
+    --body: rgba(244,239,230,.6);
+    --max: 1400px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: 'Poppins', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  a { color: var(--ink); text-decoration: none; }
+  a:hover { color: var(--gold-lt); }
+  h1, h2, h3 { margin: 0; }
+  button { font-family: inherit; }
 
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@parabolamarkets" />
-  <meta name="twitter:creator" content="@parabolamarkets" />
-  <meta name="twitter:title" content="Parabola Markets" />
-  <meta name="twitter:description" content="Markets where you bet the full distribution, not just yes or no." />
-  <meta name="twitter:image" content="https://raw.githubusercontent.com/shikharsehgal1/parabola-landing/main/og-image.png" />
-  <meta name="twitter:image:alt" content="Parabola — bet the full distribution. On-chain estimation markets on Solana." />
+  .wrap { max-width: var(--max); margin: 0 auto; padding-left: 44px; padding-right: 44px; }
+  .rule { border-top: 1px solid rgba(244,239,230,.09); }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,700;1,6..96,300;1,6..96,400&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  /* nav */
+  nav {
+    position: sticky; top: 0; z-index: 60;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 44px;
+    background: rgba(10,9,8,.8); backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(244,239,230,.09);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand span { font-family: 'Bodoni Moda', Georgia, serif; font-size: 17px; font-weight: 500; letter-spacing: .02em; }
+  .navlinks { display: flex; align-items: center; gap: 28px; font-size: 13px; font-weight: 500; }
+  .navlinks a { color: rgba(244,239,230,.55); }
+  .navlinks a:hover { color: var(--ink); }
+  .btn-gold {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 36px; padding: 0 16px; border-radius: 99px;
+    font-weight: 700; white-space: nowrap; color: #17130a;
+    background: linear-gradient(135deg, var(--gold-lt), var(--gold));
+  }
+  .btn-gold:hover { color: #17130a; filter: brightness(1.06); }
 
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+  /* hero */
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--label);
+  }
+  h1 {
+    font-size: clamp(44px, 7.4vw, 108px); font-weight: 800;
+    letter-spacing: -.055em; line-height: .96; text-wrap: balance;
+  }
+  h1 span { display: block; }
+  h1 .accent { color: var(--gold-lt); }
+  .lead { max-width: 720px; font-size: clamp(18px,1.6vw,22px); line-height: 1.55; font-weight: 600; }
+  .sub  { max-width: 720px; font-size: clamp(16px,1.4vw,18px); line-height: 1.7; color: var(--body); }
 
-    :root {
-      --rose:        #c9982a;
-      --rose-bright: #e8c96a;
-      --rose-dim:    #7a5e18;
-      --sand:        #b89240;
-      --sand-bright: #d4aa58;
-      --sand-dim:    #6e5220;
-      --bg:          #0b0a07;
-      --bg-el:       rgba(255,255,255,0.022);
-      --bg-glass:    rgba(13,12,8,0.87);
-      --border:      rgba(255,255,255,0.058);
-      --border-mid:  rgba(255,255,255,0.09);
-      --border-str:  rgba(255,255,255,0.15);
-      --text:        #ede8d8;
-      --text-sec:    #9e9278;
-      --text-dim:    #5e5438;
-      --r-xl: 2.25rem; --r-lg: 1.5rem; --r-md: 1rem; --r-sm: 0.6rem;
-    }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .card {
+    border: 1px solid var(--line); border-radius: 20px; overflow: hidden;
+    background: var(--panel);
+    transition: transform .5s cubic-bezier(.22,1,.36,1), border-color .4s, box-shadow .5s;
+  }
+  .card:hover { transform: translateY(-6px); border-color: rgba(232,201,106,.34); box-shadow: 0 26px 60px -26px rgba(201,152,42,.55); }
+  .card figure {
+    margin: 0; height: 180px; border-bottom: 1px solid rgba(244,239,230,.1);
+    background-image: repeating-linear-gradient(115deg, rgba(201,152,42,.13) 0 2px, transparent 2px 11px);
+    display: flex; align-items: flex-end; padding: 18px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--label);
+  }
+  .card figure.has-img { padding: 0; background-image: none; }
+  .card figure img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card .body { padding: 20px 22px 22px; }
+  .card .name { font-size: 15.5px; font-weight: 700; letter-spacing: -.015em; }
+  .card .sub2 { margin-top: 4px; font-size: 12.5px; color: var(--label); }
+  .card .row { margin-top: 18px; display: flex; align-items: baseline; justify-content: space-between; }
+  .card .val { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; letter-spacing: -.03em; }
+  .card .delta { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; }
 
-    body { font-family:'Syne',system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.65; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+  .arrows { display: flex; gap: 8px; }
+  .arrows button {
+    width: 40px; height: 40px; border-radius: 99px;
+    border: 1px solid rgba(244,239,230,.18); background: rgba(244,239,230,.04);
+    color: var(--ink); font-size: 15px; cursor: pointer;
+    transition: border-color .2s, background .2s;
+  }
+  .arrows button:hover { border-color: rgba(232,201,106,.6); background: rgba(232,201,106,.1); }
 
-    /* ── Nav ──────────────────────────────────────────────────────── */
-    nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 clamp(1.5rem,5vw,3.5rem); height:66px; background:var(--bg-glass); backdrop-filter:blur(22px) saturate(1.3); border-bottom:1px solid var(--border); }
-    .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); font-family:'Bodoni Moda',Georgia,serif; font-size:1.05rem; font-weight:500; letter-spacing:0.02em; }
-    .nav-links { display:flex; align-items:center; gap:clamp(1.2rem,3vw,2.2rem); }
-    .nav-links a { font-size:0.84rem; font-weight:500; letter-spacing:0.04em; color:var(--text-sec); text-decoration:none; transition:color 0.2s; }
-    .nav-links a:hover { color:var(--text); }
-    .nav-pilot { color:var(--rose-bright)!important; border:1px solid var(--border-mid); padding:6px 13px; border-radius:var(--r-sm); }
-    .nav-pilot:hover { border-color:var(--rose); background:rgba(201,152,42,0.07); }
-    .mono { font-family:'JetBrains Mono',monospace; font-size:0.86em; color:var(--rose-bright); }
-    /* Electric feature canvas (scoped to the example section) */
-    #electric { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:0.9; }
-    @media(max-width:580px){ .nav-links a:not(:last-child){display:none} }
+  /* manifesto */
+  .manifesto { display: flex; flex-direction: column; gap: 34px; max-width: 1120px; margin: 0 auto; }
+  .manifesto p {
+    margin: 0; font-size: clamp(24px,3.2vw,40px); font-weight: 600;
+    letter-spacing: -.035em; line-height: 1.24; text-wrap: pretty;
+    transition: opacity .5s ease, color .5s ease, transform .6s cubic-bezier(.22,1,.36,1);
+  }
+  .morelink {
+    align-self: flex-start; margin-top: 12px; display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--gold-lt);
+    border-bottom: 1px solid rgba(232,201,106,.4); padding-bottom: 6px;
+  }
 
-    /* ── Layout ───────────────────────────────────────────────────── */
-    .section { position:relative; z-index:1; }
-    .container { max-width:1100px; margin:0 auto; padding:0 clamp(1.25rem,5vw,3.5rem); }
-    .pad { padding:clamp(5rem,12vh,9rem) 0; }
-    hr { border:none; border-top:1px solid var(--border); margin:0; }
+  /* sections */
+  section { padding-top: 84px; padding-bottom: 84px; }
+  .num { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: rgba(244,239,230,.55); margin-bottom: 22px; }
+  h2 { font-size: clamp(30px,3.6vw,46px); font-weight: 800; letter-spacing: -.04em; line-height: 1.1; margin-bottom: 20px; }
+  .split { display: grid; grid-template-columns: .9fr 1.1fr; gap: 72px; align-items: center; }
+  .split.flip { grid-template-columns: 1.1fr .9fr; }
+  .split p { margin: 0 0 16px; font-size: 16.5px; line-height: 1.7; color: var(--body); max-width: 460px; }
+  .split p:last-child { margin-bottom: 0; }
 
-    /* ── Type ─────────────────────────────────────────────────────── */
-    h1,h2,h3 { font-family:'Bodoni Moda',Georgia,serif; letter-spacing:-0.02em; line-height:1.08; }
-    h1 { font-size:clamp(2.8rem,8vw,5.6rem); font-weight:400; }
-    h1 em { font-style:italic; background:linear-gradient(118deg,var(--rose-bright),var(--sand-bright)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-    h2 { font-size:clamp(2rem,5.5vw,3.6rem); font-weight:400; color:var(--text); }
-    h2 em { font-style:italic; color:var(--rose-bright); -webkit-text-fill-color:initial; }
-    h3 { font-size:clamp(1.05rem,2.5vw,1.25rem); font-weight:500; color:var(--text); margin-bottom:0.5rem; }
+  .panel { border: 1px solid var(--line); border-radius: 22px; padding: 30px; background: var(--panel); }
+  .statgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; border-radius: 14px; overflow: hidden; border: 1px solid rgba(244,239,230,.1); }
+  .statgrid > div { background: rgba(244,239,230,.04); padding: 22px 20px 24px; }
+  .statgrid .v { font-family: 'JetBrains Mono', monospace; font-size: 25px; font-weight: 700; letter-spacing: -.03em; }
+  .statgrid .l { margin-top: 7px; font-size: 12.5px; line-height: 1.5; color: var(--label); }
 
-    .eyebrow { display:inline-flex; align-items:center; gap:9px; font-size:clamp(0.68rem,1.6vw,0.76rem); font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--rose-bright); margin-bottom:1.6rem; }
-    .eyebrow-pip { width:7px; height:7px; border-radius:50%; background:var(--rose); flex-shrink:0; animation:pip 2.4s ease-in-out infinite; }
-    @keyframes pip{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.65)}}
-    .section-label { font-size:clamp(0.66rem,1.5vw,0.72rem); font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--rose); margin-bottom:1rem; }
-    .section-sub { font-size:clamp(1rem,2vw,1.1rem); color:var(--text-sec); font-weight:400; line-height:1.75; }
+  /* calculator */
+  .yearpicker { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 26px; }
+  .yearpicker .cap {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--label); margin-right: 6px;
+  }
+  .yearpicker button {
+    min-height: 44px; padding: 0 18px; border-radius: 12px; cursor: pointer;
+    font-size: 14px; font-weight: 700; letter-spacing: -.01em;
+    border: 1px solid rgba(244,239,230,.14); background: rgba(244,239,230,.04);
+    color: rgba(244,239,230,.66); transition: border-color .2s, background .2s, color .2s;
+  }
+  .yearpicker button[aria-pressed="true"] {
+    border-color: rgba(232,201,106,.75); background: rgba(232,201,106,.14); color: var(--ink);
+  }
+  .calc { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; border-radius: 16px; overflow: hidden; border: 1px solid rgba(244,239,230,.1); }
+  .calc > div { background: rgba(244,239,230,.04); padding: 26px 24px 28px; }
+  .calc .h {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+    letter-spacing: .13em; text-transform: uppercase; color: var(--label);
+  }
+  .calc .n { margin-top: 14px; font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 700; letter-spacing: -.03em; }
+  .calc .c { margin-top: 8px; font-size: 12.5px; color: var(--label); }
+  .note {
+    margin-top: 20px; padding: 16px 18px; border-radius: 14px;
+    background: rgba(201,152,42,.07); border: 1px solid rgba(201,152,42,.22);
+    font-size: 13.5px; line-height: 1.75; color: var(--body);
+  }
 
-    /* ── Hero ─────────────────────────────────────────────────────── */
-    #hero { min-height:100svh; display:flex; flex-direction:column; justify-content:center; overflow:hidden; padding-top:66px; position:relative; }
-    #lake { position:absolute; inset:0; width:100%; height:100%; z-index:0; display:block; cursor:crosshair; }
-    .hero-inner { position:relative; z-index:2; max-width:800px; padding:clamp(5rem,12vh,9rem) clamp(1.25rem,5vw,3.5rem) clamp(4rem,8vh,6rem); }
-    .hero-sub { font-size:clamp(1rem,2.4vw,1.18rem); color:var(--text-sec); font-weight:400; line-height:1.78; max-width:540px; margin:1.4rem 0 3rem; }
-    .hero-actions { display:flex; gap:12px; flex-wrap:wrap; }
-    .lake-hint { position:absolute; bottom:clamp(1.2rem,3vh,2rem); left:50%; transform:translateX(-50%); z-index:3; pointer-events:none; font-size:0.72rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:rgba(201,152,42,0.4); display:flex; align-items:center; gap:8px; animation:hintFade 3s ease-in-out 2s infinite alternate; white-space:nowrap; }
-    @keyframes hintFade{0%{opacity:0.6}100%{opacity:0.15}}
+  .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .three > div {
+    border: 1px solid var(--line); border-radius: 20px; padding: 30px 28px 34px; background: var(--panel);
+    transition: transform .5s cubic-bezier(.22,1,.36,1), border-color .4s, box-shadow .5s;
+  }
+  .three > div:hover { transform: translateY(-6px); border-color: rgba(232,201,106,.34); box-shadow: 0 26px 60px -26px rgba(201,152,42,.55); }
+  .three .tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+  .three h3 { margin: 16px 0 12px; font-size: 20px; font-weight: 700; letter-spacing: -.02em; line-height: 1.25; }
+  .three p { margin: 0 0 14px; font-size: 14px; line-height: 1.7; color: rgba(244,239,230,.55); }
+  .three .meta { padding-top: 14px; border-top: 1px solid rgba(244,239,230,.08); font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 1.6; color: var(--gold-lt); }
 
-    /* Rotator */
-    .rotator-wrap { display:inline-block; overflow:hidden; height:1.08em; vertical-align:bottom; }
-    .rotator { display:flex; flex-direction:column; animation:rotSlide 13.2s cubic-bezier(0.77,0,0.18,1) infinite; }
-    .rotator span { height:1.08em; flex-shrink:0; line-height:1.08; background:linear-gradient(118deg,var(--rose-bright),var(--sand-bright)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-    @keyframes rotSlide{
-      0%,11%    {transform:translateY(0)}
-      16%,27%   {transform:translateY(-16.666%)}
-      33%,44%   {transform:translateY(-33.333%)}
-      50%,61%   {transform:translateY(-50%)}
-      66%,77%   {transform:translateY(-66.666%)}
-      83%,94%   {transform:translateY(-83.333%)}
-      100%      {transform:translateY(0)}
-    }
+  /* signup */
+  #signup { background: linear-gradient(180deg, rgba(201,152,42,.08) 0%, transparent 70%); }
+  .signrow { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+  .cta-lg {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 54px; padding: 0 30px; border-radius: 14px; font-size: 15px;
+    font-weight: 800; white-space: nowrap; color: #17130a;
+    background: linear-gradient(135deg, var(--gold-lt), var(--gold));
+  }
+  .cta-lg:hover { color: #17130a; filter: brightness(1.05); }
+  .cta-ghost {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 54px; padding: 0 24px; border-radius: 14px; font-size: 14px;
+    font-weight: 600; white-space: nowrap; color: var(--ink);
+    border: 1px solid rgba(244,239,230,.18); background: rgba(244,239,230,.04);
+  }
+  .cta-ghost:hover { color: var(--ink); border-color: rgba(244,239,230,.34); }
 
-    /* ── Buttons ──────────────────────────────────────────────────── */
-    .btn-rose { padding:clamp(12px,2vw,14px) clamp(24px,4vw,34px); border-radius:50px; font-family:'Syne',sans-serif; font-size:clamp(0.85rem,1.8vw,0.93rem); font-weight:600; letter-spacing:0.04em; background:linear-gradient(135deg,var(--rose),#7a5010); color:#fff; border:none; cursor:pointer; text-decoration:none; display:inline-block; box-shadow:0 4px 28px rgba(201,152,42,0.28); transition:transform 0.18s,box-shadow 0.18s; position:relative; z-index:3; }
-    .btn-rose:hover { transform:translateY(-2px); box-shadow:0 8px 36px rgba(201,152,42,0.40); }
-    .btn-ghost { padding:clamp(12px,2vw,14px) clamp(24px,4vw,34px); border-radius:50px; font-family:'Syne',sans-serif; font-size:clamp(0.85rem,1.8vw,0.93rem); font-weight:500; background:transparent; color:var(--text-sec); border:1px solid var(--border-str); cursor:pointer; text-decoration:none; display:inline-block; transition:color 0.18s,border-color 0.18s; position:relative; z-index:3; }
-    .btn-ghost:hover { color:var(--text); border-color:var(--rose-dim); }
+  footer { padding: 40px 44px; max-width: var(--max); margin: 0 auto; border-top: 1px solid rgba(244,239,230,.09); }
+  .footrow { display: flex; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+  .footrow .copy { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .06em; color: var(--label); }
+  .footlinks { display: flex; gap: 26px; font-size: 13px; }
+  .footlinks a { color: rgba(244,239,230,.55); }
+  .footlinks a:hover { color: var(--gold-lt); }
 
-    /* ── Built-on ─────────────────────────────────────────────────── */
-    .built-wrap { display:flex; gap:clamp(1.5rem,4vw,3.5rem); flex-wrap:wrap; align-items:center; justify-content:center; max-width:680px; margin:0 auto; padding:clamp(1.4rem,4vw,2rem) clamp(1.5rem,4vw,2.5rem); border-radius:var(--r-xl); background:var(--bg-el); border:1px solid var(--border-mid); }
-    .built-item { font-size:0.76rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); display:flex; flex-direction:column; align-items:center; gap:5px; }
-    .built-item .bi-name { font-size:1rem; font-weight:700; color:var(--text-sec); }
+  /* motion — content is visible by default; JS opts in via the .js class on <html> */
+  .js .js-reveal { opacity: 0; transform: translateY(30px); }
+  .js-reveal.in { opacity: 1; transform: translateY(0); transition: opacity .85s cubic-bezier(.22,1,.36,1), transform .85s cubic-bezier(.22,1,.36,1); }
+  /* Hard visible state: never depends on a CSS transition actually running.
+     Applied by the safety timeout and by every non-animating branch. */
+  .js-reveal.shown { opacity: 1 !important; transform: none !important; transition: none !important; }
+  @keyframes pipPulse { 0%,100% { opacity: 1 } 50% { opacity: .22 } }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    .js-reveal { opacity: 1 !important; transform: none !important; }
+  }
 
-    /* ── Problem ──────────────────────────────────────────────────── */
-    .problem-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-top:3.5rem; }
-    @media(max-width:700px){ .problem-grid{grid-template-columns:1fr} }
-    .prob-card { border-radius:var(--r-xl); padding:clamp(1.5rem,4vw,2.2rem); border:1px solid var(--border-mid); }
-    .prob-card.bad  { background:rgba(160,80,20,0.04); }
-    .prob-card.good { background:rgba(201,152,42,0.055); border-color:var(--rose-dim); }
-    .prob-tag { display:inline-block; font-size:0.68rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; padding:4px 13px; border-radius:50px; margin-bottom:1rem; }
-    .prob-tag.bad  { background:rgba(180,100,20,0.12); color:#d4a040; }
-    .prob-tag.good { background:rgba(201,152,42,0.18); color:var(--rose-bright); }
-    .prob-card p { font-size:0.91rem; color:var(--text-sec); line-height:1.72; }
-    .prob-example { margin-top:1rem; padding:0.8rem 1rem; border-radius:var(--r-md); background:rgba(255,255,255,0.035); border:1px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--text-sec); line-height:1.7; }
-    .prob-example strong { color:var(--rose-bright); }
-
-    /* ── Edge / advantage section ─────────────────────────────────── */
-    .advantage-grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(2rem,5vw,4rem); align-items:start; margin-top:3.5rem; }
-    @media(max-width:820px){ .advantage-grid{grid-template-columns:1fr} }
-
-    /* NBA comparison table */
-    .compare-table { width:100%; border-collapse:collapse; font-size:0.88rem; margin-top:1rem; }
-    .compare-table th { font-weight:600; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); padding:0 0 0.6rem; text-align:left; border-bottom:1px solid var(--border); }
-    .compare-table th:not(:first-child) { text-align:right; }
-    .compare-table td { padding:0.7rem 0; color:var(--text-sec); border-bottom:1px solid var(--border); vertical-align:top; line-height:1.4; }
-    .compare-table td:not(:first-child) { text-align:right; font-family:'JetBrains Mono',monospace; font-size:0.8rem; }
-    .compare-table .row-good td { color:var(--text); }
-    .compare-table .row-good td:not(:first-child) { color:var(--rose-bright); }
-    .compare-table .row-head td { font-weight:600; font-size:0.78rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-dim); border-bottom:none; padding-top:1.1rem; padding-bottom:0.3rem; }
-
-    /* CI demo canvas box */
-    .ci-box { border-radius:var(--r-xl); background:var(--bg-el); border:1px solid var(--border-mid); overflow:hidden; }
-    .ci-box canvas { display:block; width:100%; }
-    .ci-label { font-size:0.72rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); padding:1rem 1.2rem 0.5rem; }
-
-    /* Market types */
-    .mkt-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr)); gap:0.9rem; margin-top:2rem; }
-    .mkt-card { padding:1.1rem 1.2rem; border-radius:var(--r-lg); background:var(--bg-el); border:1px solid var(--border-mid); transition:border-color 0.25s; }
-    .mkt-card:hover { border-color:var(--rose-dim); }
-    .mkt-tag { font-size:0.68rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--rose); margin-bottom:0.4rem; }
-    .mkt-card p { font-size:0.84rem; color:var(--text-sec); line-height:1.6; margin:0; }
-    .mkt-note { font-size:0.82rem; color:var(--text-dim); margin-top:1.5rem; line-height:1.65; padding:1rem; border-radius:var(--r-md); background:rgba(255,255,255,0.02); border:1px solid var(--border); }
-    .mkt-note code { font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--rose-bright); background:rgba(201,152,42,0.1); padding:1px 5px; border-radius:3px; }
-
-    /* Steps */
-    .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr)); gap:1.25rem; margin-top:3.5rem; }
-    .step { padding:clamp(1.4rem,3vw,1.9rem); border-radius:var(--r-xl); background:var(--bg-el); border:1px solid var(--border-mid); transition:border-color 0.25s; }
-    .step:hover { border-color:var(--rose-dim); }
-    .step-num { font-family:'JetBrains Mono',monospace; font-size:0.7rem; font-weight:500; letter-spacing:0.14em; color:var(--rose); margin-bottom:0.8rem; }
-    .step h3 { font-size:0.97rem; margin-bottom:0.4rem; }
-    .step p  { font-size:0.87rem; color:var(--text-sec); line-height:1.65; }
-
-    /* Perps */
-    .perps-layout { display:grid; grid-template-columns:1fr 1fr; gap:clamp(2rem,5vw,4rem); align-items:center; margin-top:4rem; }
-    @media(max-width:780px){ .perps-layout{grid-template-columns:1fr} }
-    .perp-chart-box { border-radius:var(--r-xl); background:var(--bg-el); border:1px solid var(--border-mid); padding:1.5rem 1.5rem 1.1rem; }
-    .chart-sublabel { font-size:0.69rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim); margin-bottom:1rem; }
-    .funding-pills { display:flex; gap:9px; flex-wrap:wrap; margin-top:0.8rem; }
-    .fpill { padding:5px 14px; border-radius:50px; font-family:'JetBrains Mono',monospace; font-size:0.76rem; font-weight:500; animation:pillBreath 3.5s ease-in-out infinite; }
-    .fpill.long  { background:rgba(30,180,100,0.10); color:#5dcc8c; border:1px solid rgba(30,180,100,0.22); }
-    .fpill.short { background:rgba(220,70,70,0.10); color:#ee7070; border:1px solid rgba(220,70,70,0.22); animation-delay:0.7s; }
-    @keyframes pillBreath{0%,100%{opacity:1}50%{opacity:0.55}}
-    .perp-features { list-style:none; display:flex; flex-direction:column; gap:1rem; margin-top:1.5rem; }
-    .perp-features li { display:flex; gap:0.85rem; align-items:flex-start; font-size:0.92rem; color:var(--text-sec); line-height:1.65; }
-    .perp-features li::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--rose); flex-shrink:0; margin-top:0.6em; animation:pip 2.8s ease-in-out infinite; }
-    .perp-features li:nth-child(2)::before{animation-delay:0.4s}
-    .perp-features li:nth-child(3)::before{animation-delay:0.8s}
-    .perp-features li:nth-child(4)::before{animation-delay:1.2s}
-    .perp-features li strong { color:var(--text); font-weight:500; }
-
-    /* Weather callout */
-    .weather-callout { margin-top:1.5rem; padding:1.1rem 1.3rem; border-radius:var(--r-lg); background:rgba(184,152,56,0.06); border:1px solid rgba(184,152,56,0.2); }
-    .weather-callout .wc-label { font-size:0.68rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--sand); margin-bottom:0.5rem; }
-    .weather-callout p { font-size:0.88rem; color:var(--text-sec); line-height:1.7; margin:0; }
-    .weather-callout strong { color:var(--sand-bright); font-weight:500; }
-
-    /* CTA */
-    #cta { text-align:center; position:relative; overflow:hidden; }
-    #cta h2 { max-width:560px; margin:0 auto 1.4rem; }
-    footer { padding:2.2rem clamp(1.25rem,5vw,3.5rem); border-top:1px solid var(--border); display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:1rem; font-size:0.8rem; color:var(--text-dim); }
-    footer a { color:var(--text-dim); text-decoration:none; transition:color 0.2s; }
-    footer a:hover { color:var(--rose-bright); }
-
-    .reveal { opacity:0; transform:translateY(30px); transition:opacity 0.65s ease,transform 0.65s ease; }
-    .reveal.visible { opacity:1; transform:translateY(0); }
-    ::-webkit-scrollbar{width:5px} ::-webkit-scrollbar-track{background:var(--bg)} ::-webkit-scrollbar-thumb{background:var(--border-str);border-radius:3px}
-
-    /* ── Waitlist bar ──────────────────────────────────────────────── */
-    #waitlist-bar {
-      position: fixed; top: 66px; left: 0; right: 0; z-index: 99;
-      display: flex; align-items: center; justify-content: center;
-      gap: clamp(0.6rem, 2vw, 1.2rem); flex-wrap: wrap;
-      padding: 10px clamp(1rem, 4vw, 2rem);
-      background: linear-gradient(90deg, rgba(122,94,24,0.92), rgba(110,88,28,0.92));
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(201,152,42,0.25);
-      font-size: clamp(0.78rem, 2vw, 0.86rem);
-      color: rgba(237,224,228,0.88);
-      transition: transform 0.3s ease, opacity 0.3s ease;
-    }
-    #waitlist-bar.hidden { transform: translateY(-110%); opacity: 0; pointer-events: none; }
-    #wl-btn {
-      padding: 7px 20px; border-radius: 50px;
-      background: var(--rose-bright); color: #1a1608;
-      font-weight: 700; font-size: 0.82rem; letter-spacing: 0.04em;
-      text-decoration: none; white-space: nowrap; flex-shrink: 0;
-      transition: opacity 0.18s;
-    }
-    #wl-btn:hover { opacity: 0.85; }
-    #wl-close {
-      background: none; border: none; cursor: pointer;
-      color: rgba(237,224,228,0.5); font-size: 0.85rem; padding: 2px 6px;
-      line-height: 1; flex-shrink: 0;
-      transition: color 0.18s;
-    }
-    #wl-close:hover { color: rgba(237,224,228,0.9); }
-    /* push content down when bar is visible */
-    body.wl-open #hero { padding-top: calc(66px + 44px); }
-    body.wl-open nav { top: 0; }
-    @media(max-width:500px) {
-      #waitlist-bar span { display: none; }
-    }
-  </style>
+  @media (max-width: 900px) {
+    .wrap, nav, footer { padding-left: 22px; padding-right: 22px; }
+    .navlinks { display: none; }
+    .cards, .calc, .three, .statgrid { grid-template-columns: 1fr; }
+    .split, .split.flip { grid-template-columns: 1fr; gap: 36px; }
+    section { padding-top: 56px; padding-bottom: 56px; }
+  }
+</style>
 </head>
 <body>
 
-<!-- Nav -->
 <nav>
-  <a href="#" class="nav-logo">
-    <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+  <a href="#top" class="brand">
+    <svg width="30" height="30" viewBox="0 0 34 34" fill="none" aria-hidden="true">
       <defs>
         <linearGradient id="lg" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#c9982a"/><stop offset="100%" stop-color="#b89240"/></linearGradient>
         <linearGradient id="lgf" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#c9982a" stop-opacity="0.15"/><stop offset="100%" stop-color="#b89240" stop-opacity="0.08"/></linearGradient>
@@ -260,928 +255,318 @@
       </circle>
       <line x1="17" y1="7" x2="17" y2="28" stroke="url(#lg)" stroke-width="0.9" stroke-dasharray="2 3" opacity="0.35"/>
     </svg>
-    Parabola
+    <span>Parabola</span>
   </a>
-  <div class="nav-links">
-    <a href="#problem">The Problem</a>
-    <a href="#edge">Your Edge</a>
-    <a href="#perps">Perps</a>
-    <a href="#api">API</a>
-    <a href="#cta">Contact</a>
-    <a href="https://pilot.parabolamarkets.xyz" target="_blank" rel="noopener" class="nav-pilot">Open the Pilot ↗</a>
+  <div class="navlinks">
+    <a href="#exposure">The exposure</a>
+    <a href="#profit">The payout</a>
+    <a href="#gap">How it works</a>
+    <a href="#curve">The curve</a>
+    <a class="btn-gold" href="mailto:founders@parabolamarkets.xyz">Size your tail</a>
   </div>
 </nav>
 
-<!-- Waitlist bar -->
-<div id="waitlist-bar">
-  <span>Parabola is accepting early access requests.</span>
-  <a href="https://forms.gle/mtZVd3MAipFyHqUj7" target="_blank" rel="noopener" id="wl-btn">Join the waitlist →</a>
-  <button id="wl-close" aria-label="Dismiss">✕</button>
-</div>
+<main>
 
-<!-- Hero -->
-<section id="hero">
-  <canvas id="lake"></canvas>
-  <div class="hero-inner">
-    <h1 class="reveal">
-      Markets for<br>
-      <div class="rotator-wrap">
-        <div class="rotator">
-          <span>ERCOT peak prices.</span>
-          <span>summer heat waves.</span>
-          <span>GPU compute costs.</span>
-          <span>grid demand records.</span>
-          <span>carbon prices.</span>
-          <span>power price spikes.</span>
-        </div>
-      </div>
-    </h1>
-    <p class="hero-sub reveal" style="transition-delay:0.14s">
-      The first on-chain market where you stake a <em style="font-style:italic;color:var(--rose-bright);">full probability distribution</em> — not a binary yes/no. Your precision is your edge.
-    </p>
-    <div class="hero-actions reveal" style="transition-delay:0.21s">
-      <a href="#edge" class="btn-rose">See your edge ↓</a>
-      <a href="#problem" class="btn-ghost">How it works</a>
+<section id="top" class="wrap" style="padding-top:96px;padding-bottom:72px">
+  <div class="eyebrow" style="margin-bottom:26px">Power price protection for frontier labs and retail</div>
+
+  <h1>
+    <span>Cover the hours</span>
+    <span>that spike your</span>
+    <span class="accent">power bill.</span>
+  </h1>
+
+  <p class="sub" style="margin:32px 0 0">
+    Parabola publishes a daily probability curve for the price of power. Every number is published before the outcome is known and scored against the settled price the next morning.
+  </p>
+
+  <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:52px">
+    <div class="arrows">
+      <button type="button" id="prev" aria-label="Previous">&larr;</button>
+      <button type="button" id="next" aria-label="Next">&rarr;</button>
     </div>
   </div>
-  <div class="lake-hint">
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="rgba(201,152,42,0.5)" stroke-width="1.2"/><circle cx="6.5" cy="6.5" r="2" fill="rgba(201,152,42,0.5)"/></svg>
-    drag the ball
+
+  <div class="cards" id="hero-cards" style="margin-top:18px"></div>
+</section>
+
+<section class="wrap" style="padding-bottom:96px">
+  <div class="manifesto" id="manifesto">
+    <p>A frontier training campus is the most price-inelastic load ever put on a grid. It cannot shift off-peak, cannot pause for scarcity pricing, and holds full draw through every hour that clears highest.</p>
+    <p>The top 200 hours are 2% of the year and 10% of the cost. They are the entire reason your annual power number cannot be forecast.</p>
+    <p>The tail doesn't make the bill big. It makes it unpredictable, and a budget you cannot commit to is a harder problem than a budget that is high.</p>
+    <p>We price those hours daily, and quote protection that narrows the range you have to plan against.</p>
+    <a class="morelink" href="#exposure">Size the exposure &rarr;</a>
   </div>
 </section>
 
-<hr/>
-
-<!-- Problem -->
-<section id="problem" class="section pad">
-  <div class="container">
-    <p class="section-label reveal">The Problem</p>
-    <h2 class="reveal" style="transition-delay:0.07s">Binary markets <em>discard</em> your knowledge.</h2>
-    <p class="section-sub reveal" style="transition-delay:0.13s;max-width:560px;margin-top:0.9rem">
-      Ask "Will tomorrow's ERCOT peak price top $100/MWh?" and you're forced into yes or no. But you know far more than that.
-    </p>
-    <div class="problem-grid">
-      <div class="prob-card bad reveal" style="transition-delay:0.17s">
-        <div class="prob-tag bad">Fixed-line book</div>
-        <h3>Forced binary, buried vig</h3>
-        <p>You think the peak will clear around $104/MWh. The line is fixed at $100 with a ~5% house edge baked in. You can't say how confident you are or where you think it truly peaks.</p>
-        <div class="prob-example">ERCOT peak — $/MWh<br>Over $100 &nbsp;<strong>−115</strong>&nbsp; (house: 53.5%)<br>Under $100 &nbsp;<strong>−105</strong>&nbsp; (house: 51.2%)</div>
-      </div>
-      <div class="prob-card good reveal" style="transition-delay:0.23s">
-        <div class="prob-tag good">Parabola</div>
-        <h3>Express your full belief</h3>
-        <p>Submit the distribution you actually believe. The closer your distribution to the realized outcome, the higher your payout. Your confidence (σ) matters just as much as your direction (μ).</p>
-        <div class="prob-example">ERCOT peak — $/MWh<br>Your estimate &nbsp;<strong>μ = $104 &nbsp; σ = 7</strong><br>Crowd &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>μ = $92 &nbsp; σ = 15</strong></div>
+<section id="exposure" class="wrap rule">
+  <div class="split">
+    <div>
+      <div class="num">01</div>
+      <h2>The number you can't commit to</h2>
+      <p>Running flat, a 100 MW campus draws about 876,000 MWh a year: roughly $44M of energy at $50/MWh, plus about $12M of capacity at the $329.17/MW-day cap. Both lines move, and capacity is the one escalating fastest.</p>
+      <p>Depending on how the summer lands, that annual number swings by roughly $30M on identical load, with no decision you made. That spread is the problem, and it is priceable.</p>
+    </div>
+    <div class="panel js-reveal">
+      <div class="eyebrow" style="font-size:12px;margin-bottom:18px">Illustrative &middot; 100 MW flat, PJM West</div>
+      <div class="statgrid">
+        <div><div class="v" style="color:var(--gold-lt)">2%</div><div class="l">of hours carry 10% of the annual cost</div></div>
+        <div><div class="v" style="color:var(--gold-lt)">$29.8M</div><div class="l">swing in annual spend across mild vs extreme</div></div>
+        <div><div class="v">$43.8M</div><div class="l">energy at $50/MWh in a normal year</div></div>
+        <div><div class="v">$12.0M</div><div class="l">capacity at the $329.17/MW-day cap</div></div>
       </div>
     </div>
   </div>
 </section>
 
-<hr/>
+<section id="profit" class="wrap rule">
+  <div style="max-width:740px;margin-bottom:40px">
+    <div class="num">02</div>
+    <h2>What it does to your range</h2>
+    <p style="margin:0;font-size:16.5px;line-height:1.7;color:var(--body)">100 MW flat for a year, hedged with a strip covering every hour above $125/MWh. The premium is fixed; the payout scales with how hot the year runs. Switch years and watch the range, not the level.</p>
+  </div>
 
-<!-- Your Edge -->
-<section id="edge" class="section pad" style="overflow:hidden">
-  <canvas id="electric" aria-hidden="true"></canvas>
-  <div class="container" style="position:relative;z-index:1">
-    <p class="section-label reveal">Your Edge</p>
-    <h2 class="reveal" style="transition-delay:0.07s">More ways to be <em>right.</em></h2>
-    <p class="section-sub reveal" style="transition-delay:0.13s;max-width:600px;margin-top:0.9rem">
-      In a binary market, you either picked the right side or you didn't. In an estimation market, being a little right still pays — and being very precise pays a lot.
-    </p>
-
-    <div class="advantage-grid">
-      <!-- Left column: NBA comparison table + market types -->
+  <div class="panel js-reveal">
+    <div class="yearpicker" id="yearpicker">
+      <span class="cap">The year runs</span>
+    </div>
+    <div class="calc">
       <div>
-        <!-- NBA concrete example -->
-        <div class="reveal" style="transition-delay:0.15s">
-          <div class="section-label" style="margin-bottom:0.6rem">Power example · same grid hour, same information</div>
-          <table class="compare-table">
-            <thead>
-              <tr>
-                <th>What you can express</th>
-                <th>Binary</th>
-                <th>Parabola</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="row-head"><td colspan="3">You believe: the peak lands around $104/MWh, probably $90–$118</td></tr>
-              <tr>
-                <td>Direction (over/under)</td>
-                <td>✓ yes/no</td>
-                <td>✓</td>
-              </tr>
-              <tr>
-                <td>How sure you are</td>
-                <td>✗ ignored</td>
-                <td>✓</td>
-              </tr>
-              <tr>
-                <td>"Likely between $90–$118"</td>
-                <td>✗ no market</td>
-                <td>✓</td>
-              </tr>
-              <tr>
-                <td>"Crowd is too uncertain"</td>
-                <td>✗ no market</td>
-                <td>✓</td>
-              </tr>
-              <tr class="row-good">
-                <td>Your edge captured</td>
-                <td>Partial</td>
-                <td>Full</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Is CI better? -->
-        <div class="mkt-note reveal" style="transition-delay:0.22s;margin-top:1.6rem">
-          <strong style="color:var(--text)">Can a confidence interval beat an over/under?</strong><br><br>
-          Yes. If you submit <code>N($104, σ=7)</code> and the crowd is at <code>N($92, σ=15)</code>, you're implicitly saying the peak lands between $90–$118 with <strong style="color:var(--rose-bright)">95%</strong> probability. The crowd says only <strong style="color:var(--text-sec)">51%</strong>. That gap — on a range no utility tariff even offers — is pure captured value. You earn for being right about the range, not just the side.
-        </div>
-
-        <!-- New market types -->
-        <div class="reveal" style="transition-delay:0.28s;margin-top:1.6rem">
-          <div class="section-label" style="margin-bottom:0.8rem">Markets that can't exist in binary</div>
-          <div class="mkt-grid">
-            <div class="mkt-card">
-              <div class="mkt-tag">Volatility bet</div>
-              <p>You think the outcome will be extreme — but you don't know which direction. Bet a wide distribution. Binary markets have no way to express this.</p>
-            </div>
-            <div class="mkt-card">
-              <div class="mkt-tag">Certainty bet</div>
-              <p>You agree with consensus on direction but think the crowd is overconfident. Bet a tighter σ — lower collateral, higher payout per dollar if you're right.</p>
-            </div>
-            <div class="mkt-card">
-              <div class="mkt-tag">Interval bet</div>
-              <p>"It'll definitely land somewhere in this range." Express a narrow distribution centered on that range. There's no binary equivalent.</p>
-            </div>
-            <div class="mkt-card">
-              <div class="mkt-tag">Tail bet</div>
-              <p>You think the consensus is sleeping on a tail outcome. Submit a distribution with heavier tails than the crowd to capture the underpriced extreme scenarios.</p>
-            </div>
-          </div>
-        </div>
+        <div class="h">Unhedged energy spend</div>
+        <div class="n" style="color:var(--red)" id="c-unhedged">$43.8M</div>
+        <div class="c" id="c-avg">$50/MWh realized average</div>
       </div>
+      <div>
+        <div class="h">Strip pays you</div>
+        <div class="n" style="color:var(--green)" id="c-payout">$2.1M</div>
+        <div class="c">covers hours above $125/MWh</div>
+      </div>
+      <div>
+        <div class="h">Your net cost</div>
+        <div class="n" style="color:var(--gold-lt)" id="c-net">$44.6M</div>
+        <div class="c" id="c-delta">premium $2.9M paid &middot; $2.1M returned</div>
+      </div>
+    </div>
+    <div class="note">
+      Across those four years the unhedged annual spend ranges <strong style="color:var(--ink)">$29.8M</strong>; hedged it ranges <strong style="color:var(--gold-lt)">$18.3M</strong>. The payout is deterministic and your maximum loss is the premium, so the whole position sizes against a budget line before the year starts.
+    </div>
+  </div>
+</section>
 
-      <!-- Right column: animated CI canvas -->
-      <div class="reveal" style="transition-delay:0.18s">
-        <div class="ci-box">
-          <div class="ci-label">Live comparison — ERCOT peak price ($/MWh)</div>
-          <canvas id="ci-demo" height="220"></canvas>
-        </div>
+<section id="gap" class="wrap rule">
+  <div style="max-width:740px;margin-bottom:44px">
+    <div class="num">03</div>
+    <h2>How the cover works</h2>
+  </div>
+  <div class="three">
+    <div class="js-reveal">
+      <div class="tag">01</div>
+      <h3>Narrows the range, not the level</h3>
+      <p>Protection lands on the 2% of hours that carry 10% of the cost. You are not trying to beat the market on price. You are cutting the spread between your best and worst plausible year.</p>
+      <div class="meta">$29.8M range &rarr; $18.3M</div>
+    </div>
+    <div class="js-reveal">
+      <div class="tag">02</div>
+      <h3>One premium, known up front</h3>
+      <p>You pay once, at entry. The payout is deterministic and your maximum loss is the premium, so the cost of the hedge is a budget line you commit to before the year starts.</p>
+      <div class="meta">max loss = premium paid</div>
+    </div>
+    <div class="js-reveal">
+      <div class="tag">03</div>
+      <h3>Useful before you buy anything</h3>
+      <p>How much protection to buy, and what it should cost, is a calibration question. A gate-tested probability answers it with nothing traded at all. Subscribe to the curve and stop there if you want.</p>
+      <div class="meta">sizing input &middot; zero notional</div>
+    </div>
+  </div>
+</section>
 
-        <!-- Proper scoring rule -->
-        <div style="margin-top:1.2rem;padding:1.2rem 1.3rem;border-radius:var(--r-xl);background:var(--bg-el);border:1px solid var(--border-mid)">
-          <div class="section-label" style="margin-bottom:0.7rem">What the math actually says</div>
-          <p style="font-size:0.88rem;color:var(--text-sec);line-height:1.7;margin-bottom:0.8rem">
-            Under the <strong style="color:var(--text)">log scoring rule</strong>, your score after outcome x is log Q(x). Taking expectations under the true distribution P*:
-          </p>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-sec);line-height:1.9;background:rgba(255,255,255,0.03);border-radius:var(--r-md);padding:0.9rem 1rem;border:1px solid var(--border)">
-            𝔼[score | report Q] = −H(P*) − KL(P* ‖ Q)<br>
-            <span style="color:var(--text-dim)">P* = true dist · Q = reported · H = entropy of P*</span><br>
-            <span style="color:var(--rose-bright)">Since KL ≥ 0, score is maximised when Q = P*.</span><br>
-            <span style="color:var(--text-dim)">Caveat: Q must assign positive probability wherever P* does, or KL blows up.</span>
-          </div>
-          <p style="font-size:0.82rem;color:var(--text-sec);margin-top:0.9rem;line-height:1.7">
-            This shows log scoring is <strong style="color:var(--text)">strictly proper</strong>: the unique best strategy is to report your true belief. Ordinary fixed-payoff binary bets do not automatically have this property — they reward being directionally right, not reporting a calibrated probability. A binary contract <em>can</em> be made proper (e.g. via log-score or Brier-score payoffs), but a standard over/under payout is not one of those.
-          </p>
-          <p style="font-size:0.78rem;color:var(--text-dim);margin-top:0.7rem;line-height:1.6">
-            Power example: KL(N(104,7) ‖ N(92,15)) = log(15/7) + (49+144)/450 − ½ ≈ <span style="color:var(--rose-bright)">0.69</span> — a single number capturing both the mean shift and the tighter certainty.
-          </p>
-        </div>
+<section id="curve" class="wrap rule">
+  <div class="split">
+    <div>
+      <div class="num">04</div>
+      <h2>Scored against what actually happened</h2>
+      <p>Before you buy any protection you have to decide how much, and what it should cost. A calibration-tested probability is that input.</p>
+      <p>Published daily before the outcome is knowable, scored against the realized price the next morning. Three gates run before every publish; fail one and the curve does not go out.</p>
+    </div>
+    <div class="panel js-reveal">
+      <div style="display:flex;justify-content:space-between;margin-bottom:20px" class="eyebrow">
+        <span style="font-size:10.5px">Walk-forward &middot; 365d &middot; h=1</span>
+        <span style="font-size:10.5px;color:var(--green)">all gates pass</span>
+      </div>
+      <div class="statgrid" id="proof">
+        <div><div class="v" style="color:var(--gold-lt)" data-k="skill">0.170</div><div class="l">CRPS skill vs climatology, 365 days walk-forward</div></div>
+        <div><div class="v" data-k="cov">94.8%</div><div class="l">of outcomes inside the 95% band</div></div>
+        <div><div class="v" data-k="ks">0.044</div><div class="l">PIT KS distance, shape gate green</div></div>
+        <div><div class="v" data-k="brier">0.052</div><div class="l" data-k="brierlabel">spike Brier vs 0.059 climatology</div></div>
       </div>
     </div>
   </div>
 </section>
 
-<hr/>
-
-<!-- How it works -->
-<section id="how" class="section pad">
-  <div class="container">
-    <p class="section-label reveal">How It Works</p>
-    <h2 class="reveal" style="transition-delay:0.07s">Four steps. <em>Infinite nuance.</em></h2>
-    <div class="steps">
-      <div class="step reveal" style="transition-delay:0.10s">
-        <div class="step-num">01</div>
-        <h3>Pick a market</h3>
-        <p>ERCOT/PJM/CAISO power prices, grid demand, cooling-degree days, carbon, GPU-compute costs — any outcome with a numeric realization.</p>
-      </div>
-      <div class="step reveal" style="transition-delay:0.16s">
-        <div class="step-num">02</div>
-        <h3>Submit a distribution</h3>
-        <p>Choose μ (where you expect the outcome) and σ (how certain you are). More conviction → tighter σ → less collateral.</p>
-      </div>
-      <div class="step reveal" style="transition-delay:0.22s">
-        <div class="step-num">03</div>
-        <h3>Sign on Solana</h3>
-        <p>Your distribution is an on-chain transaction. The AMM quotes you immediately against the current crowd distribution.</p>
-      </div>
-      <div class="step reveal" style="transition-delay:0.28s">
-        <div class="step-num">04</div>
-        <h3>Settle and collect</h3>
-        <p>A proper scoring rule pays proportional to how close your distribution was to the realized outcome. Precision compounds.</p>
-      </div>
+<section id="signup" class="wrap rule">
+  <div class="signrow">
+    <div style="max-width:640px">
+      <h2 style="margin:0">Send us your hourly load shape. We'll show you where the tail actually is.</h2>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;min-width:380px">
+      <a class="cta-lg" href="mailto:founders@parabolamarkets.xyz">Size your tail</a>
+      <a class="cta-ghost" href="https://pilot.parabolamarkets.xyz" target="_blank" rel="noopener">See the live curve &#8599;</a>
     </div>
   </div>
 </section>
 
-<hr/>
-
-<!-- Perps -->
-<section id="perps" class="section pad">
-  <div class="container">
-    <p class="section-label reveal">Perpetual Estimation Markets</p>
-    <h2 class="reveal" style="transition-delay:0.07s">Trade the distribution <em>continuously.</em></h2>
-    <p class="section-sub reveal" style="transition-delay:0.13s;max-width:560px;margin-top:0.9rem">
-      Distribution perps let you hold a long or short position on how the crowd's collective estimate evolves over time — a perpetual on crowd belief itself.
-    </p>
-    <div class="perps-layout">
-      <div class="perp-chart-box reveal" style="transition-delay:0.16s">
-        <div class="chart-sublabel">AMM distribution vs Pyth oracle anchor</div>
-        <svg viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg" width="100%">
-          <defs>
-            <linearGradient id="pg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c9982a" stop-opacity="0.32"/><stop offset="100%" stop-color="#c9982a" stop-opacity="0"/></linearGradient>
-            <linearGradient id="pg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#b89240" stop-opacity="0.22"/><stop offset="100%" stop-color="#b89240" stop-opacity="0"/></linearGradient>
-            <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#e8c96a"/></marker>
-          </defs>
-          <path d="M35 200 Q110 200 148 138 Q172 92 192 62 Q202 44 214 40 Q226 36 238 40 Q250 44 262 62 Q282 92 310 148 Q348 200 390 200 Z" fill="url(#pg2)" opacity="0.9"><animate attributeName="opacity" values="0.9;0.6;0.9" dur="5s" repeatCount="indefinite"/></path>
-          <path d="M35 200 Q110 200 148 138 Q172 92 192 62 Q202 44 214 40 Q226 36 238 40 Q250 44 262 62 Q282 92 310 148 Q348 200 390 200" fill="none" stroke="#b89240" stroke-width="1.8" stroke-dasharray="5 4" opacity="0.55"><animate attributeName="stroke-opacity" values="0.55;0.8;0.55" dur="4s" repeatCount="indefinite"/></path>
-          <path d="M68 200 Q138 200 172 138 Q196 92 212 62 Q224 44 238 40 Q254 36 268 40 Q284 44 298 64 Q322 95 354 148 Q388 200 420 200 Z" fill="url(#pg1)" opacity="0.9"><animate attributeName="d" dur="4.5s" repeatCount="indefinite" values="M68 200 Q138 200 172 138 Q196 92 212 62 Q224 44 238 40 Q254 36 268 40 Q284 44 298 64 Q322 95 354 148 Q388 200 420 200 Z;M62 200 Q135 200 170 140 Q194 94 210 64 Q222 46 236 42 Q252 38 266 42 Q282 46 296 66 Q320 97 352 150 Q386 202 418 200 Z;M68 200 Q138 200 172 138 Q196 92 212 62 Q224 44 238 40 Q254 36 268 40 Q284 44 298 64 Q322 95 354 148 Q388 200 420 200 Z" calcMode="spline" keySplines="0.45 0 0.55 1; 0.45 0 0.55 1"/></path>
-          <path d="M68 200 Q138 200 172 138 Q196 92 212 62 Q224 44 238 40 Q254 36 268 40 Q284 44 298 64 Q322 95 354 148 Q388 200 420 200" fill="none" stroke="#c9982a" stroke-width="2.2" opacity="0.78"><animate attributeName="stroke-opacity" values="0.78;0.95;0.78" dur="3.5s" repeatCount="indefinite"/></path>
-          <line x1="214" y1="40" x2="238" y2="40" stroke="#e8c96a" stroke-width="1.6" marker-end="url(#arr)" opacity="0.8"><animate attributeName="opacity" values="0.8;0.3;0.8" dur="2.5s" repeatCount="indefinite"/></line>
-          <text x="218" y="34" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#e8c96a" opacity="0.75">funding</text>
-          <text x="148" y="25" font-family="Syne,sans-serif" font-size="9.5" fill="#b89240" opacity="0.65">anchor (oracle)</text>
-          <text x="264" y="25" font-family="Syne,sans-serif" font-size="9.5" fill="#c9982a" opacity="0.85">AMM μ</text>
-          <line x1="25" y1="200" x2="395" y2="200" stroke="#fff" stroke-opacity="0.06" stroke-width="1"/>
-        </svg>
-        <div class="funding-pills">
-          <div class="fpill long">Long +0.014%/hr</div>
-          <div class="fpill short">Short −0.014%/hr</div>
-        </div>
-      </div>
-
-      <div class="reveal" style="transition-delay:0.22s">
-        <p style="font-size:clamp(0.93rem,2vw,1.03rem);color:var(--text-sec);line-height:1.78;margin-bottom:1rem">
-          The AMM maintains a market-implied distribution relative to an oracle reference. Traders express views over the <em style="color:var(--text)">whole distribution</em> — not a single binary event. Funding is based on a signed, statewise discrepancy (log-density ratios), so you are rewarded when the market distribution moves toward the one you supplied.
-        </p>
-        <ul class="perp-features">
-          <li><strong>Long mean:</strong> you think the market's implied mean is too low. You profit as the distribution's centre shifts up toward the oracle. A binary contract cannot express this cleanly across the full distribution.</li>
-          <li><strong>Short uncertainty:</strong> you think the market is overestimating variance. Submit a tighter distribution. You profit as the crowd's σ compresses — a dimension binary markets don't price at all.</li>
-          <li><strong>Signed funding:</strong> unlike raw KL (which is unsigned), the funding rule uses statewise log-density ratios so it's always clear who pays whom and why.</li>
-          <li><strong>No expiry:</strong> hold as long as you want. Exit any time by taking the opposing side.</li>
-        </ul>
-
-        <!-- Power example -->
-        <div class="weather-callout">
-          <div class="wc-label">Power example</div>
-          <p>
-            A binary market asks only: "Will the ERCOT evening peak exceed $100/MWh on Thursday?" That collapses your entire view of the grid into a single threshold probability. Suppose you believe the peak will land around <strong>$78/MWh — but with a fat right tail toward the $5,000 scarcity cap</strong> if a heat wave hits. A distribution market lets you express both: the expected level <em>and</em> the shape of that tail. You get rewarded for being right about the <strong>whole distribution of power prices</strong> — not just which side of an arbitrary line they land on.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr/>
-
-<!-- API -->
-<section id="api" class="section pad" style="position:relative;overflow:hidden">
-  <div class="container" style="position:relative;z-index:1">
-    <p class="section-label reveal">Developer API</p>
-    <h2 class="reveal" style="transition-delay:0.07s">Trade power markets <em>from code — or a text.</em></h2>
-    <p class="section-sub reveal" style="transition-delay:0.13s;max-width:620px;margin-top:0.9rem">
-      A full algorithmic-trading API sits behind the pilot: normalized market data, sandboxed backtesting, a strategy engine, and risk-checked execution — across a 4-layer architecture. Wire up a bot, or just text it your trades in plain English.
-    </p>
-
-    <div class="advantage-grid" style="margin-top:2rem">
-      <!-- Left: how to use it on the pilot -->
-      <div class="reveal" style="transition-delay:0.15s">
-        <div class="section-label" style="margin-bottom:0.8rem">How to use it on the pilot</div>
-        <ul class="perp-features">
-          <li><strong>1 · Sign in on the pilot</strong> with Google/Privy or your Solana wallet — the same embedded wallet the pilot already uses.</li>
-          <li><strong>2 · Get a session token.</strong> The API verifies your Privy / Supabase token or a wallet signature (SIWS) and mints a bearer token — your account key is derived from the verified credential, never trusted from the request.</li>
-          <li><strong>3 · Call the API</strong> with <span class="mono">Authorization: Bearer &lt;token&gt;</span> — quotes, candles, backtests, and orders, all risk-checked before execution.</li>
-          <li><strong>4 · Or just text it.</strong> <span class="mono">POST /nl/command</span> turns "short $5k of power if it breaks 100" into a validated order.</li>
-        </ul>
-        <div class="weather-callout" style="margin-top:1.2rem">
-          <div class="wc-label">Text your trades</div>
-          <p style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;line-height:1.9;color:var(--text-sec)">
-            → "buy 10 ERCOT-PEAK"<br>
-            → "short $5k of BTC if it breaks 90000"<br>
-            → "how's my balance?" · "close my power position"
-          </p>
-        </div>
-      </div>
-
-      <!-- Right: endpoints -->
-      <div class="reveal" style="transition-delay:0.22s">
-        <div class="section-label" style="margin-bottom:0.8rem">Core endpoints</div>
-        <div class="prob-example" style="font-size:0.8rem;line-height:2.0;padding:1.1rem 1.2rem">
-          <span style="color:var(--rose-bright)">GET</span>&nbsp; /market/candles &nbsp;· OHLCV history<br>
-          <span style="color:var(--rose-bright)">GET</span>&nbsp; /market/quote &nbsp;· L1/L2 real-time<br>
-          <span style="color:var(--rose-bright)">GET</span>&nbsp; /account/balance &nbsp;· cash · margin · BP<br>
-          <span style="color:var(--sand-bright)">POST</span> /orders/place &nbsp;· risk-checked order<br>
-          <span style="color:var(--rose-bright)">GET</span>&nbsp; /orders/status &nbsp;· fills<br>
-          <span style="color:var(--sand-bright)">POST</span> /strategy/backtest &nbsp;· perf report<br>
-          <span style="color:var(--sand-bright)">POST</span> /nl/command &nbsp;· natural language<br>
-          <span style="color:var(--rose-bright)">WS</span>&nbsp;&nbsp; /ws/market &nbsp;· streaming quotes
-        </div>
-        <p style="font-size:0.8rem;color:var(--text-dim);margin-top:0.8rem;line-height:1.7">
-          4 layers — Data · Research/Backtesting · Strategy · Execution/Risk. Circuit breakers, buying-power &amp; leverage caps enforced before every trade. Paper-trade first; live brokers are opt-in.
-        </p>
-        <div style="display:flex;gap:0.7rem;flex-wrap:wrap;margin-top:1.2rem">
-          <a href="https://pilot.parabolamarkets.xyz" target="_blank" rel="noopener" class="btn-rose" style="font-size:0.85rem;padding:12px 26px">Open the Pilot ↗</a>
-          <a href="docs.html" target="_blank" rel="noopener" class="btn-ghost" style="font-size:0.85rem;padding:12px 26px">Interactive API reference ↗</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr/>
-
-<!-- CTA -->
-<section id="cta" class="section pad">
-  <div class="container" style="text-align:center;position:relative;z-index:1">
-    <p class="section-label reveal" style="display:flex;align-items:center;justify-content:center;gap:8px"><span class="eyebrow-pip" style="display:inline-block"></span>Early Access</p>
-    <h2 class="reveal" style="transition-delay:0.07s;max-width:560px;margin:0 auto 1.2rem">Ready to bet the <em>full distribution?</em></h2>
-    <p class="section-sub reveal" style="transition-delay:0.13s;max-width:440px;margin:0 auto 2rem">Parabola is live on Solana devnet. Join the waitlist to get early access.</p>
-    <div class="reveal" style="transition-delay:0.19s;display:flex;flex-direction:column;align-items:center;gap:1rem">
-      <a href="https://forms.gle/mtZVd3MAipFyHqUj7" target="_blank" rel="noopener" class="btn-rose" style="font-size:clamp(0.95rem,2vw,1.05rem);padding:16px 40px">
-        Join the waitlist
-      </a>
-      <a href="https://x.com/parabolamarkets" target="_blank" rel="noopener" style="font-size:0.85rem;color:var(--text-dim);text-decoration:none;letter-spacing:0.04em">or reach out on X →</a>
-      <a href="mailto:founders@parabolamarkets.xyz" class="btn-ghost" style="font-size:0.85rem;padding:12px 28px">Email founders@parabolamarkets.xyz</a>
-    </div>
-  </div>
-</section>
+</main>
 
 <footer>
-  <span>© 2026 Parabola Markets</span>
-  <span>Built on <a href="https://solana.com" target="_blank" rel="noopener">Solana</a> · Oracle by <a href="https://pyth.network" target="_blank" rel="noopener">Pyth</a></span>
+  <div class="footrow">
+    <div class="copy">&copy; 2026 Parabola Markets</div>
+    <div class="footlinks">
+      <a href="docs.html" target="_blank" rel="noopener">API docs</a>
+      <a href="mailto:founders@parabolamarkets.xyz">founders@parabolamarkets.xyz</a>
+    </div>
+  </div>
 </footer>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     CI DEMO CANVAS — animated distribution comparison
-════════════════════════════════════════════════════════════════ -->
-<script>
-(function () {
-  const cv = document.getElementById('ci-demo');
-  if (!cv) return;
-  const ct = cv.getContext('2d');
-
-  // Distributions: crowd N($92,15), you N($104,7) — ERCOT peak price $/MWh
-  const MU_C = 92, SIG_C = 15;
-  const MU_Y = 104, SIG_Y = 7;
-  const CI_LO = 90, CI_HI = 118;
-  const LINE  = 100;
-  const X_MIN = 50, X_MAX = 150;
-
-  // Normalise so "you" peak reaches 1.0
-  const NORM = 1 / (SIG_Y * Math.sqrt(2 * Math.PI));
-
-  function gaussian(x, mu, sig) {
-    return Math.exp(-0.5 * ((x - mu) / sig) ** 2) / (sig * Math.sqrt(2 * Math.PI));
-  }
-
-  // Probability that outcome in [lo, hi] — numeric integration
-  function probInRange(mu, sig, lo, hi) {
-    let sum = 0, n = 400;
-    const dx = (hi - lo) / n;
-    for (let i = 0; i <= n; i++) {
-      const x = lo + i * dx;
-      const w = (i === 0 || i === n) ? 0.5 : 1;
-      sum += w * gaussian(x, mu, sig);
-    }
-    return sum * dx;
-  }
-
-  const CI_PROB_C = probInRange(MU_C, SIG_C, CI_LO, CI_HI); // ~0.558
-  const CI_PROB_Y = probInRange(MU_Y, SIG_Y, CI_LO, CI_HI); // ~0.849
-  const OVER_PROB_C = 1 - probInRange(MU_C, SIG_C, X_MIN, LINE);
-  const OVER_PROB_Y = 1 - probInRange(MU_Y, SIG_Y, X_MIN, LINE);
-
-  // Continuous video-like animation: 4 states, each with internal animation + cross-fade
-  const STATES = [
-    { label: 'Binary: one line, forced choice',        duration: 3000 },
-    { label: 'Crowd estimate  μ=$92  σ=15',            duration: 3000 },
-    { label: 'Your estimate  μ=$104  σ=7',             duration: 3000 },
-    { label: 'Confidence interval  $90–$118',          duration: 3600 },
-  ];
-  let stateIdx = 0, stateStart = performance.now();
-  const FADE = 600; // cross-fade duration ms
-
-  function resize() {
-    const w = cv.parentElement.clientWidth;
-    cv.width  = w;
-    cv.height = 220;
-  }
-
-  function toX(x) { return 16 + (x - X_MIN) / (X_MAX - X_MIN) * (cv.width - 32); }
-  function toY(h) { return cv.height - 36 - (h / NORM) * (cv.height - 64); }
-
-  function drawBell(mu, sig, fillColor, strokeColor, alpha) {
-    ct.save();
-    ct.globalAlpha = alpha;
-    ct.beginPath();
-    let first = true;
-    const step = (X_MAX - X_MIN) / (cv.width - 32);
-    for (let px = 16; px <= cv.width - 16; px++) {
-      const x = X_MIN + (px - 16) / (cv.width - 32) * (X_MAX - X_MIN);
-      const h = gaussian(x, mu, sig);
-      const y = toY(h);
-      first ? (ct.moveTo(px, y), first = false) : ct.lineTo(px, y);
-    }
-    ct.lineTo(cv.width - 16, cv.height - 36);
-    ct.lineTo(16, cv.height - 36);
-    ct.closePath();
-    ct.fillStyle = fillColor;
-    ct.fill();
-    ct.beginPath();
-    first = true;
-    for (let px = 16; px <= cv.width - 16; px++) {
-      const x = X_MIN + (px - 16) / (cv.width - 32) * (X_MAX - X_MIN);
-      const h = gaussian(x, mu, sig);
-      const y = toY(h);
-      first ? (ct.moveTo(px, y), first = false) : ct.lineTo(px, y);
-    }
-    ct.strokeStyle = strokeColor;
-    ct.lineWidth = 2;
-    ct.stroke();
-    ct.restore();
-  }
-
-  function drawShade(lo, hi, color, alpha) {
-    const x1 = toX(lo), x2 = toX(hi);
-    ct.save();
-    ct.globalAlpha = alpha;
-    ct.fillStyle = color;
-    ct.fillRect(x1, 0, x2 - x1, cv.height - 36);
-    ct.restore();
-  }
-
-  function drawVLine(x, color, alpha, dashed) {
-    const px = toX(x);
-    ct.save();
-    ct.globalAlpha = alpha;
-    ct.strokeStyle = color;
-    ct.lineWidth = 1.5;
-    if (dashed) ct.setLineDash([4, 5]);
-    ct.beginPath();
-    ct.moveTo(px, 8);
-    ct.lineTo(px, cv.height - 36);
-    ct.stroke();
-    ct.restore();
-  }
-
-  function drawLabel(text, px, py, color, alpha, align, size) {
-    ct.save();
-    ct.globalAlpha = alpha;
-    ct.fillStyle = color;
-    ct.font = `${size || 11}px Syne, sans-serif`;
-    ct.textAlign = align || 'left';
-    ct.fillText(text, px, py);
-    ct.restore();
-  }
-
-  function drawAxis() {
-    ct.save();
-    ct.strokeStyle = 'rgba(255,255,255,0.08)';
-    ct.lineWidth = 1;
-    ct.beginPath();
-    ct.moveTo(16, cv.height - 36);
-    ct.lineTo(cv.width - 16, cv.height - 36);
-    ct.stroke();
-    // tick labels
-    [50, 70, 90, 110, 130, 150].forEach(v => {
-      if (v < X_MIN || v > X_MAX) return;
-      const px = toX(v);
-      ct.fillStyle = 'rgba(255,255,255,0.25)';
-      ct.font = '10px JetBrains Mono, monospace';
-      ct.textAlign = 'center';
-      ct.fillText(v, px, cv.height - 14);
-      ct.fillStyle = 'rgba(255,255,255,0.08)';
-      ct.fillRect(px - 0.5, cv.height - 38, 1, 4);
-    });
-    ct.fillStyle = 'rgba(255,255,255,0.18)';
-    ct.font = '9px Syne, sans-serif';
-    ct.textAlign = 'center';
-    ct.fillText('Peak price ($/MWh)', cv.width / 2, cv.height - 2);
-    ct.restore();
-  }
-
-  // Probability bar at bottom
-  function drawProbBar(label, prob, color, py, alpha) {
-    const maxW = cv.width - 120;
-    const bw = maxW * prob;
-    ct.save();
-    ct.globalAlpha = alpha;
-    ct.fillStyle = 'rgba(255,255,255,0.05)';
-    ct.beginPath();
-    ct.roundRect(70, py, maxW, 12, 3);
-    ct.fill();
-    ct.fillStyle = color;
-    ct.beginPath();
-    ct.roundRect(70, py, bw, 12, 3);
-    ct.fill();
-    ct.fillStyle = color;
-    ct.font = '10px Syne, sans-serif';
-    ct.textAlign = 'right';
-    ct.fillText(label, 66, py + 10);
-    ct.textAlign = 'left';
-    ct.fillText(Math.round(prob * 100) + '%', 70 + bw + 5, py + 10);
-    ct.restore();
-  }
-
-  function render(now) {
-    const elapsed = now - stateStart;
-    const dur     = STATES[stateIdx].duration;
-    const next    = (stateIdx + 1) % STATES.length;
-
-    // alpha: fade in at start, fade out at end — always 0→1→0
-    let alpha = 1;
-    if (elapsed < FADE)           alpha = elapsed / FADE;
-    if (elapsed > dur - FADE)     alpha = Math.max(0, (dur - elapsed) / FADE);
-    if (elapsed >= dur)           { stateIdx = next; stateStart = now; }
-
-    const s = stateIdx;
-    const W = cv.width, H = cv.height;
-    // t: normalised within-state progress 0→1, for internal animations
-    const t = Math.min(elapsed / dur, 1);
-    // slow sine wave for breathing/pulsing elements
-    const pulse = (Math.sin(now * 0.002) + 1) * 0.5;
-
-    ct.clearRect(0, 0, W, H);
-    ct.fillStyle = 'rgba(11,10,7,1)';
-    ct.fillRect(0, 0, W, H);
-    drawAxis();
-
-    if (s === 0) {
-      // State 0: binary line — pulsing glow, question mark fades in
-      const lineAlpha = 0.5 + pulse * 0.3;
-      drawVLine(LINE, '#c9982a', lineAlpha * alpha);
-      const lx = toX(LINE);
-      // "over" region tint pulses
-      ct.save(); ct.globalAlpha = pulse * 0.05 * alpha;
-      ct.fillStyle = 'rgba(201,152,42,1)';
-      ct.fillRect(lx, 8, W - 16 - lx, H - 44);
-      ct.restore();
-      drawLabel('Over $100', lx + 5, 22, 'rgba(201,152,42,0.85)', alpha, 'left', 11);
-      drawLabel('Under $100', lx - 5, 22, 'rgba(158,148,100,0.6)', alpha, 'right', 11);
-      // question mark rises in
-      const qy = 65 + (1 - Math.min(t * 3, 1)) * 20;
-      drawLabel('?', toX(108), qy, 'rgba(201,152,42,' + (0.25 + pulse * 0.15) + ')', alpha, 'center', 36);
-      drawLabel('Only yes or no. Your full belief is discarded.', W / 2, H - 52, 'rgba(158,148,100,0.75)', alpha * Math.min(t * 4, 1), 'center', 10);
-    }
-
-    if (s === 1) {
-      // State 1: crowd distribution grows in from baseline
-      const growSig = SIG_C * (0.3 + 0.7 * Math.min(t * 2, 1));
-      drawBell(MU_C, growSig, 'rgba(184,152,56,0.10)', 'rgba(184,152,56,0.6)', alpha);
-      drawVLine(LINE, '#c9982a', 0.35 * alpha, false);
-      const cpx = toX(MU_C);
-      const labelA = Math.min(t * 3, 1) * alpha;
-      drawLabel('Crowd  μ=$92  σ=15', cpx, 20, 'rgba(184,152,56,0.9)', labelA, 'center', 11);
-      drawLabel('wide, uncertain', cpx, 32, 'rgba(184,152,56,0.5)', labelA, 'center', 9);
-      drawLabel('P(over $100): ' + Math.round(OVER_PROB_C * 100) + '%', W / 2, H - 52, 'rgba(158,148,100,0.75)', labelA, 'center', 10);
-    }
-
-    if (s === 2) {
-      // State 2: your distribution slides in from right, crowd fades
-      const slideT  = Math.min(t * 2, 1);
-      const youMu   = MU_Y + (X_MAX - MU_Y) * (1 - slideT);
-      drawBell(MU_C, SIG_C, 'rgba(184,152,56,0.07)', 'rgba(184,152,56,0.30)', alpha * (0.5 + 0.5 * (1 - slideT)));
-      drawBell(youMu, SIG_Y, 'rgba(201,152,42,0.16)', 'rgba(201,152,42,0.88)', alpha * slideT);
-      drawVLine(LINE, 'rgba(201,152,42,0.4)', 0.4 * alpha, false);
-      const labelA = Math.min(slideT * 2, 1) * alpha;
-      drawLabel('You  μ=$104  σ=7', toX(MU_Y), 20, 'rgba(232,201,106,0.9)', labelA, 'center', 11);
-      drawLabel('precise, confident', toX(MU_Y), 32, 'rgba(232,201,106,0.5)', labelA, 'center', 9);
-      drawLabel('P(over $100): ' + Math.round(OVER_PROB_Y * 100) + '% vs crowd ' + Math.round(OVER_PROB_C * 100) + '%', W / 2, H - 52, 'rgba(232,201,106,0.8)', labelA, 'center', 10);
-    }
-
-    if (s === 3) {
-      // State 3: CI interval expands from centre, bars count up
-      const expandT = Math.min(t * 1.8, 1);
-      const ciLo  = 104 - (104 - CI_LO) * expandT;
-      const ciHi  = 104 + (CI_HI - 104) * expandT;
-      drawShade(ciLo, ciHi, 'rgba(184,152,56,0.09)', alpha);
-      drawBell(MU_C, SIG_C, 'rgba(184,152,56,0.07)', 'rgba(184,152,56,0.30)', alpha * 0.65);
-      drawBell(MU_Y, SIG_Y, 'rgba(201,152,42,0.16)', 'rgba(201,152,42,0.82)', alpha);
-      drawVLine(ciLo, 'rgba(184,152,56,0.5)', 0.7 * alpha, true);
-      drawVLine(ciHi, 'rgba(184,152,56,0.5)', 0.7 * alpha, true);
-      const cx = (toX(ciLo) + toX(ciHi)) / 2;
-      drawLabel('$90–$118', cx, 18, 'rgba(212,176,80,0.8)', alpha * Math.min(t * 3, 1), 'center', 10);
-      // animated prob bars (count up)
-      const barT = Math.min(t * 1.5, 1);
-      drawProbBar('Crowd', CI_PROB_C * barT, 'rgba(184,152,56,0.65)', H - 66, alpha);
-      drawProbBar('You', CI_PROB_Y * barT, 'rgba(201,152,42,0.88)', H - 50, alpha);
-    }
-
-    // State label
-    ct.save();
-    ct.globalAlpha = Math.min(t * 3, 1) * alpha * 0.5;
-    ct.fillStyle = 'rgba(94,84,56,1)';
-    ct.font = '9.5px Syne, sans-serif';
-    ct.textAlign = 'center';
-    ct.fillText(STATES[s].label, W / 2, H - 39);
-    ct.restore();
-  }
-
-  function loop(now) {
-    render(now);
-    requestAnimationFrame(loop);
-  }
-
-  resize();
-  window.addEventListener('resize', () => { resize(); });
-  requestAnimationFrame(loop);
-})();
-</script>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     BALL CANVAS — rolling ball physics on Gaussian curve floor
-════════════════════════════════════════════════════════════════ -->
 <script>
 (function () {
   'use strict';
-  const canvas = document.getElementById('lake');
-  const ctx    = canvas.getContext('2d');
-  const BALL_R = 13;
 
-  let W, H;
-  const ball = { x: 0, y: 0, vx: 1.8, vy: 0, grabbed: false };
-  const TRAIL_LEN = 100;
-  const trailX = new Float32Array(TRAIL_LEN);
-  const trailY = new Float32Array(TRAIL_LEN);
-  let trailHead = 0, trailCount = 0;
-  let mouseX = -9999, mouseY = -9999;
+  /* ---------- hero card carousel ---------- */
+  var CARDS = [
+    { img: 'assets/gpu-hall.jpg', alt: 'Server racks in a dark data hall, amber cabling and status lights', name: '100 MW campus, one year',
+      sub: 'energy at $50/MWh, before transmission', value: '$43.8M', delta: '876k MWh', color: '#e8c96a' },
+    { img: 'assets/substation.jpg', alt: 'High-voltage transmission towers silhouetted against a golden dusk sky', name: 'Capacity at the cap',
+      sub: '$329.17/MW-day, same load', value: '$12.0M', delta: 'escalating', color: '#c9982a' },
+    { img: 'assets/curve.png', alt: 'The published day-ahead probability curve: median line, 5–95% band, settled prices', name: 'Swing across summers',
+      sub: 'same load, no decision you made', value: '$29.8M', delta: 'unhedged range', color: 'rgba(244,239,230,.58)' }
+  ];
+  var offset = 0;
+  var host = document.getElementById('hero-cards');
 
-  // The floor IS a Gaussian: V(x) = (x-μ)²/(2σ²) — a parabola.
-  // The ball oscillates in this potential well as a harmonic oscillator.
-  function bellY(x) {
-    const mu = W * 0.5, sig = W / 7.0, t = (x - mu) / sig;
-    return H * 0.80 - H * 0.16 * Math.exp(-0.5 * t * t);
+  function renderCards() {
+    var n = CARDS.length;
+    var k = ((offset % n) + n) % n;
+    var order = CARDS.slice(k).concat(CARDS.slice(0, k));
+    host.innerHTML = order.map(function (c) {
+      var fig = c.img
+        ? '<figure class="has-img"><img src="' + c.img + '" alt="' + c.alt + '"></figure>'
+        : '<figure>' + c.alt + '</figure>';
+      return '<article class="card">' + fig +
+        '<div class="body">' +
+          '<div class="name">' + c.name + '</div>' +
+          '<div class="sub2">' + c.sub + '</div>' +
+          '<div class="row"><span class="val">' + c.value + '</span>' +
+          '<span class="delta" style="color:' + c.color + '">' + c.delta + '</span></div>' +
+        '</div></article>';
+    }).join('');
   }
-  function bellDY(x) {
-    const mu = W * 0.5, sig = W / 7.0, t = (x - mu) / sig;
-    return H * 0.16 * (t / sig) * Math.exp(-0.5 * t * t);
-  }
+  document.getElementById('prev').addEventListener('click', function () { offset -= 1; renderCards(); });
+  document.getElementById('next').addEventListener('click', function () { offset += 1; renderCards(); });
+  renderCards();
 
-  function init() {
-    const rect = canvas.getBoundingClientRect();
-    W = canvas.width  = Math.floor(rect.width);
-    H = canvas.height = Math.floor(rect.height);
-    ball.x = W * 0.5;
-    ball.y = bellY(ball.x) - BALL_R;
-    ball.vx = 1.8; ball.vy = 0;
-    trailCount = 0;
-  }
+  /* ---------- annual variance calculator ----------
+     100 MW flat = 876,000 MWh/yr. Strip covers every hour above $125/MWh.
+     Premium is fixed; payout scales with how hot the year runs.
+     NOTE: these are illustrative planning figures, not quoted prices. -------- */
+  var PREMIUM = 2.9; // $M
+  var YEARS = [
+    { key: 'mild',    label: 'Mild',    avg: 41, energy: 35.9, payout: 0.3 },
+    { key: 'normal',  label: 'Normal',  avg: 50, energy: 43.8, payout: 2.1 },
+    { key: 'hot',     label: 'Hot',     avg: 62, energy: 54.3, payout: 6.4 },
+    { key: 'extreme', label: 'Extreme', avg: 75, energy: 65.7, payout: 11.8 }
+  ];
+  var current = 'normal';
+  var picker = document.getElementById('yearpicker');
 
-  function stepBall() {
-    if (ball.grabbed) return;
-    const GRAVITY = 0.38, ELASTICITY = 0.97, AIR_DRAG = 0.9999;
-    ball.vy += GRAVITY;
-    ball.x  += ball.vx;
-    ball.y  += ball.vy;
-    ball.vx *= AIR_DRAG;
-    const floor = bellY(ball.x);
-    if (ball.y + BALL_R >= floor) {
-      ball.y = floor - BALL_R;
-      const slope = bellDY(ball.x);
-      const nLen = Math.sqrt(slope * slope + 1);
-      const nx = -slope / nLen, ny = 1 / nLen;
-      const dot = ball.vx * nx + ball.vy * ny;
-      ball.vx = (ball.vx - 2 * dot * nx) * ELASTICITY;
-      ball.vy = (ball.vy - 2 * dot * ny) * ELASTICITY;
-    }
-    // Auto-roll: if nearly stopped, nudge toward the centre of the well
-    if (Math.abs(ball.vx) < 1.4 && Math.abs(ball.vy) < 1.4) {
-      ball.vx = (ball.x < W * 0.5 ? 1 : -1) * 2.5;
-    }
-    if (ball.x - BALL_R < 0)  { ball.x = BALL_R;     ball.vx =  Math.abs(ball.vx) * ELASTICITY; }
-    if (ball.x + BALL_R > W)  { ball.x = W - BALL_R; ball.vx = -Math.abs(ball.vx) * ELASTICITY; }
-    if (ball.y - BALL_R < 0)  { ball.y = BALL_R;     ball.vy =  Math.abs(ball.vy) * ELASTICITY; }
-    trailX[trailHead] = ball.x;
-    trailY[trailHead] = ball.y;
-    trailHead = (trailHead + 1) % TRAIL_LEN;
-    if (trailCount < TRAIL_LEN) trailCount++;
-  }
+  function m(n) { return '$' + n.toFixed(1) + 'M'; }
 
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-
-    // Bell curve guide line
-    ctx.beginPath();
-    ctx.moveTo(0, bellY(0));
-    for (let x = 1; x <= W; x++) ctx.lineTo(x, bellY(x));
-    ctx.strokeStyle = 'rgba(201,152,42,0.18)';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-
-    // Subtle fill under curve
-    ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
-    const grd = ctx.createLinearGradient(0, H * 0.60, 0, H);
-    grd.addColorStop(0, 'rgba(201,152,42,0.055)');
-    grd.addColorStop(1, 'rgba(11,10,7,0)');
-    ctx.fillStyle = grd;
-    ctx.fill();
-
-    // Trail
-    for (let k = 0; k < trailCount; k++) {
-      const age = (trailCount - 1 - k) / TRAIL_LEN;
-      const idx = (trailHead - 1 - k + TRAIL_LEN) % TRAIL_LEN;
-      const r2  = BALL_R * (1 - age) * 0.55;
-      if (r2 < 0.4) continue;
-      ctx.beginPath();
-      ctx.arc(trailX[idx], trailY[idx], r2, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(74,208,96,${((1 - age) * 0.30).toFixed(3)})`;
-      ctx.fill();
-    }
-
-    // Ball outer glow
-    const gg = ctx.createRadialGradient(ball.x, ball.y, BALL_R * 0.5, ball.x, ball.y, BALL_R * 2.8);
-    gg.addColorStop(0, 'rgba(74,208,96,0.26)');
-    gg.addColorStop(1, 'rgba(74,208,96,0)');
-    ctx.beginPath(); ctx.arc(ball.x, ball.y, BALL_R * 2.8, 0, Math.PI * 2);
-    ctx.fillStyle = gg; ctx.fill();
-
-    // Ball body
-    const bg2 = ctx.createRadialGradient(ball.x - BALL_R * 0.3, ball.y - BALL_R * 0.35, 1, ball.x, ball.y, BALL_R);
-    bg2.addColorStop(0, '#d8f7b4');
-    bg2.addColorStop(0.5, '#3fb24f');
-    bg2.addColorStop(1, 'rgba(18,66,28,0.9)');
-    ctx.beginPath(); ctx.arc(ball.x, ball.y, BALL_R, 0, Math.PI * 2);
-    ctx.fillStyle = bg2; ctx.fill();
-
-    // Catchlight
-    ctx.beginPath();
-    ctx.arc(ball.x - BALL_R * 0.28, ball.y - BALL_R * 0.30, BALL_R * 0.28, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255,245,200,0.42)'; ctx.fill();
-
-    const dx = mouseX - ball.x, dy = mouseY - ball.y;
-    canvas.style.cursor = ball.grabbed ? 'grabbing'
-      : (Math.sqrt(dx * dx + dy * dy) < BALL_R + 12 ? 'grab' : 'default');
+  function paintCalc() {
+    var y = YEARS.filter(function (v) { return v.key === current; })[0];
+    document.getElementById('c-unhedged').textContent = m(y.energy);
+    document.getElementById('c-payout').textContent = m(y.payout);
+    document.getElementById('c-net').textContent = m(y.energy + PREMIUM - y.payout);
+    document.getElementById('c-avg').textContent = '$' + y.avg + '/MWh realized average';
+    document.getElementById('c-delta').textContent = 'premium ' + m(PREMIUM) + ' paid \u00b7 ' + m(y.payout) + ' returned';
+    Array.prototype.forEach.call(picker.querySelectorAll('button'), function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.key === current));
+    });
   }
 
-  function loop() {
-    stepBall(); draw();
-    requestAnimationFrame(loop);
-  }
-
-  function heroCoords(e) { const r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
-  function touchCoords(e) { const r = canvas.getBoundingClientRect(); const t = e.touches[0] || e.changedTouches[0]; return [t.clientX - r.left, t.clientY - r.top]; }
-  function isBallHit(x, y) { const dx = x - ball.x, dy = y - ball.y; return Math.sqrt(dx * dx + dy * dy) < BALL_R + 14; }
-
-  const hero = document.getElementById('hero');
-  hero.addEventListener('mousemove', e => {
-    [mouseX, mouseY] = heroCoords(e);
-    if (ball.grabbed) { ball.vx = mouseX - ball.x; ball.vy = mouseY - ball.y; ball.x = mouseX; ball.y = mouseY; }
-  }, { passive: true });
-  hero.addEventListener('mousedown', e => {
-    const [x, y] = heroCoords(e);
-    if (isBallHit(x, y)) { ball.grabbed = true; ball.vx = ball.vy = 0; }
+  YEARS.forEach(function (y) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.key = y.key;
+    b.textContent = y.label;
+    b.addEventListener('click', function () { current = y.key; paintCalc(); });
+    picker.appendChild(b);
   });
-  hero.addEventListener('mouseup',    () => { ball.grabbed = false; });
-  hero.addEventListener('mouseleave', () => { ball.grabbed = false; mouseX = mouseY = -9999; });
-  // Touch: only block scroll when ball is actually grabbed
-  let touchStartX = 0, touchStartY = 0, touchDecided = false, touchScrolling = false;
-  hero.addEventListener('touchstart', e => {
-    const [x, y] = touchCoords(e);
-    touchStartX = x; touchStartY = y;
-    touchDecided = false; touchScrolling = false;
-    if (isBallHit(x, y)) { ball.grabbed = true; ball.vx = ball.vy = 0; }
-  }, { passive: true });
-  hero.addEventListener('touchmove', e => {
-    const [x, y] = touchCoords(e);
-    if (!touchDecided) {
-      const dx = Math.abs(x - touchStartX), dy = Math.abs(y - touchStartY);
-      if (dx < 4 && dy < 4) return;           // haven't moved enough to decide yet
-      touchDecided = true;
-      if (!ball.grabbed && dy > dx) { touchScrolling = true; } // vertical swipe = scroll
+  paintCalc();
+
+  /* ---------- live gate metrics from the published artifact ---------- */
+  fetch('./validation.json')
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (val) {
+      if (!val || !val.backtests || !val.backtests.h1_last_365d) return;
+      var bt = val.backtests.h1_last_365d;
+      var set = function (k, v) {
+        var el = document.querySelector('#proof [data-k="' + k + '"]');
+        if (el) el.textContent = v;
+      };
+      set('skill', bt.crps_skill_vs_climatology.toFixed(3));
+      set('cov', (bt.coverage_95 * 100).toFixed(1) + '%');
+      set('ks', bt.pit_ks_distance.toFixed(3));
+      set('brier', bt.spike_250_brier.toFixed(3));
+      set('brierlabel', 'spike Brier vs ' + bt.spike_250_brier_climatology.toFixed(3) + ' climatology');
+    })
+    .catch(function () { /* keep the static fallback values */ });
+
+  /* ---------- motion (progressive enhancement) ---------- */
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce && 'IntersectionObserver' in window) {
+    var targets = document.querySelectorAll('.js-reveal');
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      });
+    }, { threshold: .15, rootMargin: '0px 0px -8% 0px' });
+    Array.prototype.forEach.call(targets, function (el) { io.observe(el); });
+    // Safety net: if anything is still not visibly revealed, force the hard
+    // visible state. .shown carries !important and no transition, so it does
+    // not depend on the transition having run.
+    setTimeout(function () {
+      Array.prototype.forEach.call(targets, function (el) { el.classList.add('shown'); });
+    }, 4000);
+  } else {
+    Array.prototype.forEach.call(document.querySelectorAll('.js-reveal'), function (el) {
+      el.classList.add('shown');
+    });
+  }
+
+  // manifesto: lines brighten as they cross the reading line
+  if (!reduce) {
+    var lines = document.querySelectorAll('#manifesto p');
+    var scrolled = false;
+    function onScroll() {
+      if (!scrolled) return;
+      var focus = window.innerHeight * 0.46;
+      Array.prototype.forEach.call(lines, function (el) {
+        var r = el.getBoundingClientRect();
+        var mid = r.top + r.height / 2;
+        var d = Math.abs(mid - focus) / (window.innerHeight * 0.5);
+        var near = Math.max(0, 1 - d);
+        el.style.opacity = String(0.24 + near * 0.76);
+        el.style.color = near > 0.55 ? '#f4efe6' : 'rgba(244,239,230,.62)';
+        el.style.transform = 'translateY(' + (1 - near) * 8 + 'px)';
+      });
     }
-    if (touchScrolling) return;               // let browser scroll naturally
-    if (ball.grabbed) {
-      e.preventDefault();
-      mouseX = x; mouseY = y;
-      ball.vx = (x - ball.x) * 0.6; ball.vy = (y - ball.y) * 0.6;
-      ball.x = x; ball.y = y;
-    }
-  }, { passive: false });
-  hero.addEventListener('touchend', () => {
-    ball.grabbed = false; mouseX = mouseY = -9999;
-    touchDecided = false; touchScrolling = false;
-  });
-
-  let rt;
-  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(init, 120); });
-
-  init();
-  requestAnimationFrame(loop);
-
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.10, rootMargin: '0px 0px -30px 0px' });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    window.addEventListener('scroll', function () { scrolled = true; onScroll(); }, { passive: true });
+    window.addEventListener('resize', onScroll);
+  }
 })();
-</script>
-<script>
-  // Waitlist bar dismiss
-  (function () {
-    const bar = document.getElementById('waitlist-bar');
-    document.body.classList.add('wl-open');
-    document.getElementById('wl-close').addEventListener('click', () => {
-      bar.classList.add('hidden');
-      document.body.classList.remove('wl-open');
-    });
-  })();
-</script>
-<script>
-  // Electric feature by the example — RED lightning tendrils that follow the
-  // cursor and sweep in the scroll direction (inspired by Electric-Strings).
-  (function () {
-    const cv = document.getElementById('electric');
-    if (!cv || !cv.getContext) return;
-    const ctx = cv.getContext('2d');
-    const host = cv.parentElement; // the #edge (example) section
-    let W = 0, H = 0, dpr = 1;
-    function size() {
-      dpr = Math.min(2, window.devicePixelRatio || 1);
-      const r = host.getBoundingClientRect();
-      W = Math.max(1, r.width); H = Math.max(1, r.height);
-      cv.width = W * dpr; cv.height = H * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    size();
-    window.addEventListener('resize', size);
-
-    // Cursor relative to the section (null when not hovering it).
-    let mx = null, my = null;
-    window.addEventListener('mousemove', (e) => {
-      const r = cv.getBoundingClientRect();
-      if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
-        mx = e.clientX - r.left; my = e.clientY - r.top;
-      } else { mx = null; my = null; }
-    });
-
-    // Scroll velocity → the tendrils flow in the direction you scroll.
-    let scrollVel = 0, lastY = window.scrollY || window.pageYOffset || 0;
-    window.addEventListener('scroll', () => {
-      const y = window.scrollY || window.pageYOffset || 0;
-      scrollVel += (y - lastY); lastY = y;
-      scrollVel = Math.max(-140, Math.min(140, scrollVel));
-    }, { passive: true });
-
-    const SEG = 18;
-    function bolt(x0, y0, x1, y1, t, flow) {
-      ctx.beginPath();
-      ctx.moveTo(x0, y0);
-      const dx = x1 - x0, dy = y1 - y0;
-      const nrm = Math.hypot(dx, dy) || 1;
-      const px = -dy / nrm, py = dx / nrm;
-      for (let i = 1; i < SEG; i++) {
-        const f = i / SEG;
-        const amp = Math.sin(Math.PI * f) * 30;
-        const off = Math.sin(f * 9 + t) * amp + (Math.random() - 0.5) * amp;
-        ctx.lineTo(x0 + dx * f + px * off, y0 + dy * f + py * off + flow * f * 0.7);
-      }
-      ctx.lineTo(x1, y1 + flow * 0.7);
-      ctx.stroke();
-    }
-
-    let t = 0, raf = 0;
-    function loop() {
-      t += 0.03;
-      scrollVel *= 0.90;              // decay after each scroll burst
-      const flow = scrollVel;         // + when scrolling down, − when up
-      ctx.clearRect(0, 0, W, H);
-      ctx.globalCompositeOperation = 'lighter';
-      ctx.lineCap = 'round';
-      ctx.shadowBlur = 16; ctx.shadowColor = 'rgba(255,60,50,0.9)';
-      const NUM = Math.max(5, Math.round(W / 150));
-      const tx = mx != null ? mx : W * 0.5 + Math.sin(t * 0.5) * W * 0.22;
-      const ty = (my != null ? my : H * 0.5 + Math.cos(t * 0.4) * H * 0.15) + flow;
-      for (let k = 0; k < NUM; k++) {
-        const x0 = W * (k + 0.5) / NUM, y0 = H;
-        ctx.strokeStyle = 'rgba(255,54,44,' + (0.34 + 0.16 * Math.sin(t + k)) + ')';
-        ctx.lineWidth = 1.5;
-        bolt(x0, y0, tx, ty, t + k * 1.3, flow);
-      }
-      ctx.shadowBlur = 0;
-      ctx.globalCompositeOperation = 'source-over';
-      raf = requestAnimationFrame(loop);
-    }
-    function start() { if (!raf) raf = requestAnimationFrame(loop); }
-    function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
-    // Only animate while the example section is on screen.
-    const io = new IntersectionObserver((es) => {
-      es.forEach((e) => e.isIntersecting ? start() : stop());
-    }, { threshold: 0.02 });
-    io.observe(host);
-    document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
-  })();
 </script>
 </body>
 </html>
