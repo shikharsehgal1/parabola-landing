@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Parabola Markets · Power price protection</title>
-<meta name="description" content="Parabola publishes a daily probability curve for the price of power and quotes protection against the scarcity hours that drive budget variance." />
+<title>Parabola Markets · Power price protection for your business</title>
+<meta name="description" content="Understand your business's power price exposure. Bring hourly usage and existing fixed-price purchases to compare costs with and without protection. Request a pilot exposure review." />
 <meta property="og:site_name" content="Parabola Markets" />
-<meta property="og:title" content="Parabola Markets · Power price protection" />
-<meta property="og:description" content="Cover the hours that spike your power bill. Daily calibrated probability curve for PJM Western Hub day-ahead power, and protection quoted against the scarcity hours." />
+<meta property="og:title" content="Parabola Markets · Power price protection for your business" />
+<meta property="og:description" content="Understand your business's power price exposure. Bring hourly usage and existing fixed-price purchases to compare costs with and without protection. Request a pilot exposure review." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://parabolamarkets.xyz" />
 <meta property="og:image" content="https://raw.githubusercontent.com/shikharsehgal1/parabola-landing/main/og-image.png" />
@@ -19,8 +19,8 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@parabolamarkets" />
 <meta name="twitter:creator" content="@parabolamarkets" />
-<meta name="twitter:title" content="Parabola Markets · Power price protection" />
-<meta name="twitter:description" content="Cover the hours that spike your power bill. Daily calibrated probability curve for PJM Western Hub day-ahead power, and protection quoted against the scarcity hours." />
+<meta name="twitter:title" content="Parabola Markets · Power price protection for your business" />
+<meta name="twitter:description" content="Understand your business's power price exposure. Bring hourly usage and existing fixed-price purchases to compare costs with and without protection. Request a pilot exposure review." />
 <meta name="twitter:image" content="https://raw.githubusercontent.com/shikharsehgal1/parabola-landing/main/og-image.png" />
 <meta name="twitter:image:alt" content="Parabola Markets" />
 <script>document.documentElement.classList.add('js');</script>
@@ -76,6 +76,7 @@
     background: linear-gradient(135deg, var(--gold-lt), var(--gold));
   }
   .btn-gold:hover { color: #17130a; filter: brightness(1.06); }
+  .navlinks .btn-gold { color: #17130a; }
 
   /* hero */
   .eyebrow {
@@ -94,6 +95,7 @@
   .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   .card {
     border: 1px solid var(--line); border-radius: 20px; overflow: hidden;
+    display: flex; flex-direction: column;
     background: var(--panel);
     transition: transform .5s cubic-bezier(.22,1,.36,1), border-color .4s, box-shadow .5s;
   }
@@ -107,9 +109,9 @@
   }
   .card figure.has-img { padding: 0; background-image: none; }
   .card figure img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .card .body { padding: 20px 22px 22px; }
+  .card .body { padding: 20px 22px 22px; display: flex; flex-direction: column; flex: 1; }
   .card .name { font-size: 15.5px; font-weight: 700; letter-spacing: -.015em; }
-  .card .sub2 { margin-top: 4px; font-size: 12.5px; color: var(--label); }
+  .card .sub2 { margin-top: 4px; font-size: 12.5px; line-height: 1.6; color: var(--label); flex: 1; }
   .card .row { margin-top: 18px; display: flex; align-items: baseline; justify-content: space-between; }
   .card .val { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; letter-spacing: -.03em; }
   .card .delta { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; }
@@ -172,6 +174,7 @@
   .calc .h {
     font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
     letter-spacing: .13em; text-transform: uppercase; color: var(--label);
+    min-height: 3.9em;
   }
   .calc .n { margin-top: 14px; font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 700; letter-spacing: -.03em; }
   .calc .c { margin-top: 8px; font-size: 12.5px; color: var(--label); }
@@ -195,6 +198,7 @@
   /* signup */
   #signup { background: linear-gradient(180deg, rgba(201,152,42,.08) 0%, transparent 70%); }
   .signrow { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+  .signup-actions { display: flex; gap: 10px; flex-wrap: wrap; max-width: 100%; }
   .cta-lg {
     display: inline-flex; align-items: center; justify-content: center;
     height: 54px; padding: 0 30px; border-radius: 14px; font-size: 15px;
@@ -213,7 +217,7 @@
   footer { padding: 40px 44px; max-width: var(--max); margin: 0 auto; border-top: 1px solid rgba(244,239,230,.09); }
   .footrow { display: flex; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
   .footrow .copy { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .06em; color: var(--label); }
-  .footlinks { display: flex; gap: 26px; font-size: 13px; }
+  .footlinks { display: flex; gap: 20px 26px; flex-wrap: wrap; font-size: 13px; }
   .footlinks a { color: rgba(244,239,230,.55); }
   .footlinks a:hover { color: var(--gold-lt); }
 
@@ -234,6 +238,8 @@
     .navlinks { display: none; }
     .cards, .calc, .three, .statgrid { grid-template-columns: 1fr; }
     .split, .split.flip { grid-template-columns: 1fr; gap: 36px; }
+    .calc .h { min-height: 0; }
+    .signup-actions .cta-lg, .signup-actions .cta-ghost { width: 100%; padding-left: 16px; padding-right: 16px; }
     section { padding-top: 56px; padding-bottom: 56px; }
   }
 </style>
@@ -258,28 +264,29 @@
     <span>Parabola</span>
   </a>
   <div class="navlinks">
-    <a href="#exposure">The exposure</a>
-    <a href="#profit">The payout</a>
+    <a href="#exposure">Your exposure</a>
+    <a href="#profit">Compare costs</a>
     <a href="#gap">How it works</a>
-    <a href="#curve">The curve</a>
-    <a class="btn-gold" href="mailto:founders@parabolamarkets.xyz">Size your tail</a>
+    <a href="#curve">Model evidence</a>
+    <a class="btn-gold" href="mailto:founders@parabolamarkets.xyz">Request an exposure review</a>
   </div>
 </nav>
 
 <main>
 
 <section id="top" class="wrap" style="padding-top:96px;padding-bottom:72px">
-  <div class="eyebrow" style="margin-bottom:26px">Power price protection for frontier labs and retail</div>
+  <div class="eyebrow" style="margin-bottom:26px">For businesses and energy suppliers exposed to wholesale power prices</div>
 
   <h1>
-    <span>Cover the hours</span>
-    <span>that spike your</span>
-    <span class="accent">power bill.</span>
+    <span>Power price</span>
+    <span>protection for</span>
+    <span class="accent">your business.</span>
   </h1>
 
   <p class="sub" style="margin:32px 0 0">
-    Parabola publishes a daily probability curve for the price of power. Every number is published before the outcome is known and scored against the settled price the next morning.
+    Understand which hours put your power budget at risk. Bring your hourly usage and existing fixed-price purchases to compare your exposure with and without protection.
   </p>
+  <p class="sub" style="margin:12px 0 0;font-size:13px">Pilot: paper comparisons and exposure reviews. No funded protection is executed.</p>
 
   <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:52px">
     <div class="arrows">
@@ -293,10 +300,10 @@
 
 <section class="wrap" style="padding-bottom:96px">
   <div class="manifesto" id="manifesto">
-    <p>A frontier training campus is the most price-inelastic load ever put on a grid. It cannot shift off-peak, cannot pause for scarcity pricing, and holds full draw through every hour that clears highest.</p>
-    <p>The top 200 hours are 2% of the year and 10% of the cost. They are the entire reason your annual power spend cannot be forecast.</p>
-    <p>We price those hours daily, and quote protection that narrows the range you have to plan against.</p>
-    <a class="morelink" href="#exposure">Size the exposure &rarr;</a>
+    <p>The same electricity usage can produce very different costs.</p>
+    <p>If part of your supply remains linked to wholesale prices, expensive hours can push spending beyond your budget.</p>
+    <p>Existing fixed-price purchases may cover some of that exposure, but not necessarily the hours or volume you actually consume.</p>
+    <a class="morelink" href="#exposure">Map your exposure &rarr;</a>
   </div>
 </section>
 
@@ -304,17 +311,17 @@
   <div class="split">
     <div>
       <div class="num">01</div>
-      <h2>The number you can't commit to</h2>
-      <p>Running flat, a 100 MW campus draws about 876,000 MWh a year: roughly $44M of energy at $50/MWh, plus about $12M of capacity at the $329.17/MW-day cap. Both lines move, and capacity is the one escalating fastest.</p>
-      <p>Depending on how the summer lands, that annual number swings by roughly $30M on identical load, with no decision you made. That spread is the problem, and it is priceable.</p>
+      <h2>Start with what remains exposed.</h2>
+      <p>Your total consumption is not necessarily your price exposure. Start with when you use power, how your supply is priced, and the volume you have already fixed.</p>
+      <p>Compare the remaining exposure against your budget, hour by hour. The goal is to understand where additional protection could help, and where you are already covered.</p>
     </div>
     <div class="panel js-reveal">
-      <div class="eyebrow" style="font-size:12px;margin-bottom:18px">Illustrative &middot; 100 MW flat, PJM West</div>
+      <div class="eyebrow" style="font-size:12px;margin-bottom:18px">Start with your exposure</div>
       <div class="statgrid">
-        <div><div class="v" style="color:var(--gold-lt)">2%</div><div class="l">of hours carry 10% of the annual cost</div></div>
-        <div><div class="v" style="color:var(--gold-lt)">$29.8M</div><div class="l">swing in annual spend across mild vs extreme</div></div>
-        <div><div class="v">$43.8M</div><div class="l">energy at $50/MWh in a normal year</div></div>
-        <div><div class="v">$12.0M</div><div class="l">capacity at the $329.17/MW-day cap</div></div>
+        <div><div class="v" style="color:var(--gold-lt)">Usage</div><div class="l">Where and when you consume power</div></div>
+        <div><div class="v" style="color:var(--gold-lt)">Fixed</div><div class="l">Volume and prices already secured</div></div>
+        <div><div class="v">Unfixed</div><div class="l">Volume still exposed to changing prices</div></div>
+        <div><div class="v">Budget</div><div class="l">The cost you are planning against</div></div>
       </div>
     </div>
   </div>
@@ -323,60 +330,61 @@
 <section id="profit" class="wrap rule">
   <div style="max-width:740px;margin-bottom:40px">
     <div class="num">02</div>
-    <h2>What it does to your range</h2>
-    <p style="margin:0;font-size:16.5px;line-height:1.7;color:var(--body)">100 MW flat for a year, hedged with a strip covering every hour above $125/MWh. The premium is fixed; the payout scales with how hot the year runs. Switch years and watch the range, not the level.</p>
+    <h2>What would protection change?</h2>
+    <p style="margin:0;font-size:16.5px;line-height:1.7;color:var(--body)">Protection adds a cost when prices stay low. When covered prices rise above your strike, it can offset part of the increase.</p>
   </div>
 
   <div class="panel js-reveal">
     <div class="yearpicker" id="yearpicker">
-      <span class="cap">The year runs</span>
+      <span class="cap">Illustrative annual scenario</span>
     </div>
     <div class="calc">
       <div>
-        <div class="h">Unhedged energy spend</div>
+        <div class="h">Power cost before additional protection</div>
         <div class="n" style="color:var(--red)" id="c-unhedged">$43.8M</div>
-        <div class="c" id="c-avg">$50/MWh realized average</div>
+        <div class="c" id="c-avg">$50/MWh assumed annual average</div>
       </div>
       <div>
-        <div class="h">Strip pays you</div>
+        <div class="h">Protection payout</div>
         <div class="n" style="color:var(--green)" id="c-payout">$2.1M</div>
-        <div class="c">covers hours above $125/MWh</div>
+        <div class="c">Assumed payout for cover above $125/MWh</div>
       </div>
       <div>
-        <div class="h">Your net cost</div>
+        <div class="h">Net power cost, including premium</div>
         <div class="n" style="color:var(--gold-lt)" id="c-net">$44.6M</div>
         <div class="c" id="c-delta">premium $2.9M paid &middot; $2.1M returned</div>
       </div>
     </div>
     <div class="note">
-      Across those four years the unhedged annual spend ranges <strong style="color:var(--ink)">$29.8M</strong>; hedged it ranges <strong style="color:var(--gold-lt)">$18.3M</strong>. The payout is deterministic and your maximum loss is the premium, so the whole position sizes against a budget line before the year starts.
+      <strong style="color:var(--ink)">Illustration, not a quote or forecast.</strong> These four constructed scenarios assume 100 MW of constant load for a year, no existing fixed-price cover, and a $2.9M premium for a strip above $125/MWh. Costs and payouts are assumed; no payout cap is modeled. Energy only: capacity, network charges, and taxes are excluded.
     </div>
+    <p class="sub" style="margin:18px 0 0;font-size:13px">A payout cap is not a cap on your electricity bill. Uncovered volume, location differences, and other charges can remain.</p>
   </div>
 </section>
 
 <section id="gap" class="wrap rule">
   <div style="max-width:740px;margin-bottom:44px">
     <div class="num">03</div>
-    <h2>How the cover works</h2>
+    <h2>Know what protection would cover.</h2>
   </div>
   <div class="three">
     <div class="js-reveal">
       <div class="tag">01</div>
-      <h3>Narrows the range, not the level</h3>
-      <p>Protection lands on the 2% of hours that carry 10% of the cost. You are not trying to beat the market on price. You are cutting the spread between your best and worst plausible year.</p>
-      <div class="meta">$29.8M range &rarr; $18.3M</div>
+      <h3>Cover the exposure that remains</h3>
+      <p>Account for your existing purchases first. Compare the hours, location, and volume of any additional protection with the power you actually use.</p>
+      <div class="meta">Hourly usage &middot; existing cover &middot; unfixed volume</div>
     </div>
     <div class="js-reveal">
       <div class="tag">02</div>
-      <h3>One premium, known up front</h3>
-      <p>You pay once, at entry. The payout is deterministic and your maximum loss is the premium, so the cost of the hedge is a budget line you commit to before the year starts.</p>
-      <div class="meta">max loss = premium paid</div>
+      <h3>Compare the cost and limits</h3>
+      <p>Review the premium, strike, covered volume, payout cap, and settlement source together. Protection may offset a price spike without covering your entire bill.</p>
+      <div class="meta">Premium &middot; payout terms &middot; remaining risk</div>
     </div>
     <div class="js-reveal">
       <div class="tag">03</div>
-      <h3>Useful before you buy anything</h3>
-      <p>How much protection to buy, and what it should cost, is a calibration question. A gate-tested probability answers it with nothing traded at all. Subscribe to the curve and stop there if you want.</p>
-      <div class="meta">sizing input &middot; zero notional</div>
+      <h3>Review before any commitment</h3>
+      <p>Use the pilot to compare scenarios and discuss your exposure. A paper comparison is not an executable quote or a purchase of protection.</p>
+      <div class="meta">Paper pilot &middot; no funds committed</div>
     </div>
   </div>
 </section>
@@ -385,19 +393,20 @@
   <div class="split">
     <div>
       <div class="num">04</div>
-      <h2>Scored against what actually happened</h2>
-      <p>Before you buy any protection you have to decide how much, and what it should cost. A calibration-tested probability is that input.</p>
-      <p>Published daily before the outcome is knowable, scored against the realized price the next morning. Three gates run before every publish; fail one and the curve does not go out.</p>
+      <h2>Understand the model behind the comparison.</h2>
+      <p>Inspect the underlying price distributions, data sources, and historical evaluation. See the assumptions behind each scenario before relying on the result.</p>
+      <p>The published report uses PJM Western Hub day-ahead price data. Its h=1 benchmark passes the recorded gates; the h=33 benchmark fails the spike-prediction gate. Results depend on the horizon.</p>
+      <p>These historical tests do not validate customer bill forecasts or current hedge prices. <a class="morelink" href="validation.json" style="font-size:11px">Read the model report &rarr;</a></p>
     </div>
     <div class="panel js-reveal">
-      <div style="display:flex;justify-content:space-between;margin-bottom:20px" class="eyebrow">
-        <span style="font-size:10.5px">Walk-forward &middot; 365d &middot; h=1</span>
-        <span style="font-size:10.5px;color:var(--green)">all gates pass</span>
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px" class="eyebrow">
+        <span style="font-size:10.5px">Historical &middot; 365d &middot; h=1</span>
+        <span style="font-size:10.5px">Report: Jul 29, 2026</span>
       </div>
       <div class="statgrid" id="proof">
         <div><div class="v" style="color:var(--gold-lt)" data-k="skill">0.170</div><div class="l">CRPS skill vs climatology, 365 days walk-forward</div></div>
         <div><div class="v" data-k="cov">94.8%</div><div class="l">of outcomes inside the 95% band</div></div>
-        <div><div class="v" data-k="ks">0.044</div><div class="l">PIT KS distance, shape gate green</div></div>
+        <div><div class="v" data-k="ks">0.044</div><div class="l">PIT KS distance, a calibration diagnostic</div></div>
         <div><div class="v" data-k="brier">0.052</div><div class="l" data-k="brierlabel">spike Brier vs 0.059 climatology</div></div>
       </div>
     </div>
@@ -407,11 +416,12 @@
 <section id="signup" class="wrap rule">
   <div class="signrow">
     <div style="max-width:640px">
-      <h2 style="margin:0">Send us your hourly load shape. We'll show you where the tail actually is.</h2>
+      <h2 style="margin:0">Start with the power you actually buy.</h2>
+      <p class="sub" style="margin:20px 0 0">Tell us where you buy power, how your supply is priced, and what remains unfixed.</p>
     </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;min-width:380px">
-      <a class="cta-lg" href="mailto:founders@parabolamarkets.xyz">Size your tail</a>
-      <a class="cta-ghost" href="https://pilot.parabolamarkets.xyz" target="_blank" rel="noopener">See the live curve &#8599;</a>
+    <div class="signup-actions">
+      <a class="cta-lg" href="mailto:founders@parabolamarkets.xyz">Request an exposure review</a>
+      <a class="cta-ghost" href="https://pilot.parabolamarkets.xyz" target="_blank" rel="noopener">Explore Expert tools &#8599;</a>
     </div>
   </div>
 </section>
@@ -434,12 +444,12 @@
 
   /* ---------- hero card carousel ---------- */
   var CARDS = [
-    { img: 'assets/gpu-hall.jpg', alt: 'Server racks in a dark data hall, amber cabling and status lights', name: '100 MW campus, one year',
-      sub: 'energy at $50/MWh, before transmission', value: '$43.8M', delta: '876k MWh', color: '#e8c96a' },
-    { img: 'assets/substation.jpg', alt: 'High-voltage transmission towers silhouetted against a golden dusk sky', name: 'Capacity at the cap',
-      sub: '$329.17/MW-day, same load', value: '$12.0M', delta: 'escalating', color: '#c9982a' },
-    { img: 'assets/curve.png', alt: 'The published day-ahead probability curve: median line, 5–95% band, settled prices', name: 'Swing across summers',
-      sub: 'same load, no decision you made', value: '$29.8M', delta: 'unhedged range', color: 'rgba(244,239,230,.58)' }
+    { img: 'assets/gpu-hall.jpg', alt: 'Server racks in a dark data hall, amber cabling and status lights', name: 'Map your exposure',
+      sub: 'Add your hourly usage, existing fixed-price purchases, and budget.', value: '01', delta: 'Your inputs', color: '#e8c96a' },
+    { img: 'assets/substation.jpg', alt: 'High-voltage transmission towers silhouetted against a golden dusk sky', name: 'Compare your options',
+      sub: 'See how leaving exposure open, fixing more volume, or adding spike protection changes your costs.', value: '02', delta: 'Paper comparison', color: '#c9982a' },
+    { img: 'assets/curve.png', alt: 'Illustrative probability bands and power price observations', name: 'Review the terms',
+      sub: 'Compare the premium, covered volume, payout cap, and risk that remains.', value: '03', delta: 'Exposure review', color: 'rgba(244,239,230,.58)' }
   ];
   var offset = 0;
   var host = document.getElementById('hero-cards');
@@ -486,7 +496,7 @@
     document.getElementById('c-unhedged').textContent = m(y.energy);
     document.getElementById('c-payout').textContent = m(y.payout);
     document.getElementById('c-net').textContent = m(y.energy + PREMIUM - y.payout);
-    document.getElementById('c-avg').textContent = '$' + y.avg + '/MWh realized average';
+    document.getElementById('c-avg').textContent = '$' + y.avg + '/MWh assumed annual average';
     document.getElementById('c-delta').textContent = 'premium ' + m(PREMIUM) + ' paid \u00b7 ' + m(y.payout) + ' returned';
     Array.prototype.forEach.call(picker.querySelectorAll('button'), function (b) {
       b.setAttribute('aria-pressed', String(b.dataset.key === current));
@@ -503,7 +513,7 @@
   });
   paintCalc();
 
-  /* ---------- live gate metrics from the published artifact ---------- */
+  /* ---------- historical metrics from the published artifact ---------- */
   fetch('./validation.json')
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (val) {
