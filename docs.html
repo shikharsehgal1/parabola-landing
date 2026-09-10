@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Parabola Trading API — Reference</title>
-  <meta name="description" content="API reference for the Parabola Trading API — market data, backtesting, strategies, risk-checked execution, and natural-language trading." />
+  <title>Parabola Trading API — Design Reference</title>
+  <meta name="description" content="Design reference for the Parabola Trading API. These endpoint contracts are not deployed on the current public pilot." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,700&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -42,6 +42,10 @@
     .sidebar a.nav .m { font-size:0.56rem; font-weight:700; padding:2px 5px; border-radius:5px; color:#0b0a07; font-family:'JetBrains Mono',monospace; }
 
     .main { padding:34px clamp(1rem,3.5vw,3rem) 140px; min-width:0; }
+    .availability { margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid var(--border-str); }
+    .availability strong { color:var(--rose-bright); }
+    .availability p { margin:6px 0 10px; color:var(--text-sec); }
+    .availability a { font-weight:600; text-decoration:underline; }
     @media (max-width:900px){ .shell{grid-template-columns:1fr} .sidebar{display:none} }
 
     .m-get{background:var(--get)} .m-post{background:var(--post)} .m-delete{background:var(--delete)} .m-put{background:var(--put)} .m-patch{background:var(--sand-bright)}
@@ -109,11 +113,18 @@
 
   <div class="shell">
     <aside class="sidebar" id="sidebar"></aside>
-    <main class="main" id="main"><div class="loading">Loading API reference…</div></main>
+    <main class="main">
+      <aside class="availability" aria-label="API availability">
+        <strong>API design reference: not available in the current pilot</strong>
+        <p>These Trading API contracts are not deployed on the public pilot. The examples require a separate compatible API deployment.</p>
+        <a href="https://pilot.parabolamarkets.xyz/business-guide.html" target="_blank" rel="noopener">Business quick start &rarr;</a>
+      </aside>
+      <div id="main"><div class="loading">Loading API design reference…</div></div>
+    </main>
   </div>
 
   <script>
-    const BASE = "https://api.parabolamarkets.xyz";
+    const BASE = "YOUR_API_BASE";
     const GROUP_META = {
       system: "Health, version, and component/layer status.",
       auth: "Verify wallet / Privy / Supabase identity and mint session tokens.",
@@ -228,7 +239,7 @@
         <div class="code-col">
           <div class="code-card">
             <div class="cc-head">
-              <span class="lbl">Request</span>
+              <span class="lbl">Example</span>
               <button class="tab active" onclick="pmTab(this,'${cid}','curl')">cURL</button>
               <button class="tab" onclick="pmTab(this,'${cid}','py')">Python</button>
               <button class="tab" onclick="pmTab(this,'${cid}','js')">JS</button>
@@ -238,7 +249,7 @@
             <pre data-lang="py" id="${cid}-py">${esc(py)}</pre>
             <pre data-lang="js" id="${cid}-js">${esc(js)}</pre>
           </div>
-          ${exJson?`<div class="code-card"><div class="cc-head"><span class="lbl">Response · 200</span></div><pre class="show">${esc(exJson)}</pre></div>`:""}
+          ${exJson?`<div class="code-card"><div class="cc-head"><span class="lbl">Example response · 200</span></div><pre class="show">${esc(exJson)}</pre></div>`:""}
         </div>`;
 
       return `<section class="ep" id="${id}">
@@ -279,20 +290,20 @@
       document.getElementById("sidebar").innerHTML = side.join("");
 
       // Main: overview + groups
-      const cards = [...groups.keys()].map(tag=>`<div class="card"><h3>${esc(tag).replace(/-/g," ")}</h3><code>${BASE}/api/v1/${esc(tag.split("-")[0])}</code><p>${esc(GROUP_META[tag]||"")}</p></div>`).join("");
+      const cards = [...groups.keys()].map(tag=>`<div class="card"><h3>${esc(tag).replace(/-/g," ")}</h3><code>${BASE}/api/v1/${esc(tag === "natural-language" ? "nl" : tag.split("-")[0])}</code><p>${esc(GROUP_META[tag]||"")}</p></div>`).join("");
       let idx=0;
       const sections = [...groups.entries()].map(([tag,list])=>
-        `<h2 class="group-title" id="grp-${slug(tag)}">${esc(tag).replace(/-/g," ")}</h2><div class="group-desc">Base · <code>${BASE}/api/v1</code></div>`+
+        `<h2 class="group-title" id="grp-${slug(tag)}">${esc(tag).replace(/-/g," ")}</h2><div class="group-desc">Example base · <code>${BASE}/api/v1</code></div>`+
         list.map(({path,method,op})=>renderEndpoint(path,method,op,spec,idx++)).join("")
       ).join("");
 
       document.getElementById("main").innerHTML = `
         <div class="hero" id="overview">
           <div class="eyebrow">${esc(spec.info.title)} · v${esc(spec.info.version)}</div>
-          <h1>API Reference</h1>
+          <h1>API Design Reference</h1>
           <p>${esc(spec.info.description||"")}</p>
+          <div class="ratebar"><b>Example origin</b> <code>${BASE}</code> is a placeholder. Replace it in the examples with the origin of a separately deployed compatible Trading API. The current pilot backend does not implement these contracts.</div>
           <div class="cards">${cards}</div>
-          <div class="ratebar"><b>Base URL</b> <code>${BASE}</code> &nbsp;·&nbsp; <b>Auth</b> send <code>Authorization: Bearer &lt;token&gt;</code> (from <code>/auth/*</code>) or <code>X-API-Key</code>. &nbsp;·&nbsp; <b>Rate limit</b> per key / IP, exponential-backoff friendly.</div>
         </div>
         ${sections}`;
     }).catch(e=>{ document.getElementById("main").innerHTML = `<div class="loading">Could not load openapi.json — ${esc(e.message)}</div>`; });
