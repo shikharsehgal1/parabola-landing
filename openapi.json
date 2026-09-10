@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Parabola Trading API",
-    "description": "Comprehensive algorithmic-trading API \u2014 4-layer architecture (Data \u00b7 Research/Backtesting \u00b7 Strategy \u00b7 Execution/Risk), verified wallet/JWT identity, and natural-language trading. Runs behind the Parabola pilot.",
+    "description": "Design reference for a separate algorithmic-trading API: data, research/backtesting, strategy, execution/risk, verified wallet/JWT identity, and natural-language trading. These endpoint contracts are not deployed on the current public Parabola pilot.",
     "version": "1.0.0"
   },
   "paths": {
