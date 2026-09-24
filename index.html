@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Parabola Markets · Power, accessible for everyone</title>
-<meta name="description" content="The onchain derivatives exchange for electricity. Institutions hedge the hours that blow up their power budget; everyone else gets the other side of that trade. Fully collateralized, settled on the grid operator's official print." />
+<title>Parabola Markets · Hedge the hours that break your budget</title>
+<meta name="description" content="Parabola publishes the reference curve for power prices and structures shaped cover against it. Buyers, writers and allocators transact on one number, fully collateralized, settled on the grid operator's official print." />
 <meta property="og:site_name" content="Parabola Markets" />
 <meta property="og:title" content="Parabola Markets · Power price protection" />
 <meta property="og:description" content="Cover the hours that spike your power bill. Daily calibrated probability curve for PJM Western Hub day-ahead power, and protection quoted against the scarcity hours." />
@@ -27,6 +27,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600&family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" crossorigin="anonymous"></script>
 <style>
   :root {
     --bg: #0a0908;
@@ -246,6 +248,65 @@
   .grid.live small { font-size: 9px; margin-left: 6px; text-transform: uppercase; font-weight: 700; }
   .grids-note { flex-basis: 100%; margin-top: 6px; font-size: 13px; color: var(--label); }
   @media (min-width: 1100px) { .grids-note { flex-basis: auto; margin: 0 0 0 auto; } }
+
+  .rates { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+  .rates th, .rates td { padding: 10px 12px; text-align: right; border-bottom: 1px solid rgba(244,239,230,.1); white-space: nowrap; }
+  .rates th { font-weight: 700; color: var(--ink); }
+  .rates thead th { color: var(--label); font-weight: 400; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; vertical-align: bottom; }
+  .rates thead th small { display: block; text-transform: none; letter-spacing: 0; color: rgba(244,239,230,.4); font-size: 10.5px; margin-top: 3px; }
+  .rates tbody th, .rates thead th:first-child { text-align: left; }
+  .rates td.hot { color: var(--gold-lt); font-weight: 700; }
+  .table-scroll { overflow-x: auto; }
+  .contract .ctitle { font-size: 18px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 14px; }
+  .contract dl { margin: 0; display: grid; gap: 0; }
+  .contract dl > div { display: grid; grid-template-columns: 110px 1fr; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(244,239,230,.08); font-size: 14px; }
+  .contract dt { color: var(--label); font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; padding-top: 2px; }
+  .contract dd { margin: 0; color: var(--body); }
+  .contract dd strong { color: var(--ink); }
+  .deskform label { display: block; font-size: 12px; color: var(--label); margin-bottom: 12px; }
+  .deskform input, .deskform select, .deskform textarea { display: block; width: 100%; margin-top: 6px; padding: 10px 12px; background: rgba(244,239,230,.04); border: 1px solid rgba(244,239,230,.14); border-radius: 10px; color: var(--ink); font: inherit; font-size: 14px; box-sizing: border-box; }
+  .deskform .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .deskform .hp { display: none; }
+  .text-link-inline { color: var(--gold-lt); }
+  @media (max-width: 700px) { .deskform .frow { grid-template-columns: 1fr; } .contract dl > div { grid-template-columns: 1fr; gap: 4px; } }
+
+  .grid.pass { color: #0a0908; background: var(--gold-lt); border-color: var(--gold-lt); font-weight: 700; }
+  .grid.gated { color: var(--ink); border-color: rgba(255,139,106,.5); }
+  .grid.pass small, .grid.gated small { font-size: 9px; margin-left: 6px; text-transform: uppercase; font-weight: 700; }
+  .gridtable th small { display: block; font-weight: 400; color: rgba(244,239,230,.45); font-size: 10.5px; text-transform: none; letter-spacing: 0; }
+  .gridtable tbody th small { margin-top: 2px; }
+  .gridtable td small { color: rgba(244,239,230,.45); font-size: 10.5px; margin-left: 4px; }
+  .st { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .08em; padding: 3px 8px; border-radius: 99px; white-space: nowrap; }
+  .st.live { color: #0a0908; background: var(--green); } .st.pass { color: #0a0908; background: var(--gold-lt); } .st.gated { color: var(--red); border: 1px solid rgba(255,139,106,.5); }
+  .dots i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; } .dots i.ok { background: var(--green); } .dots i.no { background: var(--red); }
+  .hero-top { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 56px; align-items: center; }
+  .hero-top h1 { font-size: clamp(44px, 5.8vw, 92px); }
+  .gridmap { position: relative; min-width: 0; }
+  .gridmap canvas { display: block; width: 100%; aspect-ratio: 1.6 / 1; }
+  .gm-tabs { display: flex; gap: 6px; flex-wrap: nowrap; margin-bottom: 10px; }
+  .gm-tabs button { position: relative; overflow: hidden; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .04em; color: var(--body); background: transparent; border: 1px solid var(--line); padding: 6px 12px; border-radius: 99px; cursor: pointer; white-space: nowrap; flex: 1 1 0; min-width: 0; transition: color .2s, border-color .2s, background .2s; }
+  .gm-tabs button:hover { color: var(--ink); border-color: rgba(244,239,230,.3); }
+  .gm-tabs button[aria-selected="true"] { color: #0a0908; background: var(--gold-lt); border-color: var(--gold-lt); font-weight: 700; }
+  .gm-tabs small { font-size: 9px; margin-left: 6px; text-transform: uppercase; font-weight: 700; opacity: .7; }
+  @media (max-width: 1100px) { .gm-tabs small { display: none; } .gm-tabs button { font-size: 11px; padding: 5px 10px; } }
+  .gm-tabs i { position: absolute; left: 0; bottom: 0; width: 100%; height: 2px; background: #0a0908; opacity: 0; transform-origin: left; transform: scaleX(0); }
+  .gm-tabs button[aria-selected="true"] i { opacity: .35; }
+  .gm-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--line); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--label); }
+  .gm-ticker { color: var(--ink); transition: opacity .35s ease; }
+  .gm-ticker em { font-style: normal; color: var(--gold-lt); }
+  .gm-legend { display: flex; gap: 16px; }
+  .gm-legend i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
+  @media (max-width: 900px) { .hero-top { grid-template-columns: 1fr; gap: 28px; } }
+  .world { border-top: 1px solid var(--line); }
+  .wrow { display: grid; grid-template-columns: 160px minmax(0,1fr); gap: 20px; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .wchips { display: flex; flex-wrap: wrap; gap: 8px; }
+  @media (max-width: 700px) { .wrow { grid-template-columns: 1fr; gap: 10px; } }
+
+  .grid.recorded { color: #0a0908; background: #7fd3ff; border-color: #7fd3ff; font-weight: 700; }
+  .grid.recorded small { font-size: 9px; margin-left: 6px; text-transform: uppercase; font-weight: 700; }
+  .st.recorded { color: #0a0908; background: #7fd3ff; }
+  .two-markets .gridtable td { text-align: left; white-space: normal; }
+  .two-markets .gridtable thead th { text-align: left; }
 </style>
 </head>
 <body>
@@ -268,11 +329,12 @@
     <span>Parabola</span>
   </a>
   <div class="navlinks">
-    <a href="#doors">Hedge</a>
-    <a href="#doors">Trade</a>
-    <a href="#curve">Index</a>
-    <a href="#market">Market</a>
-    <a class="btn-gold" href="https://pilot.parabolamarkets.xyz/?view=hedge">Open the exchange</a>
+    <a href="#who">Who it's for</a>
+    <a href="#grids-section">One market</a>
+    <a href="#curve-rates">The rate</a>
+    <a href="#desk">How it works</a>
+    <a href="#curve">The record</a>
+    <a class="btn-gold" href="#contact">Request cover</a>
   </div>
 </nav>
 
@@ -281,11 +343,26 @@
 <section id="top" class="wrap" style="padding-top:96px;padding-bottom:72px">
   <div class="eyebrow" style="margin-bottom:26px">The onchain derivatives exchange for electricity</div>
 
+  <div class="hero-top">
   <h1>
     <span>Power,</span>
     <span class="accent">Accessible</span>
     <span class="accent">for Everyone.</span>
   </h1>
+  <div class="gridmap" id="gridmap" role="img" aria-label="Animated map of power grids linked by flows of buyers and writers: US hubs, Germany-Luxembourg, Great Britain and India with their cross-border interconnectors.">
+    <div class="gm-tabs" role="tablist" aria-label="Region">
+      <button type="button" role="tab" data-v="us" aria-selected="true">USA <small>7 ISOs</small><i></i></button>
+      <button type="button" role="tab" data-v="de" aria-selected="false">Germany <small>DE-LU</small><i></i></button>
+      <button type="button" role="tab" data-v="gb" aria-selected="false">UK <small>GB</small><i></i></button>
+      <button type="button" role="tab" data-v="in" aria-selected="false">India <small>IEX</small><i></i></button>
+    </div>
+    <canvas></canvas>
+    <div class="gm-foot">
+      <span class="gm-ticker" id="gm-ticker">&nbsp;</span>
+      <span class="gm-legend"><span><i style="background:#e8c96a"></i>Buyers</span><span><i style="background:#20e6b0"></i>Writers</span></span>
+    </div>
+  </div>
+  </div>
 
 
   <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:52px">
@@ -302,51 +379,177 @@
   <div class="manifesto" id="manifesto">
     <p>In the AI and compute build-out, grids everywhere are under strain, and neither frontier labs nor households can manage what they consume. Grid Strategies puts U.S. demand up 16% by 2029; DOE and LBNL see data-centre use doubling or tripling by 2028.</p>
     <p>Trading venues are closed to retail, and even professionals can't freely trade or directly hedge tail risk on today's primitive market structure.</p>
-    <p>Parabola turns that strain into something you can act on: an open exchange where anyone exposed to power, from a training campus to a household, can cap the hours that break their budget and trade the swings they can't consume around.</p>
+    <p>Parabola turns that strain into something you can act on: an open exchange connecting people across grids, so a battery in Texas can back a laundromat in Pennsylvania, and a data centre can cap its bill across three grids at once.</p>
     <a class="morelink" href="#doors">Three doors, one book &rarr;</a>
   </div>
 </section>
 
-<section id="doors" class="wrap rule">
+<section id="who" class="wrap rule">
   <div style="max-width:740px;margin-bottom:44px">
     <div class="num">01</div>
-    <h2>Three doors. One book.</h2>
+    <h2>Three counterparties. One number.</h2>
+    <p class="lead-p">Every trade on Parabola is marked against the published curve and matched between someone who needs the cover and someone whose business improves by writing it. Nobody is asked to be the other side of a risk they don't already hold.</p>
   </div>
-  <div class="three doors">
+  <div class="three">
     <div class="js-reveal">
-      <div class="tag">Hedge</div>
-      <h3>Cap the hours that spike.</h3>
-      <p>Bring your hourly load. Choose a strike. Buy a capped payout on every hour above it. Premium fixed up front, payout scales with how hot the day gets, and your maximum loss is the premium.</p>
-      <div class="meta">data centres &middot; retailers &middot; factories &middot; storage</div>
-      <a class="cta-lg" href="https://pilot.parabolamarkets.xyz/?view=hedge">Open Hedge</a>
+      <div class="tag">Buyers</div>
+      <h3>Cap the hours that break the budget.</h3>
+      <p>Retail suppliers, co-ops and munis that sell fixed and buy hourly. Large loads that can't shift. And the brokers who serve every business that has no instrument at all today.</p>
+      <div class="meta">suppliers &middot; co-ops &middot; large loads &middot; brokers &middot; DISCOMs &middot; open-access industry</div>
+      <a class="cta-lg" href="#contact">Request cover</a>
     </div>
     <div class="js-reveal">
-      <div class="tag">Trade</div>
-      <h3>Ten seconds. One curve.</h3>
-      <p>Say where you think tomorrow's price lands and how sure you are. We turn that into a distribution and price it against ours. Where you're right, you make money. Your stake is the most you can lose.</p>
-      <div class="meta">everyone who pays a bill</div>
-      <a class="cta-lg" href="https://pilot.parabolamarkets.xyz/?view=trade">Open Trade</a>
+      <div class="tag">Writers</div>
+      <h3>Forward-sell the hours you already earn in.</h3>
+      <p>Batteries, peaking generators, curtailable load and the aggregators who pool them. Their revenue is the spike. Writing cover converts it into premium today, and the most they can owe is posted the day they sign.</p>
+      <div class="meta">storage &middot; generators &middot; demand response &middot; miners &middot; merchant solar (floors)</div>
+      <a class="cta-lg" href="#contact">Write cover</a>
     </div>
     <div class="js-reveal">
-      <div class="tag">Index</div>
-      <h3>Published before. Scored after.</h3>
-      <p>A daily probability curve for every hub we list, gate-tested before release, scored against the settled print, hash-chained so it can never be quietly revised. The mark nobody has to take on trust.</p>
-      <div class="meta">the reference everything is priced against</div>
-      <a class="cta-lg" href="https://pilot.parabolamarkets.xyz/?view=index">See the Index</a>
+      <div class="tag">Allocators</div>
+      <h3>Scarcity premium without a turbine.</h3>
+      <p>Weather-risk and insurance-linked capital, and onchain vaults, that want structured exposure to power volatility. Parametric trigger, public print, no claims process.</p>
+      <div class="meta">ILS &middot; weather-risk funds &middot; onchain vaults</div>
+      <a class="cta-lg" href="#contact">Request cover</a>
     </div>
   </div>
-  <div class="grids" aria-label="Grids">
+<div class="grids" aria-label="Grids">
     <span class="eyebrow" style="margin:0 8px 0 0">Grids</span>
     <span class="grid live">PJM <small>live</small></span>
-    <span class="grid">ERCOT</span><span class="grid">MISO</span><span class="grid">CAISO</span><span class="grid">NYISO</span><span class="grid">ISO-NE</span><span class="grid">SPP</span><span class="grid">GB</span><span class="grid">EU</span>
-    <span class="grids-note">One engine, one curve per hub. A grid lists when its curve has a scored record.</span>
+    <span class="grid pass">MISO <small>passes</small></span>
+    <span class="grid pass">DE-LU <small>passes</small></span>
+    <span class="grid gated">ERCOT <small>4/5</small></span>
+    <span class="grid gated">CAISO <small>4/5</small></span>
+    <span class="grid">NYISO</span><span class="grid">ISO-NE</span><span class="grid">SPP</span><span class="grid">GB</span><span class="grid">EU ×40</span>
+    <span class="grids-note">One engine, one curve per hub. A grid lists when its curve passes all five gates. Four ran through them this week; two passed.</span>
+  </div>
+</section>
+
+<section id="grids-section" class="wrap rule">
+  <div style="max-width:740px;margin-bottom:36px">
+    <div class="num">02</div>
+    <h2>One market across grids.</h2>
+    <p class="lead-p">Every grid publishes a price. None of them trade together. Parabola puts one market structure and one listing rule on every settleable print: each grid's model earns its listing by passing the same five gates, each hub's contracts are the same, and every trade marks into one book — so cover written on one grid can back risk on another.</p>
+  </div>
+  <div class="eyebrow" style="font-size:12px;margin-bottom:14px">Settleable prints &middot; published daily by the operator or exchange</div>
+  <div class="world">
+    <div class="wrow"><div class="eyebrow">North America</div><div class="wchips"><span class="grid live">PJM <small>live</small></span><span class="grid pass">MISO <small>passes</small></span><span class="grid gated">ERCOT <small>4/5</small></span><span class="grid gated">CAISO <small>4/5</small></span><span class="grid">NYISO</span><span class="grid">ISO-NE</span><span class="grid">SPP</span><span class="grid">IESO</span><span class="grid">AESO</span></div></div>
+    <div class="wrow"><div class="eyebrow">Europe</div><div class="wchips"><span class="grid pass">DE-LU <small>passes</small></span><span class="grid">FR</span><span class="grid">NL</span><span class="grid">BE</span><span class="grid">AT</span><span class="grid">GB</span><span class="grid">Nord Pool</span><span class="grid">ES / PT</span><span class="grid">IT</span><span class="grid">PL</span></div></div>
+    <div class="wrow"><div class="eyebrow">Asia-Pacific</div><div class="wchips"><span class="grid">JEPX</span><span class="grid">AEMO NEM</span><span class="grid">NZEM</span><span class="grid recorded">IEX India <small>own model · 1 day</small></span></div></div>
+    <div class="wrow"><div class="eyebrow">Latin America</div><div class="wchips"><span class="grid">Brazil PLD</span><span class="grid">Chile CEN</span></div></div>
+  </div>
+  <div class="grids" style="margin-top:0;border-top:0">
+    <span class="grid live" style="padding:3px 8px">live</span><span class="grid pass" style="padding:3px 8px">passes gates</span><span class="grid gated" style="padding:3px 8px">gated</span><span class="grid recorded" style="padding:3px 8px">recorded, own model</span><span class="grid" style="padding:3px 8px">public print, not yet run</span>
+  </div>
+  <p class="note" style="margin-top:18px">India runs a different model — a market with a Rs 10,000/MWh ceiling that binds all night needs one — under the same contracts and the same listing rule. One day recorded; a candidate, not a listing. <a href="https://pilot.parabolamarkets.xyz/india" style="color:var(--gold-lt)">See the IEX pilot &rarr;</a></p>
+
+  <div class="two-markets">
+    <div class="eyebrow" style="margin:34px 0 12px">Two markets, one structure</div>
+    <div class="table-scroll"><table class="rates gridtable">
+      <thead><tr><th></th><th>PJM Western Hub</th><th>IEX India</th></tr></thead>
+      <tbody>
+        <tr><th>Unit</th><td>Hourly, 24 a day</td><td>15-minute blocks, 96 a day</td></tr>
+        <tr><th>Cap</th><td>$4,000 settlement grid</td><td>Rs 10,000 ceiling as a probability atom</td></tr>
+        <tr><th>Model</th><td>Johnson-SU body, GPD spike tail</td><td>Censored lognormal, Gaussian copula</td></tr>
+        <tr><th>Products</th><td>Capped call strip</td><td>Cap, floor, collar, swap, spread floor, digital</td></tr>
+        <tr><th>Record</th><td>44 days, 90 runs, 0 revisions</td><td>1 day, from Sep 24</td></tr>
+        <tr><th>Status</th><td><span class="st live">LIVE</span></td><td><span class="st recorded">CANDIDATE</span></td></tr>
+      </tbody>
+    </table></div>
+    <p class="note" style="margin-top:12px">The invariant across grids is the contract, the settlement grid, the listing rule and the record — not the estimator. Two models, one market.</p>
+  </div>
+</section>
+
+<section id="curve-rates" class="wrap rule">
+  <div class="split">
+    <div>
+      <div class="num">03</div>
+      <h2>The rate you can lock today</h2>
+      <p>Cover from the strike up to $500/MWh above it, priced per MWh off the published curve. This is the number a buyer sees before they ever call, and the number a writer quotes against.</p>
+      <p>Indicative, with a 25% loading. The curve is validated at one day ahead; longer terms are reference marks and writers quote them.</p>
+      <a class="morelink" href="#contact">Ask for a term &rarr;</a>
+    </div>
+    <div class="panel js-reveal">
+      <div class="eyebrow" style="font-size:12px;margin-bottom:18px">Premium per MWh &middot; PJM Western Hub day-ahead &middot; marked 2026-09-22</div>
+      <div class="table-scroll">
+      <table class="rates">
+        <thead><tr><th>Strike</th><th>Tomorrow<small>daily average</small></th><th>Month-end<small>midday HE13</small></th><th>Month-end<small>evening HE18</small></th><th>Month-end<small>late HE21</small></th></tr></thead>
+        <tbody>
+          <tr><th>$125</th><td>$4.99</td><td>$11.51</td><td class="hot">$40.77</td><td>$20.87</td></tr>
+          <tr><th>$150</th><td>$4.15</td><td>$10.31</td><td class="hot">$33.80</td><td>$16.49</td></tr>
+          <tr><th>$200</th><td>$3.05</td><td>$9.18</td><td class="hot">$24.50</td><td>$10.92</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="eyebrow" style="font-size:12px;margin:26px 0 14px">Index levels &middot; the same curve, as a number</div>
+      <div class="table-scroll">
+      <table class="rates">
+        <thead><tr><th>Index</th><th>Delivery</th><th>Median</th><th>5–95%</th><th>P&gt;$250</th></tr></thead>
+        <tbody>
+          <tr><th>PBL-PJMW-DA-AVG</th><td>Sep 24 · daily average</td><td>$56</td><td>$33–$117</td><td>1.1%</td></tr>
+          <tr><th>PBL-PJMW-DA-EVE</th><td>Sep 30 · HE18</td><td>$84</td><td>$48–$316</td><td>8.8%</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="desk" class="wrap rule">
+  <div style="max-width:740px;margin-bottom:44px">
+    <div class="num">04</div>
+    <h2>One request. One price.</h2>
+    <p class="lead-p">Send Parabola the hub, the window, the hours, the quantity, the strike and the cap. We mark the request against the curve, put it to the writers, and come back with a single premium the same business day.</p>
+  </div>
+  <div class="split">
+    <div class="three" style="grid-template-columns:1fr;gap:12px">
+      <div class="js-reveal"><div class="tag">01</div><h3>Send the card</h3><p>Or one sentence: <em>"Cover 5 MWh an hour above $150, evenings, July through August, cap $400k."</em></p></div>
+      <div class="js-reveal"><div class="tag">02</div><h3>Parabola marks and routes it</h3><p>Expected payout under the curve, plus spread, goes to the writer panel as the reference. Writers quote their own premium.</p></div>
+      <div class="js-reveal"><div class="tag">03</div><h3>Sign, post, settle</h3><p>Standard term agreement. Buyer posts the premium, writer posts the cap less premium, both into escrow. Settles on the grid operator's published print. Parabola structures and matches the trade; it does not hold the risk.</p></div>
+    </div>
+    <div class="panel js-reveal contract">
+      <div class="eyebrow" style="font-size:12px;margin-bottom:16px">Sample contract &middot; worked example, not a live quote</div>
+      <div class="ctitle">PJM Western Hub &middot; day-ahead &middot; evening cap</div>
+      <dl>
+        <div><dt>Delivery</dt><dd>Jul 1 – Aug 31 &middot; hours ending 16–21 &middot; 372 hours</dd></div>
+        <div><dt>Quantity</dt><dd>5 MWh per hour</dd></div>
+        <div><dt>Strike</dt><dd>$150 / MWh</dd></div>
+        <div><dt>Payout</dt><dd>5 &times; max(print &minus; 150, 0) per hour, summed, capped at <strong>$400,000</strong></dd></div>
+        <div><dt>Premium</dt><dd><strong>$38,000</strong>, paid at trade</dd></div>
+        <div><dt>Buyer posts</dt><dd>$38,000 &mdash; its maximum loss</dd></div>
+        <div><dt>Writer posts</dt><dd>$362,000 &mdash; its maximum loss</dd></div>
+        <div><dt>Settles</dt><dd>Monthly, on PJM's published day-ahead LMP, pnode 51288</dd></div>
+      </dl>
+      <div class="note" style="margin-top:18px">A mild summer: the writer keeps $38,000. A heat dome with sixty hours above $150 averaging $300: the buyer collects $45,000. Two hundred hours at $1,000: the cap binds at $400,000 and nobody gets a margin call.</div>
+    </div>
+  </div>
+</section>
+
+<section id="suppliers" class="wrap rule">
+  <div class="split flip">
+    <div class="panel js-reveal">
+      <div class="eyebrow" style="font-size:12px;margin-bottom:18px">Index + Cap &middot; a plan on the broker's shelf</div>
+      <div class="statgrid">
+        <div><div class="v" style="color:var(--gold-lt)">index</div><div class="l">the customer pays the hourly market rate, like today</div></div>
+        <div><div class="v" style="color:var(--gold-lt)">+ cap</div><div class="l">summer evenings can't exceed $150/MWh</div></div>
+        <div><div class="v">$110</div><div class="l">a month, four months, for a 50 kW shop</div></div>
+        <div><div class="v" style="color:var(--green)">$0</div><div class="l">of derivatives the customer ever touches</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="num">05</div>
+      <h2>For suppliers and brokers: the cap plan</h2>
+      <p>A laundromat can't hedge power. Its supplier can. Sell an index plan with a ceiling, aggregate the capped load, and buy one strip on Parabola to cover it. The customer gets a bill that can't spike; the supplier gets a product nobody else on the shelf has and never loses a year to a heat wave.</p>
+      <p>Regulated as retail supply, like every fixed-price plan sold today. The hedge lives one layer up, between two eligible contract participants.</p>
+      <a class="morelink" href="#contact">Build a cap plan &rarr;</a>
+    </div>
   </div>
 </section>
 
 <section id="curve" class="wrap rule">
   <div class="split">
     <div>
-      <div class="num">02</div>
+      <div class="num">06</div>
       <h2>Scored against what actually happened</h2>
       <p>Before you buy any protection you have to decide how much, and what it should cost. A calibration-tested probability is that input.</p>
       <p>Published daily before the outcome is knowable, scored against the realized price the next morning. Three gates run before every publish; fail one and the curve does not go out.</p>
@@ -357,11 +560,14 @@
         <span style="font-size:10.5px;color:var(--green)">all gates pass</span>
       </div>
       <div class="statgrid" id="proof">
-        <div><div class="v" style="color:var(--gold-lt)" data-k="skill">0.170</div><div class="l">CRPS skill vs climatology, 365 days walk-forward</div></div>
-        <div><div class="v" data-k="cov">94.8%</div><div class="l">of outcomes inside the 95% band</div></div>
-        <div><div class="v" data-k="ks">0.044</div><div class="l">PIT KS distance, shape gate green</div></div>
-        <div><div class="v" data-k="brier">0.052</div><div class="l" data-k="brierlabel">spike Brier vs 0.059 climatology</div></div>
+        <div><div class="v" style="color:var(--gold-lt)" data-k="skill">0.186</div><div class="l">CRPS skill vs climatology, 365 days walk-forward</div></div>
+        <div><div class="v" data-k="cov">96.4%</div><div class="l">of outcomes inside the 95% band</div></div>
+        <div><div class="v" data-k="ks">0.056</div><div class="l">PIT KS distance, shape gate green</div></div>
+        <div><div class="v" data-k="brier">0.064</div><div class="l" data-k="brierlabel">spike Brier vs 0.071 climatology</div></div>
       </div>
+      <div class="eyebrow" style="font-size:12px;margin:24px 0 12px;display:flex;justify-content:space-between"><span>The record &middot; every green run since Aug 2</span><span id="rec-summary" style="color:var(--green)">loading</span></div>
+      <div class="table-scroll"><table class="rates" id="rec-table"><thead><tr><th>Run</th><th>Gates</th><th>CRPS skill</th><th>95% cov.</th><th>Spike Brier</th><th>Chain</th></tr></thead><tbody></tbody></table></div>
+      <div class="note" style="margin-top:14px;font-size:12.5px">Each row is one pipeline run: fresh PJM data, a 365-day walk-forward re-test, five gates, and a publish only if all pass. Rows are hashed and chained; the chain head is <code id="rec-head" style="color:var(--gold-lt)">…</code>.</div>
     </div>
   </div>
 </section>
@@ -369,7 +575,7 @@
 <section id="market" class="wrap rule">
   <div class="split">
     <div>
-      <div class="num">03</div>
+      <div class="num">07</div>
       <h2>Built for the market that's coming</h2>
       <p>Power is the input to everything, its price is now a political issue, and the people paying for it have no instrument. The demand for a public market is already here. Only the venue is missing.</p>
       <p>Distribution markets are a known primitive. Nobody has run one on a real commodity against a public, scored reference curve. That is the gap.</p>
@@ -380,35 +586,44 @@
         <div><div class="v" style="color:var(--gold-lt)">$176B</div><div class="l">open interest in US power futures, 56% on one exchange, zero retail</div></div>
         <div><div class="v" style="color:var(--gold-lt)">$333</div><div class="l">per MW-day: capacity at the price cap on the largest US grid, three years running</div></div>
         <div><div class="v">$44.8B</div><div class="l">traded on Kalshi and Polymarket in one month. Neither lists electricity</div></div>
-        <div><div class="v" style="color:var(--green)">43 days</div><div class="l">our curve published, scored, unrevised</div></div>
+        <div><div class="v" style="color:var(--green)">44 days</div><div class="l">our curve published, scored, unrevised</div></div>
       </div>
     </div>
   </div>
   <div class="three" style="margin-top:44px">
     <div class="js-reveal"><div class="tag" style="color:var(--green)">Now &middot; live</div><h3>The paper exchange.</h3><p>Reference curve public and scored daily. Settlement engine solvency-audited. Hedge, Trade and Index doors open. Positions pre-funded, capped, deterministic.</p><div class="meta">first grid live</div></div>
     <div class="js-reveal"><div class="tag">Next &middot; institutional</div><h3>Collateralized hedges.</h3><p>Capped calls sized in MWh. Stablecoin escrow, settled on the grid print. First writers: batteries and generators. Curve hashes committed onchain.</p><div class="meta">grid by grid: ERCOT, MISO, CAISO, NYISO</div></div>
-    <div class="js-reveal"><div class="tag">Then &middot; open venue</div><h3>Protection for everyone.</h3><p>Bill protection from a phone. Permissionless vaults on the sell side. Market prices supersede the house curve. Every new hub launches with its own scored record.</p><div class="meta">then Europe</div></div>
+    <div class="js-reveal"><div class="tag">Then &middot; open venue</div><h3>Protection for everyone.</h3><p>Bill protection from a phone. Permissionless vaults on the sell side. Market prices supersede the house curve. Every new hub launches with its own scored record. IEX India recording since Sep 24 — the first grid where the collateral rail is the hard part, not the curve.</p><div class="meta">then Europe &middot; then India</div></div>
   </div>
 </section>
 
-<section id="signup" class="wrap rule">
-  <div class="signrow">
-    <div style="max-width:640px">
-      <h2 style="margin:0">Take back control of your power usage.</h2>
+
+<section id="contact" class="wrap rule">
+  <div class="split">
+    <div>
+      <h2 style="margin:0 0 16px">Cap the hours that break your budget.</h2>
+      <p>Buying, writing, allocating, or selling plans to the businesses that can't hedge at all: send us the card and a fixed price comes back the same business day.</p>
+      <p style="margin-top:22px"><a class="text-link-inline" href="mailto:founders@parabolamarkets.xyz">founders@parabolamarkets.xyz</a></p>
+      <p style="margin-top:34px;color:var(--label);font-size:14px">Anyone can trade the curve. <a href="https://pilot.parabolamarkets.xyz/?view=trade" style="color:var(--gold-lt)">Open Trade &rarr;</a></p>
     </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;min-width:380px">
-      <a class="cta-lg" href="https://pilot.parabolamarkets.xyz/?view=hedge">Open the exchange</a>
-      <a class="cta-ghost" href="mailto:founders@parabolamarkets.xyz">Size your tail</a>
-    </div>
+    <form class="panel deskform js-reveal" name="desk" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/?submitted=1">
+      <input type="hidden" name="form-name" value="desk" />
+      <p class="hp"><label>Don't fill this out: <input name="bot-field" /></label></p>
+      <div class="eyebrow" style="font-size:12px;margin-bottom:16px">Request cover</div>
+      <div class="frow"><label>Name<input name="name" required /></label><label>Company<input name="company" required /></label></div>
+      <div class="frow"><label>Email<input type="email" name="email" required /></label><label>You are<select name="role"><option>Buyer</option><option>Writer</option><option>Allocator</option><option>Supplier or broker</option><option>Other</option></select></label></div>
+      <label>What do you need?<textarea name="request" rows="3" placeholder="5 MWh an hour above $150, HE16–21, July–August, cap $400k"></textarea></label>
+      <button class="cta-lg" type="submit" style="margin-top:14px">Get a price</button>
+    </form>
   </div>
 </section>
-
 </main>
 
 <footer>
   <div class="footrow">
     <div class="copy">&copy; 2026 Parabola Markets</div>
     <div class="footlinks">
+      <a href="https://pilot.parabolamarkets.xyz/?view=hedge">Hedge</a>
       <a href="https://pilot.parabolamarkets.xyz/?view=index">The Index</a>
       <a href="mailto:founders@parabolamarkets.xyz">founders@parabolamarkets.xyz</a>
     </div>
@@ -510,6 +725,19 @@
     })
     .catch(function () { /* keep the static fallback values */ });
 
+
+  /* ---------- the record (hash-chained run ledger) ---------- */
+  fetch('./record.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (rec) {
+    if (!rec || !rec.rows) return;
+    var sum = document.getElementById('rec-summary');
+    if (sum) sum.textContent = rec.days + ' days · ' + rec.runs + ' runs · ' + Math.round(rec.gate_pass_rate * 100) + '% gates passed · 0 revisions';
+    var head = document.getElementById('rec-head'); if (head) head.textContent = rec.chain_head.slice(0, 16) + '…';
+    var tb = document.querySelector('#rec-table tbody'); if (!tb) return;
+    var rows = rec.rows.slice(-7).reverse();
+    tb.innerHTML = rows.map(function (r) {
+      return '<tr><th>' + r.date + ' #' + r.run_number + '</th><td style="color:' + (r.gates_pass ? 'var(--green)' : 'var(--red)') + '">' + (r.gates_pass ? 'pass' : 'fail') + '</td><td>' + r.crps_skill.toFixed(3) + '</td><td>' + (r.coverage_95 * 100).toFixed(1) + '%</td><td>' + r.spike_brier.toFixed(3) + '</td><td>' + r.chain_hash.slice(0, 10) + '…</td></tr>';
+    }).join('');
+  }).catch(function () {});
   /* ---------- motion (progressive enhancement) ---------- */
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!reduce && 'IntersectionObserver' in window) {
@@ -554,6 +782,233 @@
     window.addEventListener('scroll', function () { scrolled = true; onScroll(); }, { passive: true });
     window.addEventListener('resize', onScroll);
   }
+})();
+</script>
+
+<script>
+(function () {
+  'use strict';
+  var wrap = document.getElementById('gridmap');
+  if (!wrap || !window.d3 || !window.topojson) return;
+  var cv = wrap.querySelector('canvas'), ctx = cv.getContext('2d');
+  var ticker = document.getElementById('gm-ticker');
+  var tabs = Array.prototype.slice.call(wrap.querySelectorAll('.gm-tabs button'));
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var COL = { live: '#20e6b0', pass: '#e8c96a', gated: '#ff8b6a', rec: '#7fd3ff', off: 'rgba(244,239,230,.55)' };
+  function hub(id, ll, st, lx, ly, al) { return { id: id, ll: ll, st: st || 'off', lx: lx || 0, ly: ly == null ? 17 : ly, al: al || 'center' }; }
+  var VIEWS = {
+    us: {
+      origin: 'PJM',
+      hubs: [hub('CAISO', [-118.2, 34.05], 'gated', 0, 18), hub('SPP', [-97.5, 35.5], 'off', -9, -8, 'right'), hub('ERCOT', [-96.8, 32.8], 'gated', 0, 18),
+        hub('MISO', [-86.2, 39.8], 'pass', 0, -12), hub('PJM', [-77.4, 39.6], 'live', 0, 19), hub('NYISO', [-74.2, 42.7], 'off', -9, -9, 'right'),
+        hub('ISO-NE', [-71.1, 42.4], 'off', 8, 12, 'left'), hub('DE-LU', null, 'pass', 0, 19, 'right')],
+      edges: [['PJM','MISO'],['PJM','ERCOT'],['PJM','CAISO'],['PJM','DE-LU'],['ERCOT','MISO'],['ERCOT','CAISO'],['PJM','NYISO'],['NYISO','ISO-NE'],['MISO','SPP'],['SPP','ERCOT'],['SPP','CAISO'],['ISO-NE','DE-LU']],
+      pairs: [['PJM','MISO','corr 0.82 \u00b7 one shared cap +17.4%'], ['PJM','DE-LU','corr 0.18 \u00b7 one shared cap +9.1%'], ['ERCOT','MISO','corr 0.28 \u00b7 one shared cap +3.8%']]
+    },
+    de: {
+      origin: 'DE-LU', focusIds: ['276', '442'], rot: -10, par: [45, 58],
+      hubs: [hub('DE-LU', [10.3, 51.1], 'pass', 0, 19), hub('FR', [5.6, 48.7]), hub('BE', [4.7, 50.6]), hub('NL', [5.6, 52.4], 'off', 0, -12), hub('DK', [9.4, 56.0], 'off', 0, -12),
+        hub('NO', [7.8, 58.4], 'off', 0, -12), hub('SE', [13.3, 56.0], 'off', 0, -12), hub('PL', [16.8, 52.3]), hub('CZ', [14.6, 49.8]), hub('AT', [13.6, 47.6]), hub('CH', [8.1, 46.9])],
+      edges: [['DE-LU','FR'],['DE-LU','BE'],['DE-LU','NL'],['DE-LU','DK'],['DE-LU','NO'],['DE-LU','SE'],['DE-LU','PL'],['DE-LU','CZ'],['DE-LU','AT'],['DE-LU','CH'],
+        ['FR','BE'],['BE','NL'],['NL','DK'],['DK','NO'],['DK','SE'],['PL','CZ'],['CZ','AT'],['AT','CH'],['CH','FR']],
+      pairs: [['DE-LU','NO','NordLink \u00b7 1.4 GW'], ['DE-LU','BE','ALEGrO \u00b7 1 GW'], ['DE-LU','SE','Baltic Cable \u00b7 0.6 GW'], ['DE-LU','FR','AC border \u00b7 coupled day-ahead']]
+    },
+    in: {
+      origin: 'IEX', focusIds: ['356'], rot: -80, par: [10, 30],
+      hubs: [hub('IEX', [78.9, 22.0], 'rec', 0, 19), hub('BT', [90.5, 27.5], 'off', 8, -10, 'left'), hub('NP', [85.3, 27.7], 'off', 0, -12), hub('BD', [90.4, 23.8], 'off', 8, 12, 'left')],
+      edges: [['IEX','BT'],['IEX','NP'],['IEX','BD']],
+      pairs: [['IEX', null, 'Rs 10,000 ceiling \u00b7 62 of 96 blocks at the cap on Sep 24 \u00b7 own model \u00b7 1 day recorded'], ['IEX','BT','Hydro imports \u00b7 ~2 GW'], ['IEX','BD','Bheramara HVDC \u00b7 1 GW'], ['IEX','NP','Dhalkebar\u2013Muzaffarpur \u00b7 400 kV']]
+    },
+    gb: {
+      origin: 'GB', focusIds: ['826'], rot: 2, par: [48, 60],
+      hubs: [hub('GB', [-1.5, 52.8], 'off', 0, 19), hub('IE', [-7.5, 53.2]), hub('FR', [2.3, 50.3]), hub('BE', [3.6, 51.1]), hub('NL', [5.0, 52.2], 'off', 0, -12),
+        hub('DK', [8.9, 55.9], 'off', 0, -12), hub('NO', [6.9, 58.9], 'off', 0, -12)],
+      edges: [['GB','IE'],['GB','FR'],['GB','BE'],['GB','NL'],['GB','DK'],['GB','NO'],['FR','BE'],['BE','NL'],['NL','NO'],['NL','DK'],['DK','NO']],
+      pairs: [['GB','FR','IFA \u00b7 2 GW'], ['GB','NO','North Sea Link \u00b7 1.4 GW'], ['GB','DK','Viking Link \u00b7 1.4 GW'], ['GB','NL','BritNed \u00b7 1 GW']]
+    }
+  };
+  var ORDER = ['us', 'de', 'gb'], PAIR_MS = 3400, REVEAL_MS = 1200, FADE_MS = 280;
+  var feats = null, us48 = null, cur = 'us', V = null;
+  var W = 0, Hh = 0, dpr = 1, parts = [];
+  var pairIdx = 0, pairT = 0, viewT = 0, revT = 0, fadeT = -1, nextView = null;
+
+  function setTicker() {
+    var p = V.pairs[pairIdx];
+    ticker.style.opacity = 0;
+    setTimeout(function () {
+      ticker.innerHTML = '<em>' + p[0] + (p[1] ? ' \u00d7 ' + p[1] : '') + '</em> &nbsp;' + p[2];
+      ticker.style.opacity = 1;
+    }, reduce ? 0 : 300);
+  }
+
+  function build() {
+    if (!feats) return;
+    W = wrap.clientWidth; Hh = Math.round(W / 1.6); dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = W * dpr; cv.height = Hh * dpr;
+    var def = VIEWS[cur], proj, focus;
+    if (cur === 'us') {
+      focus = us48;
+      var padR = Math.max(56, W * 0.1);
+      proj = d3.geoAlbers().rotate([96, 0]).center([-0.6, 38.7]).parallels([29.5, 45.5]).fitExtent([[26, 18], [W - padR, Hh - 26]], focus);
+    } else {
+      focus = { type: 'FeatureCollection', features: feats.filter(function (f) { return def.focusIds.indexOf(f.id) >= 0; }) };
+      var pts = { type: 'Feature', geometry: { type: 'MultiPoint', coordinates: def.hubs.map(function (h) { return h.ll; }) } };
+      proj = d3.geoConicConformal().rotate([def.rot, 0]).parallels(def.par)
+        .fitExtent([[34, 22], [W - 34, Hh - 30]], { type: 'FeatureCollection', features: focus.features.concat([pts]) });
+    }
+    var H = {};
+    var hubs = def.hubs.map(function (h) { var o = Object.assign({ flash: 0 }, h); H[o.id] = o; if (o.ll) { var p = proj(o.ll); o.x = p[0]; o.y = p[1]; } return o; });
+    if (H['DE-LU'] && !H['DE-LU'].ll) { H['DE-LU'].x = W - 10; H['DE-LU'].y = Math.min(Hh - 30, H.PJM.y + Hh * 0.14); }
+    var edges = def.edges.map(function (e) {
+      var a = H[e[0]], b = H[e[1]];
+      var mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2, dx = b.x - a.x, dy = b.y - a.y;
+      var len = Math.hypot(dx, dy) || 1, nx = -dy / len, ny = dx / len;
+      if (ny > 0) { nx = -nx; ny = -ny; }
+      var bulge = Math.min(len * 0.22, Hh * 0.18);
+      return { a: a, b: b, cx: mx + nx * bulge, cy: my + ny * bulge, len: len, dashed: !a.ll || !b.ll, hl: 0 };
+    });
+    var o = H[def.origin];
+    var lons = [], lats = [];
+    [[0,0],[W,0],[0,Hh],[W,Hh],[W/2,0],[W/2,Hh],[0,Hh/2],[W,Hh/2]].forEach(function (c) { var ll = proj.invert(c); if (ll) { lons.push(ll[0]); lats.push(ll[1]); } });
+    var bb = [Math.min.apply(0, lons) - 4, Math.min.apply(0, lats) - 4, Math.max.apply(0, lons) + 4, Math.max.apply(0, lats) + 4];
+    var focusIds = cur === 'us' ? ['840'] : def.focusIds;
+    var context = feats.filter(function (f) {
+      if (focusIds.indexOf(f.id) >= 0) return false;
+      var b = d3.geoBounds(f);
+      if (b[0][0] > b[1][0]) return b[0][1] < bb[3] && b[1][1] > bb[1];
+      return b[0][0] < bb[2] && b[1][0] > bb[0] && b[0][1] < bb[3] && b[1][1] > bb[1];
+    });
+    if (cur !== 'us') context = context.concat([]);
+    var step = Math.max(6.5, W / 86), fd = [], cd = [], maxD = 1;
+    for (var y = step / 2; y < Hh; y += step) for (var x = step / 2; x < W; x += step) {
+      var ll = proj.invert([x, y]); if (!ll) continue;
+      var d = Math.hypot(x - o.x, y - o.y);
+      if (d3.geoContains(focus, ll)) { fd.push(x, y, d); if (d > maxD) maxD = d; continue; }
+      for (var i = 0; i < context.length; i++) if (d3.geoContains(context[i], ll)) { cd.push(x, y, d); break; }
+    }
+    [H].forEach(function () {});
+    hubs.forEach(function (h) { h.d = Math.hypot(h.x - o.x, h.y - o.y); if (h.d > maxD) maxD = h.d; });
+    var gp = d3.geoPath(proj);
+    V = { def: def, hubs: hubs, H: H, edges: edges, pairs: def.pairs, fd: fd, cd: cd, maxD: maxD, dotR: Math.max(0.9, step * 0.13),
+      outline: new Path2D(gp(focus) || ''), outLen: gp.measure(focus) };
+  }
+
+  function qp(e, t) { var u = 1 - t; return [u*u*e.a.x + 2*u*t*e.cx + t*t*e.b.x, u*u*e.a.y + 2*u*t*e.cy + t*t*e.b.y]; }
+  function ease(x) { x = Math.max(0, Math.min(1, x)); return 1 - Math.pow(1 - x, 3); }
+  function dots(arr, R, style, r) {
+    ctx.fillStyle = style; ctx.beginPath();
+    for (var i = 0; i < arr.length; i += 3) if (arr[i + 2] <= R) { ctx.moveTo(arr[i] + r, arr[i + 1]); ctx.arc(arr[i], arr[i + 1], r, 0, 7); }
+    ctx.fill();
+  }
+
+  function selectTab() { tabs.forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.v === cur)); }); }
+  function go(k) {
+    if (!V || k === cur && fadeT < 0) return;
+    if (reduce) { cur = k; selectTab(); build(); pairIdx = 0; revT = REVEAL_MS * 2; setTicker(); draw(0, 0); return; }
+    nextView = k; fadeT = 0; viewT = 0;
+    tabs.forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.v === k)); });
+  }
+  tabs.forEach(function (b) { b.addEventListener('click', function () { go(b.dataset.v); }); });
+
+  var last = 0;
+  function draw(now, dt) {
+    var fade = 1;
+    if (fadeT >= 0) {
+      fadeT += dt * 1000; fade = 1 - fadeT / FADE_MS;
+      if (fadeT >= FADE_MS) { cur = nextView; fadeT = -1; parts = []; build(); revT = 0; pairIdx = 0; pairT = 0; setTicker(); fade = 1; }
+    }
+    if (!reduce && fadeT < 0) {
+      revT += dt * 1000; pairT += dt * 1000; viewT += dt * 1000;
+      if (pairT > PAIR_MS) { pairT = 0; pairIdx = (pairIdx + 1) % V.pairs.length; setTicker(); }
+      if (viewT > PAIR_MS * V.pairs.length) go(ORDER[(ORDER.indexOf(cur) + 1) % ORDER.length]);
+    }
+    tabs.forEach(function (b) { var i = b.querySelector('i'); if (b.dataset.v === cur && !reduce) i.style.transform = 'scaleX(' + Math.min(1, viewT / (PAIR_MS * V.pairs.length)) + ')'; else i.style.transform = 'scaleX(0)'; });
+
+    var rev = ease(revT / REVEAL_MS), R = rev * V.maxD * 1.02 + (rev >= 1 ? 1e4 : 0);
+    var post = Math.max(0, Math.min(1, (revT - REVEAL_MS) / 900));
+    var p0 = V.pairs[pairIdx], hot = V.edges.filter(function (e) { return (e.a.id === p0[0] && e.b.id === p0[1]) || (e.a.id === p0[1] && e.b.id === p0[0]); })[0];
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, Hh);
+    ctx.globalAlpha = Math.max(0, fade);
+    dots(V.cd, R, 'rgba(244,239,230,.07)', V.dotR);
+    dots(V.fd, R, 'rgba(244,239,230,.19)', V.dotR);
+    ctx.setLineDash([V.outLen * rev, V.outLen + 1]);
+    ctx.strokeStyle = 'rgba(232,201,106,' + (0.2 + 0.45 * (1 - post)) + ')'; ctx.lineWidth = 1; ctx.stroke(V.outline);
+    ctx.setLineDash([]);
+
+    V.hubs.forEach(function (h) { h.a = Math.max(0, Math.min(1, (R - h.d) / 60)); });
+    V.hubs.forEach(function (h) {
+      if (!h.a) return;
+      ctx.globalAlpha = fade * h.a;
+      var g = ctx.createRadialGradient(h.x, h.y, 0, h.x, h.y, 46);
+      g.addColorStop(0, 'rgba(201,152,42,' + (0.10 + h.flash * 0.16) + ')'); g.addColorStop(1, 'rgba(201,152,42,0)');
+      ctx.fillStyle = g; ctx.fillRect(h.x - 46, h.y - 46, 92, 92);
+    });
+    V.edges.forEach(function (e) {
+      var ea = Math.min(e.a.a, e.b.a); if (!ea) return;
+      ctx.globalAlpha = fade * ea;
+      e.hl += ((e === hot ? 1 : 0) - e.hl) * Math.min(1, dt * 5);
+      ctx.beginPath(); ctx.moveTo(e.a.x, e.a.y); ctx.quadraticCurveTo(e.cx, e.cy, e.b.x, e.b.y);
+      ctx.strokeStyle = 'rgba(244,239,230,' + (0.11 + e.hl * 0.05) + ')'; ctx.lineWidth = 1; ctx.setLineDash(e.dashed ? [3, 4] : []);
+      ctx.stroke(); ctx.setLineDash([]);
+      if (e.hl > 0.02) {
+        ctx.beginPath(); ctx.moveTo(e.a.x, e.a.y); ctx.quadraticCurveTo(e.cx, e.cy, e.b.x, e.b.y);
+        ctx.strokeStyle = 'rgba(232,201,106,' + (e.hl * 0.7) + ')'; ctx.lineWidth = 1.4; ctx.stroke();
+      }
+      if (!reduce && rev >= 1 && fadeT < 0 && Math.random() < (0.45 + e.hl * 2.2) * dt)
+        parts.push({ e: e, t: 0, rev: Math.random() < 0.5, dur: 1.4 + e.len / 260 + Math.random() * 0.6 });
+    });
+    ctx.globalAlpha = Math.max(0, fade);
+    for (var i = parts.length - 1; i >= 0; i--) {
+      var p = parts[i]; p.t += dt / p.dur;
+      if (p.t >= 1) { (p.rev ? p.e.a : p.e.b).flash = 1; parts.splice(i, 1); continue; }
+      var c = p.rev ? '32,230,176' : '232,201,106';
+      for (var k = 0; k < 9; k++) {
+        var tt = p.t - k * 0.012; if (tt < 0) break;
+        var pt = qp(p.e, p.rev ? 1 - tt : tt);
+        ctx.fillStyle = 'rgba(' + c + ',' + ((1 - k / 9) * 0.9) + ')';
+        ctx.beginPath(); ctx.arc(pt[0], pt[1], k === 0 ? 2 : 1.6 - k * 0.12, 0, 7); ctx.fill();
+      }
+    }
+    ctx.font = "700 10px 'JetBrains Mono', monospace";
+    try { ctx.letterSpacing = '1.2px'; } catch (_) {}
+    var pulse = (now % 2200) / 2200;
+    V.hubs.forEach(function (h) {
+      h.flash = Math.max(0, h.flash - dt * 1.6);
+      if (!h.a) return;
+      ctx.globalAlpha = fade * h.a;
+      if (h.st === 'live' && !reduce) {
+        ctx.beginPath(); ctx.arc(h.x, h.y, 4 + pulse * 16, 0, 7);
+        ctx.strokeStyle = 'rgba(32,230,176,' + (0.55 * (1 - pulse)) + ')'; ctx.lineWidth = 1; ctx.stroke();
+      }
+      ctx.beginPath(); ctx.arc(h.x, h.y, 3.4 + h.flash * 1.4, 0, 7); ctx.fillStyle = COL[h.st]; ctx.fill();
+      ctx.beginPath(); ctx.arc(h.x, h.y, 6.5, 0, 7); ctx.strokeStyle = 'rgba(10,9,8,.9)'; ctx.lineWidth = 2; ctx.stroke();
+      var on = hot && (hot.a.id === h.id || hot.b.id === h.id);
+      ctx.fillStyle = on ? '#f4efe6' : 'rgba(244,239,230,.58)';
+      ctx.textAlign = h.al; ctx.textBaseline = 'middle';
+      ctx.fillText(h.id, h.x + h.lx, h.y + h.ly);
+    });
+    ctx.globalAlpha = 1;
+  }
+  function loop(now) {
+    var dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016; last = now;
+    if (!document.hidden) draw(now, dt);
+    requestAnimationFrame(loop);
+  }
+
+  fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json').then(function (r) { return r.json(); }).then(function (topo) {
+    feats = topojson.feature(topo, topo.objects.countries).features;
+    var us = feats.filter(function (f) { return f.id === '840'; })[0];
+    var polys = (us.geometry.type === 'MultiPolygon' ? us.geometry.coordinates : [us.geometry.coordinates])
+      .map(function (c) { return { type: 'Polygon', coordinates: c }; })
+      .filter(function (g) { var c = d3.geoCentroid(g); return c[0] > -126 && c[0] < -66 && c[1] > 24 && c[1] < 50; })
+      .sort(function (a, b) { return d3.geoArea(b) - d3.geoArea(a); });
+    us48 = polys[0];
+    build(); setTicker();
+    if (reduce) { revT = REVEAL_MS * 2; draw(0, 0); }
+    if (window.ResizeObserver) new ResizeObserver(function () { var w = wrap.clientWidth; if (w && w !== W) { build(); if (reduce) draw(0, 0); } }).observe(wrap);
+    if (!reduce) requestAnimationFrame(loop);
+  }).catch(function () { wrap.style.display = 'none'; });
 })();
 </script>
 </body>
