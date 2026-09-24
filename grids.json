@@ -1,0 +1,333 @@
+{
+ "generated_at": "2026-09-24T03:49:11Z",
+ "hour_ending": 18,
+ "listing_rule": "A hub lists when its curve passes all five gates on a 365-day walk-forward backtest at horizon 1 and fails the horizon-33 negative control.",
+ "grids": [
+  {
+   "iso": "pjm",
+   "hub": "PJM Western Hub",
+   "operator": "PJM",
+   "currency": "USD",
+   "status": "live",
+   "gates_passed": 5,
+   "gates_total": 5,
+   "gates": {
+    "crps_beats_climatology": true,
+    "coverage_95_in_band": true,
+    "coverage_99_floor": true,
+    "spike_brier_beats_climatology": true,
+    "no_settlement_off_grid": true,
+    "all_pass": true
+   },
+   "metrics": {
+    "crps_skill": 0.1879,
+    "coverage_95": 0.9644,
+    "coverage_99": 0.9945,
+    "pit_ks": 0.0506,
+    "spike_brier": 0.0641,
+    "climatology_spike_brier": 0.07083,
+    "eval_days": 365
+   },
+   "h33_control": {
+    "all_pass": false,
+    "crps_skill": 0.1017
+   },
+   "history": {
+    "first": "2023-08-15",
+    "last": "2026-09-23",
+    "days": 1131,
+    "records": 27141,
+    "min": 4.49,
+    "max": 2323.34
+   },
+   "curve": {
+    "operating_day": "2026-09-24",
+    "hour_ending": 18,
+    "median": 83.24,
+    "p5": 31.05,
+    "p95": 362.84,
+    "p_above_250": 0.0743,
+    "p_above_500": 0.0421,
+    "p_negative": 0.0351,
+    "grid_min": -150.0,
+    "grid_max": 4000.0,
+    "grid_points": 96,
+    "floors_applied": []
+   },
+   "source": "PJM Data Miner 2 \u00b7 day-ahead hourly LMP (pnode 51288)",
+   "note": "Live since Aug 2 with a 44-day public record."
+  },
+  {
+   "iso": "ercot",
+   "hub": "ERCOT North Hub",
+   "operator": "ERCOT",
+   "currency": "USD",
+   "status": "not_listed",
+   "gates_passed": 4,
+   "gates_total": 5,
+   "gates": {
+    "crps_beats_climatology": true,
+    "coverage_95_in_band": true,
+    "coverage_99_floor": true,
+    "spike_brier_beats_climatology": false,
+    "no_settlement_off_grid": true,
+    "all_pass": false
+   },
+   "metrics": {
+    "crps_skill": 0.1521,
+    "coverage_95": 0.9671,
+    "coverage_99": 0.9918,
+    "pit_ks": 0.0764,
+    "spike_brier": 0.00843,
+    "climatology_spike_brier": 0.00815,
+    "eval_days": 365
+   },
+   "h33_control": {
+    "all_pass": false,
+    "crps_skill": -0.2822
+   },
+   "history": {
+    "first": "2023-09-01",
+    "last": "2026-09-23",
+    "days": 1119,
+    "records": 26853,
+    "min": -6.0,
+    "max": 2758.82
+   },
+   "curve": {
+    "operating_day": "2026-09-24",
+    "hour_ending": 18,
+    "median": 51.99,
+    "p5": 20.55,
+    "p95": 88.2,
+    "p_above_250": 0.005,
+    "p_above_500": 0.0015,
+    "p_negative": 0.002,
+    "grid_min": -250.0,
+    "grid_max": 5000.0,
+    "grid_points": 110,
+    "floors_applied": [
+     "neg_floor",
+     "spike_survival_floor",
+     "terminal_floor"
+    ]
+   },
+   "source": "ERCOT DAM settlement point prices (NP4-180-ER / NP4-190-CD)",
+   "note": "Fails the $250 spike gate by 0.0002 \u2014 the spike floor is PJM-calibrated; hub-scaled floors are the fix."
+  },
+  {
+   "iso": "miso",
+   "hub": "MISO Indiana Hub",
+   "operator": "MISO",
+   "currency": "USD",
+   "status": "passes",
+   "gates_passed": 5,
+   "gates_total": 5,
+   "gates": {
+    "crps_beats_climatology": true,
+    "coverage_95_in_band": true,
+    "coverage_99_floor": true,
+    "spike_brier_beats_climatology": true,
+    "no_settlement_off_grid": true,
+    "all_pass": true
+   },
+   "metrics": {
+    "crps_skill": 0.2729,
+    "coverage_95": 0.937,
+    "coverage_99": 0.9918,
+    "pit_ks": 0.0464,
+    "spike_brier": 0.0404,
+    "climatology_spike_brier": 0.04191,
+    "eval_days": 365
+   },
+   "h33_control": {
+    "all_pass": false,
+    "crps_skill": 0.0529
+   },
+   "history": {
+    "first": "2023-09-01",
+    "last": "2026-09-23",
+    "days": 1119,
+    "records": 26856,
+    "min": 8.43,
+    "max": 944.45
+   },
+   "curve": {
+    "operating_day": "2026-09-24",
+    "hour_ending": 18,
+    "median": 84.8,
+    "p5": 50.14,
+    "p95": 284.35,
+    "p_above_250": 0.0654,
+    "p_above_500": 0.0133,
+    "p_negative": 0.0076,
+    "grid_min": -150.0,
+    "grid_max": 4000.0,
+    "grid_points": 96,
+    "floors_applied": []
+   },
+   "source": "MISO day-ahead ex-post LMP (daily market reports)",
+   "note": "Passes all five gates on history; public record starts on listing."
+  },
+  {
+   "iso": "caiso",
+   "hub": "CAISO SP15",
+   "operator": "CAISO",
+   "currency": "USD",
+   "status": "not_listed",
+   "gates_passed": 4,
+   "gates_total": 5,
+   "gates": {
+    "crps_beats_climatology": true,
+    "coverage_95_in_band": true,
+    "coverage_99_floor": true,
+    "spike_brier_beats_climatology": false,
+    "no_settlement_off_grid": true,
+    "all_pass": false
+   },
+   "metrics": {
+    "crps_skill": 0.4386,
+    "coverage_95": 0.9836,
+    "coverage_99": 1.0,
+    "pit_ks": 0.1529,
+    "spike_brier": 3e-05,
+    "climatology_spike_brier": 0.0,
+    "eval_days": 365
+   },
+   "h33_control": {
+    "all_pass": false,
+    "crps_skill": -0.8178
+   },
+   "history": {
+    "first": "2023-09-01",
+    "last": "2026-09-23",
+    "days": 1119,
+    "records": 26856,
+    "min": -67.08,
+    "max": 614.42
+   },
+   "curve": {
+    "operating_day": "2026-09-24",
+    "hour_ending": 18,
+    "median": 44.55,
+    "p5": -32.99,
+    "p95": 91.89,
+    "p_above_250": 0.0086,
+    "p_above_500": 0.0015,
+    "p_negative": 0.1001,
+    "grid_min": -150.0,
+    "grid_max": 4000.0,
+    "grid_points": 96,
+    "floors_applied": [
+     "spike_survival_floor",
+     "terminal_floor"
+    ]
+   },
+   "source": "CAISO OASIS PRC_LMP DAM (TH_SP15_GEN-APND)",
+   "note": "Fails the spike gate because $250 spikes do not occur at SP15 HE18 (0.18% of days); the glut regime (33% negative days at HE13) needs a low-tail model. Not listed."
+  },
+  {
+   "iso": "de",
+   "hub": "Germany-Luxembourg",
+   "operator": "EPEX / ENTSO-E",
+   "currency": "EUR",
+   "status": "passes",
+   "gates_passed": 5,
+   "gates_total": 5,
+   "gates": {
+    "crps_beats_climatology": true,
+    "coverage_95_in_band": true,
+    "coverage_99_floor": true,
+    "spike_brier_beats_climatology": true,
+    "no_settlement_off_grid": true,
+    "all_pass": true
+   },
+   "metrics": {
+    "crps_skill": 0.1821,
+    "coverage_95": 0.9836,
+    "coverage_99": 1.0,
+    "pit_ks": 0.0763,
+    "spike_brier": 0.01308,
+    "climatology_spike_brier": 0.01351,
+    "eval_days": 365
+   },
+   "h33_control": {
+    "all_pass": false,
+    "crps_skill": 0.1044
+   },
+   "history": {
+    "first": "2023-09-01",
+    "last": "2026-09-23",
+    "days": 1119,
+    "records": 26853,
+    "min": -499.0,
+    "max": 936.28
+   },
+   "curve": {
+    "operating_day": "2026-09-24",
+    "hour_ending": 18,
+    "median": 132.68,
+    "p5": -64.72,
+    "p95": 251.2,
+    "p_above_250": 0.0502,
+    "p_above_500": 0.0322,
+    "p_negative": 0.0607,
+    "grid_min": -500.0,
+    "grid_max": 4000.0,
+    "grid_points": 131,
+    "floors_applied": []
+   },
+   "source": "EPEX day-ahead via Energy-Charts (DE-LU), 15-min averaged to hourly",
+   "note": "Passes all five gates on history; public record starts on listing."
+  },
+  {
+   "iso": "iex",
+   "hub": "IEX India (DAM)",
+   "operator": "IEX / CERC",
+   "currency": "INR",
+   "status": "recorded",
+   "gates_passed": null,
+   "gates_total": 5,
+   "gates": null,
+   "metrics": null,
+   "h33_control": null,
+   "history": {
+    "first": "2026-09-24",
+    "last": "2026-09-24",
+    "days": 1,
+    "records": 96,
+    "min": 1809.08,
+    "max": 10000.0
+   },
+   "curve": null,
+   "model": {
+    "id": "iex-dam-censored-lognormal-v1",
+    "summary": "Censored lognormal per 15-minute block with the Rs 10,000/MWh ceiling as a probability atom; Gaussian copula across blocks; conditioned on the last cleared day.",
+    "unit": "15-minute blocks (96/day)",
+    "cap": "Rs 10,000/MWh ceiling",
+    "products": [
+     "cap",
+     "floor",
+     "zero-cost collar",
+     "fixed-price swap",
+     "battery spread floor",
+     "ceiling-hit digital"
+    ]
+   },
+   "latest_day": {
+    "date": "2026-09-24",
+    "average_rs_mwh": 7435.0,
+    "blocks_at_ceiling": 62
+   },
+   "source": "IEX public market snapshot pages (scripts/fetch_iex_prices.py); one day per daily run",
+   "note": "Own model, not yet gated. 1 day recorded (2026-09-24: average Rs 7,435/MWh, 62 of 96 blocks at the ceiling). A candidate, not a listing: the listing rule needs a walk-forward record, and IEX exposes only the latest day, so the record grows one day per run. Same contracts, same listing rule, different model \u2014 a ceiling-bound market needs one.",
+   "pilot_url": "/india"
+  }
+ ],
+ "statuses": {
+  "live": "Listed and publishing daily with a public scored record",
+  "passes": "Passes all five gates on history; record starts on listing",
+  "not_listed": "Fails at least one gate",
+  "recorded": "Own per-grid model; prints recorded; not yet gated"
+ }
+}
