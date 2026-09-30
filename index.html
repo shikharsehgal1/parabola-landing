@@ -449,14 +449,14 @@
       <thead><tr><th></th><th>PJM Western Hub</th><th>IEX India</th></tr></thead>
       <tbody>
         <tr><th>Unit</th><td>Hourly, 24 a day</td><td>15-minute blocks, 96 a day</td></tr>
-        <tr><th>Cap</th><td>$4,000 settlement grid</td><td>Rs 10,000 ceiling as a probability atom</td></tr>
-        <tr><th>Model</th><td>Johnson-SU body, GPD spike tail</td><td>Censored lognormal, Gaussian copula</td></tr>
+        <tr><th>Price range</th><td>Priced up to $4,000/MWh</td><td>Up to the exchange's Rs 10,000/MWh ceiling, priced in</td></tr>
+        <tr><th>Tested how</th><td>Five public tests on a year of real prices, rerun every day</td><td>Scored on every recorded day; lists after a year of record</td></tr>
         <tr><th>Products</th><td>Capped call strip</td><td>Cap, floor, collar, swap, spread floor, digital</td></tr>
         <tr><th>Record</th><td>44 days, 90 runs, 0 revisions</td><td>1 day, from Sep 24</td></tr>
         <tr><th>Status</th><td><span class="st live">LIVE</span></td><td><span class="st recorded">CANDIDATE</span></td></tr>
       </tbody>
     </table></div>
-    <p class="note" style="margin-top:12px">The invariant across grids is the contract, the settlement grid, the listing rule and the record — not the estimator. Two models, one market.</p>
+    <p class="note" style="margin-top:12px">What stays the same across grids is the contract, the settlement, the listing rule and the public record. Each market gets the model its prices need. Two models, one market.</p>
   </div>
 </section>
 
@@ -803,7 +803,7 @@
         hub('MISO', [-86.2, 39.8], 'pass', 0, -12), hub('PJM', [-77.4, 39.6], 'live', 0, 19), hub('NYISO', [-74.2, 42.7], 'off', -9, -9, 'right'),
         hub('ISO-NE', [-71.1, 42.4], 'off', 8, 12, 'left'), hub('DE-LU', null, 'pass', 0, 19, 'right')],
       edges: [['PJM','MISO'],['PJM','ERCOT'],['PJM','CAISO'],['PJM','DE-LU'],['ERCOT','MISO'],['ERCOT','CAISO'],['PJM','NYISO'],['NYISO','ISO-NE'],['MISO','SPP'],['SPP','ERCOT'],['SPP','CAISO'],['ISO-NE','DE-LU']],
-      pairs: [['PJM','MISO','corr 0.82 \u00b7 one shared cap +17.4%'], ['PJM','DE-LU','corr 0.18 \u00b7 one shared cap +9.1%'], ['ERCOT','MISO','corr 0.28 \u00b7 one shared cap +3.8%']]
+      pairs: [['PJM','MISO','one shared cap across both \u00b7 17% cheaper than two'], ['PJM','DE-LU','one shared cap across both \u00b7 9% cheaper than two'], ['ERCOT','MISO','one shared cap across both \u00b7 4% cheaper than two']]
     },
     de: {
       origin: 'DE-LU', focusIds: ['276', '442'], rot: -10, par: [45, 58],
