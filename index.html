@@ -77,9 +77,6 @@
   .lede { margin-top: 18px; font-family: var(--serif); font-size: clamp(26px, 2.9vw, 46px); line-height: 1.05; color: var(--dim); max-width: 16ch; }
   .fv { margin-top: 18px; font-family: var(--mono); font-size: 12px; color: var(--dim); }
   .fv b { font-weight: 400; color: var(--ink); font-variant-numeric: tabular-nums; }
-  .status { display: inline-flex; align-items: center; gap: 8px; }
-  .status i { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-  .js .status i { animation: blink 2.4s ease-in-out infinite; }
   @keyframes blink { 50% { opacity: .25; } }
   .escrow { margin-top: 36px; }
   .escrow .track { display: flex; height: 10px; }
@@ -99,7 +96,7 @@
   .big .mono { margin-top: 12px; }
 
   .inst { margin-top: 36px; }
-  .inst-head { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-bottom: 10px; }
+  .inst-head { display: flex; justify-content: flex-end; gap: 16px; flex-wrap: wrap; padding-bottom: 10px; }
   .plot { position: relative; height: clamp(120px, 20vh, 190px); cursor: ew-resize; touch-action: pan-y; }
   .plot::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--line); transform-origin: left; }
   .plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
@@ -278,7 +275,6 @@
 
     <div class="inst">
       <div class="inst-head mono fade" style="--d:.7s">
-        <span class="faint" id="inst-label">PJM Western Hub &middot; 6 pm &middot; day-ahead &middot; marked 2026-09-24</span>
         <span class="faint">Drag to move the strike</span>
       </div>
       <div class="plot" id="plot" role="img" aria-label="Exceedance curve: the chance the PJM Western Hub 6 pm day-ahead price ends above each level from $0 to $500 per MWh. Drag to move the strike.">
@@ -303,7 +299,6 @@
       <p class="copy fade" style="--d:1.2s">Parabola builds and lists derivatives on the price of electricity, for hedging power risk and for trading it.</p>
     </div>
     <div class="right fade" style="--d:1.5s">
-      <span class="mono faint status"><i></i>Pilot &middot; paper trading &middot; nothing here is an offer</span>
       <div class="backed">
     <span class="mono faint">Backed by</span>
     <a class="wm" href="https://www.wintermute.com/" target="_blank" rel="noopener" aria-label="Wintermute">
@@ -412,7 +407,7 @@
 <a class="pin u" href="mailto:founders@parabolamarkets.xyz">founders@parabolamarkets.xyz</a>
 
 <footer>
-  <span>&copy; 2026 Parabola Markets &middot; Pilot, paper trading. Nothing here is an offer.</span>
+  <span>&copy; 2026 Parabola Markets</span>
   <nav>
     <a href="https://pilot.parabolamarkets.xyz/?view=hedge">Hedge</a>
     <a href="https://pilot.parabolamarkets.xyz/?view=index">Index</a>
@@ -592,8 +587,24 @@
     });
   }
   var plot = $('plot'), introDone = !MOTION;
+  /* when nobody is dragging, the strike sweeps along the curve and back */
+  var auto = MOTION, ph = 0, last = null, resumeT = 0, heroOn = true, MID = 250, AMP = 210, PERIOD = 9;
+  function sweep(now) {
+    requestAnimationFrame(sweep);
+    if (!auto || !introDone || !heroOn || glide) { last = null; return; }
+    if (last === null) { ph = Math.asin(Math.max(-1, Math.min(1, (KDRAW - MID) / AMP))); last = now; }
+    ph += Math.min(now - last, 50) / 1000 * (2 * Math.PI / PERIOD); last = now;
+    KDRAW = K = MID + AMP * Math.sin(ph);
+    paint();
+  }
+  if (MOTION) {
+    requestAnimationFrame(sweep);
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { heroOn = en[0].isIntersecting; }).observe(document.getElementById('plot'));
+  }
+  function resume() { clearTimeout(resumeT); if (MOTION) resumeT = setTimeout(function () { auto = true; }, 2500); }
   function setFrom(e) {
     if (!introDone) return;
+    auto = false; clearTimeout(resumeT);
     var r = plot.getBoundingClientRect();
     var v = Math.round(Math.min(Math.max((e.clientX - r.left) / r.width, 0), 1) * XMAX / 5) * 5;
     K = Math.min(Math.max(v, 10), 490);
@@ -601,6 +612,9 @@
   }
   plot.addEventListener('pointerdown', function (e) { plot.setPointerCapture(e.pointerId); setFrom(e); });
   plot.addEventListener('pointermove', function (e) { if (e.pointerType === 'mouse' || plot.hasPointerCapture(e.pointerId)) setFrom(e); });
+  plot.addEventListener('pointerleave', resume);
+  plot.addEventListener('pointerup', resume);
+  plot.addEventListener('pointercancel', resume);
 
   /* intro: letters rise, the curve draws left to right, then the strike sweeps out to $250 */
   var hero = $('hero');
@@ -619,15 +633,10 @@
     });
   } else { hero.classList.add('on'); paint(); }
 
-  function label(c, hub) {
-    var h = c.hour_ending, clock = h === 12 ? 'noon' : h === 24 ? 'midnight' : (h > 12 ? (h - 12) + ' pm' : h + ' am');
-    $('inst-label').textContent = hub + ' · ' + clock + ' · day-ahead · ' + (c.exceedance ? 'for ' : 'marked ') + c.operating_day;
-  }
-
   /* daily curve first, then the grid table's quantiles */
   fetch('./curve.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (c) {
     if (!c || !c.exceedance || !c.exceedance.values) throw 0;
-    S = fromTable(c.exceedance); curveReady = true; label(c, c.hub || 'PJM Western Hub');
+    S = fromTable(c.exceedance); curveReady = true;
     if (introDone) paint();
   }).catch(function () {}).then(function () {
     return fetch('./grids.json').then(function (r) { return r.ok ? r.json() : null; });
@@ -635,7 +644,7 @@
     if (!g || !g.grids) return;
     g.grids.forEach(function (x) {
       var c = x.curve; if (!c) return;
-      if (x.iso === 'pjm' && !curveReady) { S = fromQuantiles(c); label(c, x.hub); if (introDone) paint(); }
+      if (x.iso === 'pjm' && !curveReady) { S = fromQuantiles(c); if (introDone) paint(); }
     });
   }).catch(function () {});
 })();
