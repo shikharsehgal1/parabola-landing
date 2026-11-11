@@ -23,9 +23,17 @@
 <meta name="twitter:description" content="A tested probability curve per grid, published daily, and capped cover that settles on the operator's price." />
 <meta name="twitter:image" content="https://raw.githubusercontent.com/shikharsehgal1/parabola-landing/main/og-image.png" />
 <meta name="twitter:image:alt" content="Parabola Markets" />
+<script>
+  (function (d) {
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    d.classList.add(still ? 'still' : 'js');
+  })(document.documentElement);
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Geist:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous" defer></script>
+<script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" crossorigin="anonymous" defer></script>
 <style>
   :root {
     --bg: #000;
@@ -38,43 +46,50 @@
     --sans: 'Geist', system-ui, sans-serif;
     --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
     --pad: 40px;
+    --out: cubic-bezier(.16,.84,.24,1);
   }
   * { box-sizing: border-box; }
-  html { color-scheme: dark; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  html { color-scheme: dark; scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   a { color: inherit; text-decoration: none; }
-  h1, h2, p, dl, dd { margin: 0; }
+  h1, h2, h3, p, dl, dd { margin: 0; }
   ::selection { background: var(--accent); color: #000; }
 
   .mono { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
   .dim { color: var(--dim); }
   .faint { color: var(--faint); }
-  .u { border-bottom: 1px solid currentColor; padding-bottom: 2px; transition: opacity .2s; }
-  .u:hover { opacity: .65; }
+  .u { background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; padding-bottom: 3px; transition: background-size .5s var(--out), opacity .2s; }
+  .u:hover { background-size: 0 1px; background-position: 100% 100%; }
   .copy { font-family: var(--mono); font-size: 13.5px; line-height: 1.55; max-width: 44ch; }
   .copy + .copy { margin-top: 18px; }
 
   /* top bar */
   .bar { display: flex; justify-content: space-between; align-items: baseline; padding: 24px var(--pad); }
   .bar nav { display: flex; gap: 22px; }
+  .bar nav a { transition: color .2s; }
   .bar nav a:hover { color: var(--ink); }
 
   /* hero */
   .hero { min-height: 100svh; display: flex; flex-direction: column; }
   .hero-mid { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 0 var(--pad); }
   .mark { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(92px, 18.5vw, 300px); line-height: .82; letter-spacing: -.025em; margin-left: -.04em; }
+  .ch { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .1em; margin-bottom: -.1em; }
+  .ch > span { display: inline-block; }
   .big { text-align: right; padding-bottom: .6vw; }
   .big .n { font-family: var(--serif); font-size: clamp(64px, 9vw, 148px); line-height: .85; color: var(--accent); font-variant-numeric: tabular-nums; }
   .big .mono { margin-top: 12px; }
-  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(92px, 18.5vw, 300px); line-height: .82; letter-spacing: -.025em; margin-left: -.04em; }
 
   .inst { margin-top: 36px; }
   .inst-head { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-bottom: 10px; }
-  .plot { position: relative; height: clamp(120px, 20vh, 190px); cursor: ew-resize; touch-action: pan-y; border-bottom: 1px solid var(--line); }
+  .plot { position: relative; height: clamp(120px, 20vh, 190px); cursor: ew-resize; touch-action: pan-y; }
+  .plot::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--line); transform-origin: left; }
   .plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
   .plot .k-lab { position: absolute; top: 0; transform: translateX(6px); font-family: var(--mono); font-size: 10.5px; color: var(--accent); white-space: nowrap; pointer-events: none; }
+  #flow { stroke-dasharray: 2 10; animation: flow 1.1s linear infinite; }
+  @keyframes flow { to { stroke-dashoffset: -24; } }
   .ticks { position: relative; height: 22px; }
-  .ticks span { position: absolute; top: 6px; white-space: nowrap; transform: translateX(-50%); font-family: var(--mono); font-size: 10px; color: var(--faint); }
+  .ticks span { position: absolute; top: 6px; transform: translateX(-50%); white-space: nowrap; font-family: var(--mono); font-size: 10px; color: var(--faint); }
   .ticks span:first-child { transform: none; }
   .ticks span:last-child { transform: translateX(-100%); }
   .ticks i { font-style: normal; }
@@ -89,66 +104,120 @@
   .backed .fab-mark { width: 16px; height: auto; }
   .backed .fab-word { width: 64px; height: auto; }
 
+  /* tape */
+  .tape { overflow: hidden; border-top: 1px solid var(--line); padding: 14px 0; white-space: nowrap; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .tape-in { display: inline-flex; animation: tape 70s linear infinite; }
+  .tape span { padding: 0 28px; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; color: var(--faint); }
+  .tape b { font-weight: 400; color: var(--ink); }
+  .tape em { font-style: normal; color: var(--accent); }
+  @keyframes tape { to { transform: translateX(-50%); } }
+  .tape:hover .tape-in { animation-play-state: paused; }
+
   /* sections */
-  section { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 24px; padding: 88px var(--pad); border-top: 1px solid var(--line); }
+  section { position: relative; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 24px; padding: 88px var(--pad); }
+  section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--line); transform-origin: left; }
   .lhs { grid-column: 1 / span 5; }
   .rhs { grid-column: 7 / span 6; }
-  .lhs .mono { margin-bottom: 22px; }
+  .lhs > .mono { margin-bottom: 22px; }
   h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 4.6vw, 68px); line-height: 1; letter-spacing: -.012em; margin-bottom: 24px; max-width: 12ch; }
+  .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .12em; margin-bottom: -.12em; }
+  .w > span { display: inline-block; }
   .lhs .u { display: inline-block; margin-top: 24px; font-family: var(--mono); font-size: 13.5px; }
 
   /* tables and lists */
   table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; font-variant-numeric: tabular-nums; }
   th, td { text-align: right; padding: 11px 0; border-bottom: 1px solid var(--line); font-weight: 400; white-space: nowrap; }
   th:first-child, td:first-child { text-align: left; }
+  tbody td { vertical-align: baseline; }
   thead th { font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); vertical-align: bottom; }
+  tbody tr { transition: background .25s; }
+  tbody tr:hover { background: rgba(255,255,255,.03); }
   .hot { color: var(--accent); }
   .scroll { overflow-x: auto; }
   .cap { margin-top: 14px; font-family: var(--mono); font-size: 11.5px; line-height: 1.6; color: var(--faint); }
+  td.pay { width: 75%; }
+  td.pay i { display: block; margin-top: 9px; height: 2px; background: var(--accent); transform-origin: left; transform: scaleX(var(--w)); }
 
   dl > div { display: grid; grid-template-columns: 130px 1fr; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--line); }
   dl > div:first-child { border-top: 1px solid var(--line); }
   dt { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); padding-top: 2px; }
   dd { font-family: var(--mono); font-size: 13px; }
 
-  .who > div { display: grid; grid-template-columns: 170px 1fr; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .who > div { position: relative; display: grid; grid-template-columns: 170px 1fr; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--line); }
   .who > div:first-child { border-top: 1px solid var(--line); }
-  .who h3 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 1.05; }
+  .who > div::after { content: ''; position: absolute; left: 0; bottom: -1px; height: 1px; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .6s var(--out); }
+  .who > div:hover::after { transform: scaleX(1); }
+  .who h3 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 1.05; transition: transform .5s var(--out), color .3s; }
+  .who > div:hover h3 { transform: translateX(8px); color: var(--accent); }
   .who p { color: var(--dim); max-width: 46ch; }
 
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 36px; }
-  .stats .v { font-family: var(--serif); font-size: 44px; line-height: 1; }
+  .stats .v { font-family: var(--serif); font-size: 44px; line-height: 1; font-variant-numeric: tabular-nums; }
   .stats .l { margin-top: 8px; font-family: var(--mono); font-size: 10.5px; line-height: 1.5; color: var(--faint); }
   .ok { color: var(--ink); }
   .no { color: var(--accent); }
 
+  /* map */
+  .gridmap { position: relative; min-width: 0; }
+  .gridmap canvas { display: block; width: 100%; aspect-ratio: 1.6 / 1; }
+  .gm-tabs { display: flex; gap: 22px; border-bottom: 1px solid var(--line); margin-bottom: 12px; overflow-x: auto; }
+  .gm-tabs button { position: relative; flex: none; background: none; border: 0; padding: 0 0 11px; font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); cursor: pointer; transition: color .2s; }
+  .gm-tabs button:hover, .gm-tabs button[aria-selected="true"] { color: var(--ink); }
+  .gm-tabs small { font-size: 10px; margin-left: 6px; color: var(--faint); }
+  .gm-tabs i { position: absolute; left: 0; bottom: -1px; width: 100%; height: 1px; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+  .gm-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); }
+  .gm-ticker { color: var(--ink); transition: opacity .35s ease; }
+  .gm-ticker em { font-style: normal; color: var(--accent); }
+  .gm-legend { display: flex; gap: 16px; }
+  .gm-legend i { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
+
   /* form */
   form { display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; row-gap: 22px; }
   form .full { grid-column: 1 / -1; }
-  label { display: block; font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
-  input, select, textarea { display: block; width: 100%; margin-top: 8px; padding: 8px 0; background: transparent; border: 0; border-bottom: 1px solid rgba(255,255,255,.28); border-radius: 0; color: var(--ink); font: 400 15px/1.4 var(--sans); letter-spacing: 0; text-transform: none; outline: none; }
-  input:focus, select:focus, textarea:focus { border-bottom-color: var(--ink); }
+  label { display: block; font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); transition: color .2s; }
+  label:focus-within { color: var(--ink); }
+  input, select, textarea { display: block; width: 100%; margin-top: 8px; padding: 8px 0; background: linear-gradient(var(--accent), var(--accent)) 0 100% / 0 1px no-repeat; border: 0; border-bottom: 1px solid rgba(255,255,255,.28); border-radius: 0; color: var(--ink); font: 400 15px/1.4 var(--sans); letter-spacing: 0; text-transform: none; outline: none; transition: background-size .5s var(--out); }
+  input:focus, select:focus, textarea:focus { background-size: 100% 1px; }
   select option { background: #000; }
   textarea { resize: vertical; }
   ::placeholder { color: rgba(255,255,255,.3); }
-  form button { justify-self: start; background: none; border: 0; padding: 0 0 2px; border-bottom: 1px solid var(--ink); color: var(--ink); font: 400 13.5px var(--mono); cursor: pointer; transition: opacity .2s; }
-  form button:hover { opacity: .65; }
+  form button { justify-self: start; background: none; border: 0; padding: 0; color: var(--ink); font: 400 13.5px var(--mono); cursor: pointer; }
+  form button span { display: inline-block; transition: transform .4s var(--out); }
+  form button:hover span { transform: translateX(6px); }
   .hp { display: none; }
 
   footer { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding: 28px var(--pad) 40px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 10.5px; letter-spacing: .04em; color: var(--faint); }
-  footer nav { display: flex; gap: 18px; }
+  footer nav { display: flex; gap: 18px; flex-wrap: wrap; }
+  footer a { transition: color .2s; }
   footer a:hover { color: var(--ink); }
+
+  /* motion: everything below only applies when motion is allowed */
+  .js .ch > span { transform: translateY(105%); transition: transform 1.1s var(--out) var(--d, 0s); }
+  .js .on .ch > span { transform: none; }
+  .js .fade { opacity: 0; transform: translateY(14px); transition: opacity 1s var(--out) var(--d, 0s), transform 1s var(--out) var(--d, 0s); }
+  .js .on .fade, .js .fade.on { opacity: 1; transform: none; }
+  .js .plot::after { transform: scaleX(0); transition: transform 1.6s var(--out) .2s; }
+  .js .on .plot::after { transform: none; }
+  .js section::before { transform: scaleX(0); transition: transform 1.6s cubic-bezier(.65,0,.2,1); }
+  .js section.on::before { transform: none; }
+  .js .w > span { transform: translateY(108%); transition: transform 1s var(--out) var(--d, 0s); }
+  .js .on .w > span { transform: none; }
+  .js .rv { opacity: 0; transform: translateY(16px); transition: opacity .9s var(--out) var(--d, 0s), transform .9s var(--out) var(--d, 0s); }
+  .js .on .rv { opacity: 1; transform: none; }
+  .js td.pay i { transform: scaleX(0); transition: transform 1.6s var(--out) var(--d, 0s); }
+  .js .on td.pay i { transform: scaleX(var(--w)); }
+  .still #flow, .still .tape-in { animation: none; }
 
   @media (max-width: 900px) {
     :root { --pad: 16px; }
     .bar nav a:not(:last-child) { display: none; }
     .ticks i { display: none; }
-    section { display: block; padding: 64px var(--pad); }
-    .lhs { margin-bottom: 36px; }
     .mark { flex-direction: column; align-items: flex-start; gap: 20px; }
     .big { text-align: left; }
     .hero-foot { flex-direction: column; align-items: flex-start; gap: 28px; }
     .hero-foot .right { align-items: flex-start; }
+    section { display: block; padding: 64px var(--pad); }
+    .lhs { margin-bottom: 36px; }
     .stats { grid-template-columns: repeat(2, 1fr); row-gap: 28px; }
     .who > div { grid-template-columns: 1fr; gap: 6px; }
     dl > div { grid-template-columns: 100px 1fr; }
@@ -158,8 +227,8 @@
 </head>
 <body>
 
-<div class="hero">
-  <header class="bar">
+<div class="hero" id="hero">
+  <header class="bar fade" style="--d:.1s">
     <span class="mono">Parabola Markets</span>
     <nav class="mono dim">
       <a href="#exposure">Exposure</a>
@@ -172,37 +241,41 @@
 
   <div class="hero-mid">
     <div class="mark">
-      <h1>Parabola</h1>
-      <div class="big" aria-live="polite">
-        <div class="n" id="s-big">7.4%</div>
+      <h1 id="word" aria-label="Parabola">Parabola</h1>
+      <div class="big fade" style="--d:.9s">
+        <div class="n" id="s-big" aria-live="polite">7.4%</div>
         <div class="mono dim">chance the price clears <span id="k-big">$250</span></div>
       </div>
     </div>
 
-    <div class="inst" id="inst">
-      <div class="inst-head mono">
+    <div class="inst">
+      <div class="inst-head mono fade" style="--d:.7s">
         <span class="faint" id="inst-label">PJM Western Hub &middot; 6 pm &middot; day-ahead &middot; marked 2026-09-24</span>
         <span class="faint">Drag to move the strike</span>
       </div>
       <div class="plot" id="plot" role="img" aria-label="Exceedance curve: the chance the PJM Western Hub 6 pm day-ahead price ends above each level from $0 to $500 per MWh. Drag to move the strike.">
         <svg viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
-          <path id="tail" fill="rgba(232,85,58,.22)" />
-          <path id="curve-lo" fill="none" stroke="#fff" stroke-width="1.25" vector-effect="non-scaling-stroke" />
-          <path id="curve-hi" fill="none" stroke="#e8553a" stroke-width="1.25" vector-effect="non-scaling-stroke" />
+          <defs><clipPath id="reveal"><rect id="reveal-r" x="0" y="-10" width="1000" height="220" /></clipPath></defs>
+          <g clip-path="url(#reveal)">
+            <path id="tail" fill="rgba(232,85,58,.2)" />
+            <path id="curve-lo" fill="none" stroke="#fff" stroke-width="1.25" vector-effect="non-scaling-stroke" />
+            <path id="curve-hi" fill="none" stroke="#e8553a" stroke-width="1.25" vector-effect="non-scaling-stroke" />
+            <path id="flow" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="1.25" vector-effect="non-scaling-stroke" />
+          </g>
           <line id="k-line" y1="0" y2="200" stroke="#e8553a" stroke-width="1" vector-effect="non-scaling-stroke" />
         </svg>
-        <span class="k-lab" id="k-lab">strike</span>
+        <span class="k-lab" id="k-lab">$250</span>
       </div>
-      <div class="ticks" id="ticks"></div>
+      <div class="ticks fade" id="ticks" style="--d:1s"></div>
     </div>
   </div>
 
   <div class="hero-foot">
     <div>
-      <p class="copy">Every business that runs on electricity is exposed to its price. Parabola measures that exposure and sells capped cover against it.</p>
-      <p class="copy dim">One tested curve per grid, published daily. Contracts settle on the grid operator's own price.</p>
+      <p class="copy fade" style="--d:1.2s">Every business that runs on electricity is exposed to its price. Parabola measures that exposure and sells capped cover against it.</p>
+      <p class="copy dim fade" style="--d:1.35s">One tested curve per grid, published daily. Contracts settle on the grid operator's own price.</p>
     </div>
-    <div class="right">
+    <div class="right fade" style="--d:1.5s">
       <div class="backed">
     <span class="mono faint">Backed by</span>
     <a class="wm" href="https://www.wintermute.com/" target="_blank" rel="noopener" aria-label="Wintermute">
@@ -246,6 +319,8 @@
   </div>
 </div>
 
+<div class="tape" aria-hidden="true"><div class="tape-in" id="tape"></div></div>
+
 <main>
 
 <section id="exposure">
@@ -257,19 +332,19 @@
   <div class="rhs">
     <dl>
       <div><dt>Hub</dt><dd>PJM Western Hub, day-ahead</dd></div>
-      <div><dt>Hours</dt><dd>Jul 1 &ndash; Aug 31, 4 to 10 pm &middot; 372 h</dd></div>
+      <div><dt>Hours</dt><dd>Jul 1 &ndash; Aug 31, 4 to 10 pm &middot; <span data-count>372</span> h</dd></div>
       <div><dt>Size</dt><dd>5 MWh per hour</dd></div>
-      <div><dt>Strike</dt><dd>$150 / MWh</dd></div>
-      <div><dt>Cap</dt><dd>$400,000</dd></div>
-      <div><dt>Premium</dt><dd>$38,000, paid at trade</dd></div>
+      <div><dt>Strike</dt><dd>$<span data-count>150</span> / MWh</dd></div>
+      <div><dt>Cap</dt><dd data-count>$400,000</dd></div>
+      <div><dt>Premium</dt><dd><span data-count>$38,000</span>, paid at trade</dd></div>
     </dl>
     <div class="scroll" style="margin-top:36px">
       <table>
         <thead><tr><th>If the summer is</th><th>Buyer receives</th></tr></thead>
         <tbody>
-          <tr><td>Mild</td><td>$0</td></tr>
-          <tr><td>60 h above $150, averaging $300</td><td>$45,000</td></tr>
-          <tr><td>200 h at $1,000</td><td class="hot">$400,000 &middot; cap</td></tr>
+          <tr><td class="pay">Mild<i style="--w:0"></i></td><td data-count>$0</td></tr>
+          <tr><td class="pay">60 h above $150, averaging $300<i style="--w:.1125"></i></td><td data-count>$45,000</td></tr>
+          <tr><td class="pay">200 h at $1,000<i style="--w:1"></i></td><td class="hot"><span data-count>$400,000</span> &middot; cap</td></tr>
         </tbody>
       </table>
     </div>
@@ -288,9 +363,9 @@
       <table>
         <thead><tr><th>Strike</th><th>Tomorrow<br>daily avg</th><th>Month-end<br>1 pm</th><th>Month-end<br>6 pm</th><th>Month-end<br>9 pm</th></tr></thead>
         <tbody>
-          <tr><td>$125</td><td>$4.99</td><td>$11.51</td><td class="hot">$40.77</td><td>$20.87</td></tr>
-          <tr><td>$150</td><td>$4.15</td><td>$10.31</td><td class="hot">$33.80</td><td>$16.49</td></tr>
-          <tr><td>$200</td><td>$3.05</td><td>$9.18</td><td class="hot">$24.50</td><td>$10.92</td></tr>
+          <tr><td>$125</td><td data-count>$4.99</td><td data-count>$11.51</td><td class="hot" data-count>$40.77</td><td data-count>$20.87</td></tr>
+          <tr><td>$150</td><td data-count>$4.15</td><td data-count>$10.31</td><td class="hot" data-count>$33.80</td><td data-count>$16.49</td></tr>
+          <tr><td>$200</td><td data-count>$3.05</td><td data-count>$9.18</td><td class="hot" data-count>$24.50</td><td data-count>$10.92</td></tr>
         </tbody>
       </table>
     </div>
@@ -320,10 +395,10 @@
   </div>
   <div class="rhs">
     <div class="stats" id="proof">
-      <div><div class="v" data-k="skill">0.186</div><div class="l">CRPS skill vs climatology</div></div>
-      <div><div class="v" data-k="cov">96.4%</div><div class="l">outcomes inside the 95% band</div></div>
-      <div><div class="v" data-k="ks">0.056</div><div class="l">PIT KS distance</div></div>
-      <div><div class="v" data-k="brier">0.064</div><div class="l" data-k="brierlabel">spike Brier, vs 0.071 climatology</div></div>
+      <div><div class="v" data-k="skill" data-count>0.186</div><div class="l">CRPS skill vs climatology</div></div>
+      <div><div class="v" data-k="cov" data-count>96.4%</div><div class="l">outcomes inside the 95% band</div></div>
+      <div><div class="v" data-k="ks" data-count>0.056</div><div class="l">PIT KS distance</div></div>
+      <div><div class="v" data-k="brier" data-count>0.064</div><div class="l" data-k="brierlabel">spike Brier, vs 0.071 climatology</div></div>
     </div>
     <div class="scroll">
       <table id="rec-table">
@@ -340,9 +415,7 @@
     <div class="mono dim">Grids</div>
     <h2>One contract, any grid.</h2>
     <p class="copy dim">A grid lists when its curve passes the same five tests. Cover written on one grid can back risk on another.</p>
-  </div>
-  <div class="rhs">
-    <div class="scroll">
+    <div class="scroll" style="margin-top:36px">
       <table>
         <thead><tr><th>Hub</th><th>Gates</th><th>Status</th></tr></thead>
         <tbody>
@@ -356,6 +429,21 @@
       </table>
     </div>
     <p class="cap">Public prints, not yet run: NYISO &middot; ISO-NE &middot; SPP &middot; GB &middot; Nord Pool &middot; JEPX &middot; AEMO</p>
+  </div>
+  <div class="rhs">
+    <div class="gridmap" id="gridmap" role="img" aria-label="Animated map of power grids linked by flows of buyers and writers: US hubs, Germany-Luxembourg, Great Britain and India with their cross-border interconnectors.">
+      <div class="gm-tabs" role="tablist" aria-label="Region">
+        <button type="button" role="tab" data-v="us" aria-selected="true">USA <small>7 ISOs</small><i></i></button>
+        <button type="button" role="tab" data-v="de" aria-selected="false">Germany <small>DE-LU</small><i></i></button>
+        <button type="button" role="tab" data-v="gb" aria-selected="false">UK <small>GB</small><i></i></button>
+        <button type="button" role="tab" data-v="in" aria-selected="false">India <small>IEX</small><i></i></button>
+      </div>
+      <canvas></canvas>
+      <div class="gm-foot">
+        <span class="gm-ticker" id="gm-ticker">&nbsp;</span>
+        <span class="gm-legend"><span><i style="background:#e8553a"></i>Buyers</span><span><i style="background:#fff"></i>Writers</span></span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -374,7 +462,7 @@
       <label>Email<input type="email" name="email" autocomplete="email" required /></label>
       <label>You are<select name="role"><option>Buyer</option><option>Writer</option><option>Allocator</option><option>Supplier or broker</option><option>Other</option></select></label>
       <label class="full">What do you need covered?<textarea name="request" rows="2" placeholder="5 MWh an hour above $150, 4 to 10 pm, July and August, cap $400k"></textarea></label>
-      <button type="submit">Get a price &rarr;</button>
+      <button type="submit" class="u">Get a price <span>&rarr;</span></button>
     </form>
   </div>
 </section>
@@ -394,13 +482,100 @@
 <script>
 (function () {
   'use strict';
+  var MOTION = document.documentElement.classList.contains('js');
+  var ease = function (x) { x = Math.max(0, Math.min(1, x)); return 1 - Math.pow(1 - x, 3); };
+  var inOut = function (x) { x = Math.max(0, Math.min(1, x)); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+
+  /* ---------- count-up: animates the first number in an element's text ---------- */
+  function countUp(el, delay) {
+    var txt = el.textContent, m = txt.match(/-?[\d,]*\.?\d+/);
+    if (!m) return;
+    var raw = m[0], target = parseFloat(raw.replace(/,/g, '')), dec = (raw.split('.')[1] || '').length, commas = raw.indexOf(',') >= 0;
+    var fmt = function (v) {
+      var s = v.toFixed(dec);
+      if (commas) s = s.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return txt.slice(0, m.index) + s + txt.slice(m.index + raw.length);
+    };
+    var t0 = null, dur = 1400;
+    el.textContent = fmt(0);
+    setTimeout(function () {
+      requestAnimationFrame(function step(now) {
+        if (t0 === null) t0 = now;
+        var p = ease((now - t0) / dur);
+        el.textContent = p >= 1 ? (el.dataset.final || txt) : fmt(target * p);
+        if (p < 1) requestAnimationFrame(step);
+      });
+    }, delay || 0);
+  }
+
+  /* ---------- hash scramble for the record ledger ---------- */
+  function scramble(el, delay) {
+    var final = el.textContent, hex = '0123456789abcdef', t0 = null;
+    setTimeout(function () {
+      requestAnimationFrame(function step(now) {
+        if (t0 === null) t0 = now;
+        var settled = Math.floor((now - t0) / 70);
+        el.textContent = final.split('').map(function (c, i) { return i < settled ? c : hex[Math.random() * 16 | 0]; }).join('');
+        if (settled < final.length) requestAnimationFrame(step);
+      });
+    }, delay || 0);
+  }
+
+  /* ---------- section choreography ---------- */
+  function splitWords(h) {
+    var words = h.textContent.trim().split(/\s+/);
+    h.setAttribute('aria-label', h.textContent.trim());
+    h.innerHTML = words.map(function (w, i) {
+      return '<span class="w" aria-hidden="true"><span style="--d:' + (i * 0.06).toFixed(2) + 's">' + w + '</span></span>';
+    }).join(' ');
+  }
+
+  function arm(sec) {
+    var items = [];
+    var lhs = sec.querySelector('.lhs'), rhs = sec.querySelector('.rhs');
+    [lhs, rhs].forEach(function (col, c) {
+      if (!col) return;
+      var list = col.querySelectorAll(':scope > .mono, :scope > .copy, :scope > .cap, :scope > .u, dl > div, thead tr, tbody tr, .who > div, .stats > div, form > label, form > button, .gridmap');
+      Array.prototype.forEach.call(list, function (el, i) {
+        el.classList.add('rv');
+        el.style.setProperty('--d', Math.min(1.4, (c ? 0.25 : 0) + i * 0.06).toFixed(2) + 's');
+        items.push(el);
+      });
+    });
+    var h = sec.querySelector('h2'); if (h) splitWords(h);
+    Array.prototype.forEach.call(sec.querySelectorAll('td.pay i'), function (b, i) { b.style.setProperty('--d', (0.6 + i * 0.15) + 's'); });
+  }
+
+  function play(sec) {
+    sec.classList.add('on');
+    Array.prototype.forEach.call(sec.querySelectorAll('[data-count]'), function (el, i) { countUp(el, 250 + i * 40); });
+  }
+
+  var sections = document.querySelectorAll('main section');
+  if (MOTION && 'IntersectionObserver' in window) {
+    Array.prototype.forEach.call(sections, arm);
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { play(e.target); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    Array.prototype.forEach.call(sections, function (s) { io.observe(s); });
+  } else {
+    document.documentElement.classList.remove('js');
+    document.documentElement.classList.add('still');
+  }
+
+  /* ---------- hero wordmark ---------- */
+  var word = document.getElementById('word');
+  if (MOTION) {
+    word.innerHTML = word.textContent.split('').map(function (c, i) {
+      return '<span class="ch" aria-hidden="true"><span style="--d:' + (0.05 + i * 0.055).toFixed(3) + 's">' + c + '</span></span>';
+    }).join('');
+  }
 
   /* ---------- exposure curve ----------
-     Chance the price ends above x, interpolated (monotone cubic) through the
-     quantiles and tail probabilities published in grids.json. ----------- */
+     P(price > x) for tomorrow's 6 pm. curve.json is written daily by the
+     curve pipeline; grids.json and the numbers below are fallbacks. ---------- */
   var XMAX = 500, W = 1000, H = 200;
-  var curve = { median: 83.24, p5: 31.05, p95: 362.84, p_above_250: 0.0743, p_above_500: 0.0421, p_negative: 0.0351, operating_day: '2026-09-24', hour_ending: 18 };
-  var K = 250, S = null;
+  var K = 250, KDRAW = 250, S = null, curveReady = false;
 
   function pchip(xs, ys) {
     var n = xs.length, d = [], m = [];
@@ -415,38 +590,48 @@
       return (2 * t3 - 3 * t2 + 1) * ys[j] + (t3 - 2 * t2 + t) * h * m[j] + (-2 * t3 + 3 * t2) * ys[j + 1] + (t3 - t2) * h * m[j + 1];
     };
   }
-
-  function build(c) {
+  function fromQuantiles(c) {
     var pts = [[0, 1 - c.p_negative], [c.p5, .95], [c.median, .5], [250, c.p_above_250], [c.p95, .05], [500, c.p_above_500]]
-      .filter(function (p) { return p[0] >= 0; })
-      .sort(function (a, b) { return a[0] - b[0]; });
-    S = pchip(pts.map(function (p) { return p[0]; }), pts.map(function (p) { return p[1]; }));
+      .filter(function (p) { return p[0] >= 0; }).sort(function (a, b) { return a[0] - b[0]; });
+    return pchip(pts.map(function (p) { return p[0]; }), pts.map(function (p) { return p[1]; }));
   }
+  function fromTable(e) {
+    var v = e.values, st = e.step, x0 = e.from || 0;
+    return function (x) {
+      var f = (x - x0) / st, i = Math.max(0, Math.min(v.length - 2, Math.floor(f))), t = Math.max(0, Math.min(1, f - i));
+      return v[i] + (v[i + 1] - v[i]) * t;
+    };
+  }
+  S = fromQuantiles({ median: 83.24, p5: 31.05, p95: 362.84, p_above_250: 0.0743, p_above_500: 0.0421, p_negative: 0.0351 });
 
   var X = function (v) { return v / XMAX * W; };
   var Y = function (s) { return H - s * H; };
   function path(a, b) {
     var d = '';
     for (var v = a; v <= b + 1e-9; v += 2) d += (d ? 'L' : 'M') + X(v).toFixed(1) + ' ' + Y(S(v)).toFixed(1);
+    if (v - 2 < b) d += 'L' + X(b).toFixed(1) + ' ' + Y(S(b)).toFixed(1);
     return d;
   }
   function pct(s) { return (s * 100).toFixed(s < .1 ? 1 : 0) + '%'; }
+  var $ = function (id) { return document.getElementById(id); };
 
   function paint() {
-    document.getElementById('curve-lo').setAttribute('d', path(0, K));
-    document.getElementById('curve-hi').setAttribute('d', path(K, XMAX));
-    document.getElementById('tail').setAttribute('d', path(K, XMAX) + 'L' + W + ' ' + H + 'L' + X(K).toFixed(1) + ' ' + H + 'Z');
-    var kl = document.getElementById('k-line');
-    kl.setAttribute('x1', X(K)); kl.setAttribute('x2', X(K));
-    var lab = document.getElementById('k-lab');
-    lab.style.left = (K / XMAX * 100) + '%';
-    lab.textContent = '$' + K;
-    lab.style.transform = K > XMAX * .85 ? 'translateX(calc(-100% - 6px))' : 'translateX(6px)';
-    document.getElementById('k-big').textContent = '$' + K;
-    document.getElementById('s-big').textContent = pct(S(K));
+    var k = Math.round(KDRAW);
+    $('curve-lo').setAttribute('d', path(0, KDRAW));
+    var hi = path(KDRAW, XMAX);
+    $('curve-hi').setAttribute('d', hi);
+    $('flow').setAttribute('d', hi);
+    $('tail').setAttribute('d', hi + 'L' + W + ' ' + H + 'L' + X(KDRAW).toFixed(1) + ' ' + H + 'Z');
+    $('k-line').setAttribute('x1', X(KDRAW)); $('k-line').setAttribute('x2', X(KDRAW));
+    var lab = $('k-lab');
+    lab.style.left = (KDRAW / XMAX * 100) + '%';
+    lab.textContent = '$' + k;
+    lab.style.transform = KDRAW > XMAX * .85 ? 'translateX(calc(-100% - 6px))' : 'translateX(6px)';
+    $('k-big').textContent = '$' + k;
+    $('s-big').textContent = pct(S(KDRAW));
   }
 
-  var ticks = document.getElementById('ticks');
+  var ticks = $('ticks');
   [0, 100, 200, 300, 400, 500].forEach(function (v) {
     var s = document.createElement('span');
     s.style.left = (v / XMAX * 100) + '%';
@@ -454,31 +639,75 @@
     ticks.appendChild(s);
   });
 
-  var plot = document.getElementById('plot');
+  /* strike follows the pointer with a little lag, so moves glide */
+  var glide = 0;
+  function glideTo() {
+    if (glide) return;
+    glide = requestAnimationFrame(function step() {
+      KDRAW += (K - KDRAW) * 0.22;
+      if (Math.abs(K - KDRAW) < 0.3) KDRAW = K;
+      paint();
+      glide = KDRAW === K ? 0 : requestAnimationFrame(step);
+    });
+  }
+  var plot = $('plot'), introDone = !MOTION;
   function setFrom(e) {
+    if (!introDone) return;
     var r = plot.getBoundingClientRect();
     var v = Math.round(Math.min(Math.max((e.clientX - r.left) / r.width, 0), 1) * XMAX / 5) * 5;
     K = Math.min(Math.max(v, 10), 490);
-    paint();
+    if (MOTION) glideTo(); else { KDRAW = K; paint(); }
   }
   plot.addEventListener('pointerdown', function (e) { plot.setPointerCapture(e.pointerId); setFrom(e); });
   plot.addEventListener('pointermove', function (e) { if (e.pointerType === 'mouse' || plot.hasPointerCapture(e.pointerId)) setFrom(e); });
 
-  build(curve); paint();
+  /* intro: letters rise, the curve draws left to right, then the strike sweeps out to $250 */
+  var hero = $('hero');
+  if (MOTION) {
+    KDRAW = 10; paint();
+    $('reveal-r').setAttribute('width', 0);
+    requestAnimationFrame(function () { hero.classList.add('on'); });
+    var t0 = null;
+    requestAnimationFrame(function step(now) {
+      if (t0 === null) t0 = now;
+      var t = (now - t0) / 1000;
+      $('reveal-r').setAttribute('width', (W * inOut((t - 0.5) / 1.4)).toFixed(1));
+      KDRAW = 10 + (K - 10) * inOut((t - 1.5) / 1.6);
+      paint();
+      if (t < 3.1) requestAnimationFrame(step); else { KDRAW = K; paint(); introDone = true; }
+    });
+  } else { hero.classList.add('on'); paint(); }
 
-  fetch('./grids.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (g) {
-    var pjm = g && g.grids && g.grids.filter(function (x) { return x.iso === 'pjm'; })[0];
-    if (!pjm || !pjm.curve) return;
-    curve = pjm.curve; build(curve); paint();
-    var h = curve.hour_ending, clock = h === 12 ? 'noon' : (h > 12 ? (h - 12) + ' pm' : h + ' am');
-    document.getElementById('inst-label').textContent = pjm.hub + ' · ' + clock + ' · day-ahead · marked ' + curve.operating_day;
+  function label(c, hub) {
+    var h = c.hour_ending, clock = h === 12 ? 'noon' : h === 24 ? 'midnight' : (h > 12 ? (h - 12) + ' pm' : h + ' am');
+    $('inst-label').textContent = hub + ' · ' + clock + ' · day-ahead · ' + (c.exceedance ? 'for ' : 'marked ') + c.operating_day;
+  }
+
+  /* daily curve first, then the grid table's quantiles */
+  var tape = [];
+  fetch('./curve.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (c) {
+    if (!c || !c.exceedance || !c.exceedance.values) throw 0;
+    S = fromTable(c.exceedance); curveReady = true; label(c, c.hub || 'PJM Western Hub');
+    if (introDone) paint();
+  }).catch(function () {}).then(function () {
+    return fetch('./grids.json').then(function (r) { return r.ok ? r.json() : null; });
+  }).then(function (g) {
+    if (!g || !g.grids) return;
+    g.grids.forEach(function (x) {
+      var c = x.curve; if (!c) return;
+      if (x.iso === 'pjm' && !curveReady) { S = fromQuantiles(c); label(c, x.hub); if (introDone) paint(); }
+      var cur = x.currency === 'EUR' ? '€' : x.currency === 'INR' ? 'Rs ' : '$';
+      tape.push('<span><b>' + x.hub + '</b> &nbsp;median ' + cur + Math.round(c.median) + ' &nbsp;5–95% ' + cur + Math.round(c.p5) + '–' + cur + Math.round(c.p95) +
+        ' &nbsp;P&gt;' + cur + '250 <em>' + (c.p_above_250 * 100).toFixed(1) + '%</em> &nbsp;' + (x.status === 'live' ? 'live' : x.gates_passed + '/5 gates') + '</span>');
+    });
+    var t = $('tape'); t.innerHTML = tape.join('') + tape.join('');
   }).catch(function () {});
 
   /* ---------- gate metrics ---------- */
-  fetch('./validation.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (val) {
+  fetch('./validation.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (val) {
     var bt = val && val.backtests && val.backtests.h1_last_365d;
     if (!bt) return;
-    var set = function (k, v) { var el = document.querySelector('#proof [data-k="' + k + '"]'); if (el) el.textContent = v; };
+    var set = function (k, v) { var el = document.querySelector('#proof [data-k="' + k + '"]'); if (el) { el.dataset.final = v; el.textContent = v; } };
     set('skill', bt.crps_skill_vs_climatology.toFixed(3));
     set('cov', (bt.coverage_95 * 100).toFixed(1) + '%');
     set('ks', bt.pit_ks_distance.toFixed(3));
@@ -487,18 +716,262 @@
   }).catch(function () {});
 
   /* ---------- the record (hash-chained run ledger) ---------- */
-  fetch('./record.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (rec) {
+  fetch('./record.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (rec) {
     if (!rec || !rec.rows) return;
-    document.getElementById('rec-summary').textContent = rec.days + ' days, ' + rec.runs + ' runs, ' + Math.round(rec.gate_pass_rate * 100) + '% of gates passed, ' + rec.revisions + ' revisions.';
-    document.getElementById('rec-head').textContent = rec.chain_head.slice(0, 16) + '…';
-    document.querySelector('#rec-table tbody').innerHTML = rec.rows.slice(-6).reverse().map(function (r) {
+    $('rec-summary').textContent = rec.days + ' days, ' + rec.runs + ' runs, ' + Math.round(rec.gate_pass_rate * 100) + '% of gates passed, ' + rec.revisions + ' revisions.';
+    $('rec-head').textContent = rec.chain_head.slice(0, 16) + '…';
+    var tb = document.querySelector('#rec-table tbody');
+    tb.innerHTML = rec.rows.slice(-6).reverse().map(function (r) {
       return '<tr><td>' + r.date + ' #' + r.run_number + '</td>' +
         '<td class="' + (r.gates_pass ? 'ok' : 'no') + '">' + (r.gates_pass ? 'pass' : 'fail') + '</td>' +
         '<td>' + r.crps_skill.toFixed(3) + '</td><td>' + (r.coverage_95 * 100).toFixed(1) + '%</td>' +
-        '<td>' + r.spike_brier.toFixed(3) + '</td><td class="faint">' + r.chain_hash.slice(0, 8) + '</td></tr>';
+        '<td>' + r.spike_brier.toFixed(3) + '</td><td class="faint hash">' + r.chain_hash.slice(0, 8) + '</td></tr>';
     }).join('');
+    if (!MOTION) return;
+    var sec = $('record'), rows = tb.querySelectorAll('tr');
+    Array.prototype.forEach.call(rows, function (tr, i) { tr.classList.add('rv'); tr.style.setProperty('--d', (0.5 + i * 0.09).toFixed(2) + 's'); });
+    var go = function () {
+      Array.prototype.forEach.call(tb.querySelectorAll('.hash'), function (el, i) { scramble(el, 600 + i * 90); });
+    };
+    if (sec.classList.contains('on')) go();
+    else new MutationObserver(function (_, mo) { if (sec.classList.contains('on')) { mo.disconnect(); go(); } }).observe(sec, { attributes: true, attributeFilter: ['class'] });
   }).catch(function () {});
 })();
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+(function () {
+  'use strict';
+  var wrap = document.getElementById('gridmap');
+  if (!wrap || !window.d3 || !window.topojson) return;
+  var cv = wrap.querySelector('canvas'), ctx = cv.getContext('2d');
+  var ticker = document.getElementById('gm-ticker');
+  var tabs = Array.prototype.slice.call(wrap.querySelectorAll('.gm-tabs button'));
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var COL = { live: '#e8553a', pass: '#ffffff', gated: 'rgba(255,255,255,.55)', rec: '#ffffff', off: 'rgba(255,255,255,.4)' };
+  function hub(id, ll, st, lx, ly, al) { return { id: id, ll: ll, st: st || 'off', lx: lx || 0, ly: ly == null ? 17 : ly, al: al || 'center' }; }
+  var VIEWS = {
+    us: {
+      origin: 'PJM',
+      hubs: [hub('CAISO', [-118.2, 34.05], 'gated', 0, 18), hub('SPP', [-97.5, 35.5], 'off', -9, -8, 'right'), hub('ERCOT', [-96.8, 32.8], 'gated', 0, 18),
+        hub('MISO', [-86.2, 39.8], 'pass', 0, -12), hub('PJM', [-77.4, 39.6], 'live', 0, 19), hub('NYISO', [-74.2, 42.7], 'off', -9, -9, 'right'),
+        hub('ISO-NE', [-71.1, 42.4], 'off', 8, 12, 'left'), hub('DE-LU', null, 'pass', 0, 19, 'right')],
+      edges: [['PJM','MISO'],['PJM','ERCOT'],['PJM','CAISO'],['PJM','DE-LU'],['ERCOT','MISO'],['ERCOT','CAISO'],['PJM','NYISO'],['NYISO','ISO-NE'],['MISO','SPP'],['SPP','ERCOT'],['SPP','CAISO'],['ISO-NE','DE-LU']],
+      pairs: [['PJM','MISO','one shared cap across both \u00b7 17% cheaper than two'], ['PJM','DE-LU','one shared cap across both \u00b7 9% cheaper than two'], ['ERCOT','MISO','one shared cap across both \u00b7 4% cheaper than two']]
+    },
+    de: {
+      origin: 'DE-LU', focusIds: ['276', '442'], rot: -10, par: [45, 58],
+      hubs: [hub('DE-LU', [10.3, 51.1], 'pass', 0, 19), hub('FR', [5.6, 48.7]), hub('BE', [4.7, 50.6]), hub('NL', [5.6, 52.4], 'off', 0, -12), hub('DK', [9.4, 56.0], 'off', 0, -12),
+        hub('NO', [7.8, 58.4], 'off', 0, -12), hub('SE', [13.3, 56.0], 'off', 0, -12), hub('PL', [16.8, 52.3]), hub('CZ', [14.6, 49.8]), hub('AT', [13.6, 47.6]), hub('CH', [8.1, 46.9])],
+      edges: [['DE-LU','FR'],['DE-LU','BE'],['DE-LU','NL'],['DE-LU','DK'],['DE-LU','NO'],['DE-LU','SE'],['DE-LU','PL'],['DE-LU','CZ'],['DE-LU','AT'],['DE-LU','CH'],
+        ['FR','BE'],['BE','NL'],['NL','DK'],['DK','NO'],['DK','SE'],['PL','CZ'],['CZ','AT'],['AT','CH'],['CH','FR']],
+      pairs: [['DE-LU','NO','NordLink \u00b7 1.4 GW'], ['DE-LU','BE','ALEGrO \u00b7 1 GW'], ['DE-LU','SE','Baltic Cable \u00b7 0.6 GW'], ['DE-LU','FR','AC border \u00b7 coupled day-ahead']]
+    },
+    in: {
+      origin: 'IEX', focusIds: ['356'], rot: -80, par: [10, 30],
+      hubs: [hub('IEX', [78.9, 22.0], 'rec', 0, 19), hub('BT', [90.5, 27.5], 'off', 8, -10, 'left'), hub('NP', [85.3, 27.7], 'off', 0, -12), hub('BD', [90.4, 23.8], 'off', 8, 12, 'left')],
+      edges: [['IEX','BT'],['IEX','NP'],['IEX','BD']],
+      pairs: [['IEX', null, 'Rs 10,000 ceiling \u00b7 62 of 96 blocks at the cap on Sep 24 \u00b7 own model \u00b7 1 day recorded'], ['IEX','BT','Hydro imports \u00b7 ~2 GW'], ['IEX','BD','Bheramara HVDC \u00b7 1 GW'], ['IEX','NP','Dhalkebar\u2013Muzaffarpur \u00b7 400 kV']]
+    },
+    gb: {
+      origin: 'GB', focusIds: ['826'], rot: 2, par: [48, 60],
+      hubs: [hub('GB', [-1.5, 52.8], 'off', 0, 19), hub('IE', [-7.5, 53.2]), hub('FR', [2.3, 50.3]), hub('BE', [3.6, 51.1]), hub('NL', [5.0, 52.2], 'off', 0, -12),
+        hub('DK', [8.9, 55.9], 'off', 0, -12), hub('NO', [6.9, 58.9], 'off', 0, -12)],
+      edges: [['GB','IE'],['GB','FR'],['GB','BE'],['GB','NL'],['GB','DK'],['GB','NO'],['FR','BE'],['BE','NL'],['NL','NO'],['NL','DK'],['DK','NO']],
+      pairs: [['GB','FR','IFA \u00b7 2 GW'], ['GB','NO','North Sea Link \u00b7 1.4 GW'], ['GB','DK','Viking Link \u00b7 1.4 GW'], ['GB','NL','BritNed \u00b7 1 GW']]
+    }
+  };
+  var INDIA_OFFICIAL = {"type":"Polygon","coordinates":[[[78.92,33.39],[79.46,33.25],[79.33,32.99],[79.62,32.73],[79.44,32.53],[79.32,32.59],[78.94,32.35],[78.77,32.46],[78.74,32.63],[78.38,32.55],[78.46,32.23],[78.74,31.96],[78.67,31.77],[78.82,31.61],[78.7,31.51],[78.75,31.31],[78.92,31.27],[79.13,31.44],[79.4,31.02],[79.85,30.95],[80.22,30.73],[80.18,30.56],[81.0,30.21],[80.37,29.76],[80.39,29.6],[80.21,29.42],[80.26,29.2],[80.04,28.84],[80.33,28.63],[80.49,28.56],[80.56,28.68],[81.17,28.36],[81.3,28.13],[81.4,28.16],[81.86,27.85],[82.03,27.91],[82.4,27.68],[82.68,27.69],[82.75,27.49],[83.28,27.33],[83.39,27.47],[83.85,27.35],[83.83,27.43],[84.12,27.51],[84.61,27.31],[84.64,27.03],[85.29,26.74],[85.61,26.85],[85.83,26.57],[86.28,26.61],[86.71,26.41],[87.04,26.58],[87.11,26.4],[87.3,26.35],[87.87,26.46],[88.01,26.37],[88.17,26.74],[87.97,27.11],[88.16,27.77],[88.1,27.93],[88.59,28.11],[88.8,28.01],[88.86,27.86],[88.74,27.53],[88.89,27.32],[88.73,27.15],[88.85,26.95],[89.1,26.82],[89.34,26.85],[89.81,26.7],[90.35,26.9],[90.72,26.77],[91.3,26.77],[91.42,26.87],[91.88,26.8],[92.07,26.89],[91.99,27.12],[92.09,27.29],[91.98,27.47],[91.6,27.53],[91.56,27.85],[91.95,27.72],[92.24,27.87],[92.3,27.79],[92.57,27.85],[92.74,27.99],[92.68,28.13],[93.21,28.34],[93.32,28.6],[93.93,28.68],[93.99,28.84],[94.35,29.02],[94.29,29.15],[94.6,29.32],[94.78,29.17],[95.37,29.04],[95.8,29.35],[96.35,29.27],[96.17,29.11],[96.2,28.94],[96.46,28.99],[96.6,28.71],[96.3,28.42],[97.12,28.37],[97.32,28.22],[97.36,27.99],[96.86,27.6],[97.12,27.09],[96.71,27.36],[96.14,27.26],[95.41,26.7],[95.12,26.61],[95.04,26.29],[95.15,26.05],[95.0,25.92],[95.01,25.74],[94.61,25.39],[94.55,25.2],[94.71,25.03],[94.13,23.86],[93.31,24.06],[93.43,23.68],[93.37,23.13],[93.27,23.01],[93.14,23.03],[93.07,22.69],[93.17,22.26],[92.88,21.96],[92.68,22.15],[92.58,21.98],[92.26,23.71],[92.02,23.64],[91.92,23.72],[91.94,23.5],[91.74,23.27],[91.8,23.09],[91.59,22.94],[91.39,23.26],[91.31,23.1],[91.14,23.63],[91.36,24.1],[91.58,24.1],[91.73,24.23],[91.88,24.16],[91.9,24.34],[92.11,24.41],[92.22,24.89],[92.38,24.84],[92.48,24.93],[92.03,25.18],[90.36,25.15],[89.82,25.28],[89.83,25.98],[89.65,26.22],[89.54,25.96],[89.34,26.0],[89.12,26.15],[89.04,26.38],[88.89,26.39],[89.02,26.23],[88.66,26.26],[88.66,26.42],[88.37,26.61],[88.32,26.47],[88.5,26.35],[88.16,26.14],[88.09,25.83],[88.53,25.5],[88.77,25.5],[88.98,25.28],[88.92,25.17],[88.44,25.19],[88.32,24.87],[88.11,24.92],[88.02,24.65],[88.48,24.32],[88.74,24.29],[88.71,23.93],[88.58,23.86],[88.54,23.65],[88.77,23.49],[88.7,23.25],[88.96,23.2],[88.84,22.98],[89.08,22.15],[89.06,21.94],[88.91,21.97],[89.08,21.62],[88.89,21.65],[88.86,21.77],[88.86,21.64],[88.71,21.58],[88.76,22.13],[88.63,21.95],[88.66,22.21],[88.57,21.56],[88.49,21.56],[88.5,21.95],[88.46,21.62],[88.33,21.72],[88.31,21.61],[88.26,21.8],[88.25,21.55],[88.15,21.96],[88.2,22.17],[88.01,22.24],[87.91,22.42],[88.16,22.09],[87.83,21.73],[87.2,21.55],[86.92,21.33],[86.84,21.08],[86.97,20.81],[86.88,20.78],[87.04,20.7],[86.75,20.49],[86.75,20.31],[86.5,20.18],[86.43,20.0],[86.15,20.14],[86.37,19.96],[86.27,19.91],[85.48,19.67],[85.57,19.88],[85.27,19.78],[85.12,19.48],[85.25,19.66],[85.39,19.69],[85.33,19.58],[85.58,19.69],[84.74,19.15],[84.74,19.03],[84.11,18.3],[83.45,17.92],[83.24,17.59],[82.37,17.11],[82.25,16.93],[82.31,16.85],[82.37,16.91],[82.31,16.58],[81.76,16.32],[81.26,16.33],[81.01,15.78],[80.9,16.03],[80.81,15.72],[80.78,15.88],[80.67,15.91],[80.28,15.7],[80.05,15.09],[80.2,14.57],[80.05,14.21],[80.14,14.23],[80.31,13.44],[80.14,13.73],[80.05,13.62],[80.33,13.43],[80.33,13.2],[80.18,12.53],[79.79,11.77],[79.82,11.38],[79.68,11.3],[79.83,11.34],[79.86,10.29],[79.29,10.25],[79.28,10.04],[78.91,9.47],[79.07,9.3],[79.34,9.32],[79.45,9.16],[78.99,9.28],[78.41,9.1],[78.18,8.88],[78.06,8.36],[77.51,8.08],[77.0,8.37],[76.54,8.91],[76.67,9.01],[76.53,8.95],[76.36,9.33],[76.24,9.95],[76.34,9.7],[76.36,9.82],[76.36,9.52],[76.5,9.53],[76.18,10.11],[76.24,10.24],[76.15,10.22],[75.74,11.37],[75.32,11.9],[75.39,11.97],[75.19,12.02],[74.83,12.82],[74.94,12.88],[74.82,12.86],[74.69,13.38],[74.74,13.65],[74.5,14.03],[74.43,14.48],[74.1,14.79],[74.24,14.88],[74.11,14.85],[73.91,15.08],[73.89,15.34],[73.78,15.41],[73.97,15.37],[73.74,15.57],[73.84,15.66],[73.72,15.63],[73.45,16.07],[73.13,17.56],[73.2,17.59],[72.93,18.22],[73.06,18.19],[73.07,18.27],[72.91,18.36],[72.91,18.52],[73.01,18.47],[72.86,18.68],[72.93,18.83],[73.0,18.73],[72.9,18.89],[73.06,19.02],[72.97,19.16],[72.77,18.95],[72.79,19.31],[73.05,19.22],[72.76,19.38],[72.88,19.53],[72.72,19.54],[72.65,19.85],[72.95,20.76],[72.84,20.84],[72.81,21.13],[72.62,21.11],[72.73,21.2],[72.56,21.39],[72.75,21.45],[72.58,21.42],[72.82,21.64],[73.13,21.76],[72.55,21.67],[72.57,21.85],[72.73,21.99],[72.5,21.98],[72.58,22.19],[72.92,22.27],[72.47,22.23],[72.4,22.37],[72.33,22.26],[72.15,22.28],[72.31,22.23],[72.31,22.08],[72.1,22.01],[72.03,21.94],[72.17,21.84],[72.06,21.9],[72.1,21.84],[72.0,21.8],[72.17,21.79],[72.3,21.63],[72.1,21.21],[71.14,20.77],[70.74,20.72],[70.05,21.15],[68.94,22.3],[69.07,22.48],[69.21,22.27],[69.48,22.34],[69.52,22.45],[69.62,22.36],[69.73,22.48],[69.79,22.42],[70.18,22.56],[70.5,23.1],[70.39,22.94],[70.13,22.99],[69.59,22.76],[68.87,23.02],[68.42,23.45],[68.41,23.62],[68.82,23.88],[68.33,23.59],[68.14,23.61],[68.28,23.67],[68.16,23.76],[68.26,23.94],[68.72,23.97],[68.75,24.33],[68.84,24.24],[68.9,24.32],[69.97,24.17],[70.42,24.4],[70.56,24.42],[70.57,24.27],[70.76,24.23],[71.08,24.41],[70.95,24.58],[71.06,24.68],[70.65,25.4],[70.65,25.67],[70.25,25.71],[70.06,25.98],[70.16,26.53],[69.5,26.74],[69.53,27.13],[70.34,28.01],[70.53,28.02],[70.83,27.7],[71.87,27.96],[72.35,28.77],[72.93,29.05],[73.37,29.93],[73.94,30.19],[73.85,30.37],[74.32,30.89],[74.66,31.08],[74.51,31.18],[74.62,31.46],[74.49,31.71],[74.55,31.83],[75.36,32.26],[75.02,32.47],[74.69,32.47],[74.67,32.84],[74.35,32.77],[73.62,33.12],[73.44,34.52],[74.02,34.88],[74.12,35.11],[73.72,35.22],[73.77,35.52],[73.31,35.6],[73.09,35.88],[72.52,35.9],[72.59,36.26],[72.98,36.47],[73.08,36.7],[73.88,36.71],[73.71,36.89],[74.04,36.82],[74.66,37.05],[74.87,36.91],[75.1,36.99],[75.35,36.92],[75.43,36.72],[75.73,36.72],[75.98,36.45],[76.72,36.16],[76.84,35.86],[77.47,35.65],[77.52,35.48],[78.1,35.54],[78.66,35.85],[79.13,35.84],[79.29,35.98],[79.74,35.8],[80.0,35.84],[80.33,35.48],[80.05,34.67],[79.87,34.66],[79.71,34.42],[79.52,34.43],[79.55,34.21],[79.41,34.02],[78.9,33.98],[79.01,33.63],[78.9,33.62],[78.92,33.39]]]};
+  var ORDER = ['us', 'de', 'gb'], PAIR_MS = 3400, REVEAL_MS = 1200, FADE_MS = 280;
+  var onScreen = false;
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { onScreen = es[0].isIntersecting; }, { threshold: 0.05 }).observe(wrap); else onScreen = true;
+  var feats = null, us48 = null, cur = 'us', V = null;
+  var W = 0, Hh = 0, dpr = 1, parts = [];
+  var pairIdx = 0, pairT = 0, viewT = 0, revT = 0, fadeT = -1, nextView = null;
+
+  function setTicker() {
+    var p = V.pairs[pairIdx];
+    ticker.style.opacity = 0;
+    setTimeout(function () {
+      ticker.innerHTML = '<em>' + p[0] + (p[1] ? ' \u00d7 ' + p[1] : '') + '</em> &nbsp;' + p[2];
+      ticker.style.opacity = 1;
+    }, reduce ? 0 : 300);
+  }
+
+  function build() {
+    if (!feats) return;
+    W = wrap.clientWidth; Hh = Math.round(W / 1.6); dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = W * dpr; cv.height = Hh * dpr;
+    var def = VIEWS[cur], proj, focus;
+    if (cur === 'us') {
+      focus = us48;
+      var padR = Math.max(56, W * 0.1);
+      proj = d3.geoAlbers().rotate([96, 0]).center([-0.6, 38.7]).parallels([29.5, 45.5]).fitExtent([[26, 18], [W - padR, Hh - 26]], focus);
+    } else {
+      focus = { type: 'FeatureCollection', features: feats.filter(function (f) { return def.focusIds.indexOf(f.id) >= 0; }) };
+      var pts = { type: 'Feature', geometry: { type: 'MultiPoint', coordinates: def.hubs.map(function (h) { return h.ll; }) } };
+      proj = d3.geoConicConformal().rotate([def.rot, 0]).parallels(def.par)
+        .fitExtent([[34, 22], [W - 34, Hh - 30]], { type: 'FeatureCollection', features: focus.features.concat([pts]) });
+    }
+    var H = {};
+    var hubs = def.hubs.map(function (h) { var o = Object.assign({ flash: 0 }, h); H[o.id] = o; if (o.ll) { var p = proj(o.ll); o.x = p[0]; o.y = p[1]; } return o; });
+    if (H['DE-LU'] && !H['DE-LU'].ll) { H['DE-LU'].x = W - 10; H['DE-LU'].y = Math.min(Hh - 30, H.PJM.y + Hh * 0.14); }
+    var edges = def.edges.map(function (e) {
+      var a = H[e[0]], b = H[e[1]];
+      var mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2, dx = b.x - a.x, dy = b.y - a.y;
+      var len = Math.hypot(dx, dy) || 1, nx = -dy / len, ny = dx / len;
+      if (ny > 0) { nx = -nx; ny = -ny; }
+      var bulge = Math.min(len * 0.22, Hh * 0.18);
+      return { a: a, b: b, cx: mx + nx * bulge, cy: my + ny * bulge, len: len, dashed: !a.ll || !b.ll, hl: 0 };
+    });
+    var o = H[def.origin];
+    var lons = [], lats = [];
+    [[0,0],[W,0],[0,Hh],[W,Hh],[W/2,0],[W/2,Hh],[0,Hh/2],[W,Hh/2]].forEach(function (c) { var ll = proj.invert(c); if (ll) { lons.push(ll[0]); lats.push(ll[1]); } });
+    var bb = [Math.min.apply(0, lons) - 4, Math.min.apply(0, lats) - 4, Math.max.apply(0, lons) + 4, Math.max.apply(0, lats) + 4];
+    var focusIds = cur === 'us' ? ['840'] : def.focusIds;
+    var context = feats.filter(function (f) {
+      if (focusIds.indexOf(f.id) >= 0) return false;
+      var b = d3.geoBounds(f);
+      if (b[0][0] > b[1][0]) return b[0][1] < bb[3] && b[1][1] > bb[1];
+      return b[0][0] < bb[2] && b[1][0] > bb[0] && b[0][1] < bb[3] && b[1][1] > bb[1];
+    });
+    if (cur !== 'us') context = context.concat([]);
+    var step = Math.max(6.5, W / 86), fd = [], cd = [], maxD = 1;
+    for (var y = step / 2; y < Hh; y += step) for (var x = step / 2; x < W; x += step) {
+      var ll = proj.invert([x, y]); if (!ll) continue;
+      var d = Math.hypot(x - o.x, y - o.y);
+      if (d3.geoContains(focus, ll)) { fd.push(x, y, d); if (d > maxD) maxD = d; continue; }
+      for (var i = 0; i < context.length; i++) if (d3.geoContains(context[i], ll)) { cd.push(x, y, d); break; }
+    }
+    [H].forEach(function () {});
+    hubs.forEach(function (h) { h.d = Math.hypot(h.x - o.x, h.y - o.y); if (h.d > maxD) maxD = h.d; });
+    var gp = d3.geoPath(proj);
+    V = { def: def, hubs: hubs, H: H, edges: edges, pairs: def.pairs, fd: fd, cd: cd, maxD: maxD, dotR: Math.max(0.9, step * 0.13),
+      outline: new Path2D(gp(focus) || ''), outLen: gp.measure(focus) };
+  }
+
+  function qp(e, t) { var u = 1 - t; return [u*u*e.a.x + 2*u*t*e.cx + t*t*e.b.x, u*u*e.a.y + 2*u*t*e.cy + t*t*e.b.y]; }
+  function ease(x) { x = Math.max(0, Math.min(1, x)); return 1 - Math.pow(1 - x, 3); }
+  function dots(arr, R, style, r) {
+    ctx.fillStyle = style; ctx.beginPath();
+    for (var i = 0; i < arr.length; i += 3) if (arr[i + 2] <= R) { ctx.moveTo(arr[i] + r, arr[i + 1]); ctx.arc(arr[i], arr[i + 1], r, 0, 7); }
+    ctx.fill();
+  }
+
+  function selectTab() { tabs.forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.v === cur)); }); }
+  function go(k) {
+    if (!V || k === cur && fadeT < 0) return;
+    if (reduce) { cur = k; selectTab(); build(); pairIdx = 0; revT = REVEAL_MS * 2; setTicker(); draw(0, 0); return; }
+    nextView = k; fadeT = 0; viewT = 0;
+    tabs.forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.v === k)); });
+  }
+  tabs.forEach(function (b) { b.addEventListener('click', function () { go(b.dataset.v); }); });
+
+  var last = 0;
+  function draw(now, dt) {
+    var fade = 1;
+    if (fadeT >= 0) {
+      fadeT += dt * 1000; fade = 1 - fadeT / FADE_MS;
+      if (fadeT >= FADE_MS) { cur = nextView; fadeT = -1; parts = []; build(); revT = 0; pairIdx = 0; pairT = 0; setTicker(); fade = 1; }
+    }
+    if (!reduce && fadeT < 0) {
+      revT += dt * 1000; pairT += dt * 1000; viewT += dt * 1000;
+      if (pairT > PAIR_MS) { pairT = 0; pairIdx = (pairIdx + 1) % V.pairs.length; setTicker(); }
+      if (viewT > PAIR_MS * V.pairs.length) go(ORDER[(ORDER.indexOf(cur) + 1) % ORDER.length]);
+    }
+    tabs.forEach(function (b) { var i = b.querySelector('i'); if (b.dataset.v === cur && !reduce) i.style.transform = 'scaleX(' + Math.min(1, viewT / (PAIR_MS * V.pairs.length)) + ')'; else i.style.transform = 'scaleX(0)'; });
+
+    var rev = ease(revT / REVEAL_MS), R = rev * V.maxD * 1.02 + (rev >= 1 ? 1e4 : 0);
+    var post = Math.max(0, Math.min(1, (revT - REVEAL_MS) / 900));
+    var p0 = V.pairs[pairIdx], hot = V.edges.filter(function (e) { return (e.a.id === p0[0] && e.b.id === p0[1]) || (e.a.id === p0[1] && e.b.id === p0[0]); })[0];
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, Hh);
+    ctx.globalAlpha = Math.max(0, fade);
+    dots(V.cd, R, 'rgba(255,255,255,.07)', V.dotR);
+    dots(V.fd, R, 'rgba(255,255,255,.19)', V.dotR);
+    ctx.setLineDash([V.outLen * rev, V.outLen + 1]);
+    ctx.strokeStyle = 'rgba(232,85,58,' + (0.2 + 0.45 * (1 - post)) + ')'; ctx.lineWidth = 1; ctx.stroke(V.outline);
+    ctx.setLineDash([]);
+
+    V.hubs.forEach(function (h) { h.a = Math.max(0, Math.min(1, (R - h.d) / 60)); });
+    V.hubs.forEach(function (h) {
+      if (!h.a) return;
+      ctx.globalAlpha = fade * h.a;
+      var g = ctx.createRadialGradient(h.x, h.y, 0, h.x, h.y, 46);
+      g.addColorStop(0, 'rgba(232,85,58,' + (0.10 + h.flash * 0.16) + ')'); g.addColorStop(1, 'rgba(232,85,58,0)');
+      ctx.fillStyle = g; ctx.fillRect(h.x - 46, h.y - 46, 92, 92);
+    });
+    V.edges.forEach(function (e) {
+      var ea = Math.min(e.a.a, e.b.a); if (!ea) return;
+      ctx.globalAlpha = fade * ea;
+      e.hl += ((e === hot ? 1 : 0) - e.hl) * Math.min(1, dt * 5);
+      ctx.beginPath(); ctx.moveTo(e.a.x, e.a.y); ctx.quadraticCurveTo(e.cx, e.cy, e.b.x, e.b.y);
+      ctx.strokeStyle = 'rgba(255,255,255,' + (0.11 + e.hl * 0.05) + ')'; ctx.lineWidth = 1; ctx.setLineDash(e.dashed ? [3, 4] : []);
+      ctx.stroke(); ctx.setLineDash([]);
+      if (e.hl > 0.02) {
+        ctx.beginPath(); ctx.moveTo(e.a.x, e.a.y); ctx.quadraticCurveTo(e.cx, e.cy, e.b.x, e.b.y);
+        ctx.strokeStyle = 'rgba(232,85,58,' + (e.hl * 0.7) + ')'; ctx.lineWidth = 1.4; ctx.stroke();
+      }
+      if (!reduce && rev >= 1 && fadeT < 0 && Math.random() < (0.45 + e.hl * 2.2) * dt)
+        parts.push({ e: e, t: 0, rev: Math.random() < 0.5, dur: 1.4 + e.len / 260 + Math.random() * 0.6 });
+    });
+    ctx.globalAlpha = Math.max(0, fade);
+    for (var i = parts.length - 1; i >= 0; i--) {
+      var p = parts[i]; p.t += dt / p.dur;
+      if (p.t >= 1) { (p.rev ? p.e.a : p.e.b).flash = 1; parts.splice(i, 1); continue; }
+      var c = p.rev ? '255,255,255' : '232,85,58';
+      for (var k = 0; k < 9; k++) {
+        var tt = p.t - k * 0.012; if (tt < 0) break;
+        var pt = qp(p.e, p.rev ? 1 - tt : tt);
+        ctx.fillStyle = 'rgba(' + c + ',' + ((1 - k / 9) * 0.9) + ')';
+        ctx.beginPath(); ctx.arc(pt[0], pt[1], k === 0 ? 2 : 1.6 - k * 0.12, 0, 7); ctx.fill();
+      }
+    }
+    ctx.font = "500 10px 'JetBrains Mono', monospace";
+    try { ctx.letterSpacing = '1.2px'; } catch (_) {}
+    var pulse = (now % 2200) / 2200;
+    V.hubs.forEach(function (h) {
+      h.flash = Math.max(0, h.flash - dt * 1.6);
+      if (!h.a) return;
+      ctx.globalAlpha = fade * h.a;
+      if (h.st === 'live' && !reduce) {
+        ctx.beginPath(); ctx.arc(h.x, h.y, 4 + pulse * 16, 0, 7);
+        ctx.strokeStyle = 'rgba(232,85,58,' + (0.55 * (1 - pulse)) + ')'; ctx.lineWidth = 1; ctx.stroke();
+      }
+      ctx.beginPath(); ctx.arc(h.x, h.y, 3.4 + h.flash * 1.4, 0, 7); ctx.fillStyle = COL[h.st]; ctx.fill();
+      ctx.beginPath(); ctx.arc(h.x, h.y, 6.5, 0, 7); ctx.strokeStyle = 'rgba(0,0,0,.9)'; ctx.lineWidth = 2; ctx.stroke();
+      var on = hot && (hot.a.id === h.id || hot.b.id === h.id);
+      ctx.fillStyle = on ? '#fff' : 'rgba(255,255,255,.58)';
+      ctx.textAlign = h.al; ctx.textBaseline = 'middle';
+      ctx.fillText(h.id, h.x + h.lx, h.y + h.ly);
+    });
+    ctx.globalAlpha = 1;
+  }
+  function loop(now) {
+    var dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016; last = now;
+    if (!document.hidden && onScreen) draw(now, dt); else last = 0;
+    requestAnimationFrame(loop);
+  }
+
+  fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json').then(function (r) { return r.json(); }).then(function (topo) {
+    feats = topojson.feature(topo, topo.objects.countries).features;
+    // India drawn with its official boundary, including all of Jammu & Kashmir and Ladakh
+    // (Natural Earth's India worldview, simplified to this map's scale).
+    feats.forEach(function (f) { if (f.id === '356') f.geometry = INDIA_OFFICIAL; });
+    var us = feats.filter(function (f) { return f.id === '840'; })[0];
+    var polys = (us.geometry.type === 'MultiPolygon' ? us.geometry.coordinates : [us.geometry.coordinates])
+      .map(function (c) { return { type: 'Polygon', coordinates: c }; })
+      .filter(function (g) { var c = d3.geoCentroid(g); return c[0] > -126 && c[0] < -66 && c[1] > 24 && c[1] < 50; })
+      .sort(function (a, b) { return d3.geoArea(b) - d3.geoArea(a); });
+    us48 = polys[0];
+    build(); setTicker();
+    if (reduce) { revT = REVEAL_MS * 2; draw(0, 0); }
+    if (window.ResizeObserver) new ResizeObserver(function () { var w = wrap.clientWidth; if (w && w !== W) { build(); if (reduce) draw(0, 0); } }).observe(wrap);
+    if (!reduce) requestAnimationFrame(loop);
+  }).catch(function () { wrap.style.display = 'none'; });
+})();
+});
 </script>
 </body>
 </html>
