@@ -112,7 +112,7 @@
   .ticks span:last-child { transform: translateX(-100%); }
   .ticks i { font-style: normal; }
 
-  .hero-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; padding: 28px var(--pad) 40px; }
+  .hero-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; padding: 28px var(--pad) 80px; }
   .hero-foot .right { display: flex; flex-direction: column; align-items: flex-end; gap: 18px; }
   .backed { display: flex; align-items: center; gap: 18px; color: var(--dim); }
   .backed a { display: inline-flex; align-items: center; gap: 8px; opacity: .8; transition: opacity .2s; }
@@ -122,14 +122,6 @@
   .backed .fab-mark { width: 16px; height: auto; }
   .backed .fab-word { width: 64px; height: auto; }
 
-  /* tape */
-  .tape { overflow: hidden; border-top: 1px solid var(--line); padding: 14px 0; white-space: nowrap; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
-  .tape-in { display: inline-flex; animation: tape 70s linear infinite; }
-  .tape span { padding: 0 28px; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; color: var(--faint); }
-  .tape b { font-weight: 400; color: var(--ink); }
-  .tape em { font-style: normal; color: var(--accent); }
-  @keyframes tape { to { transform: translateX(-50%); } }
-  .tape:hover .tape-in { animation-play-state: paused; }
 
   /* sections */
   section { position: relative; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 24px; padding: 64px var(--pad); }
@@ -215,6 +207,10 @@
   form button:hover span { transform: translateX(6px); }
   .hp { display: none; }
 
+  .pin { position: fixed; right: var(--pad); bottom: 22px; z-index: 50; padding: 6px 0 3px; background-color: #000; box-shadow: 0 0 0 10px #000; font-family: var(--mono); font-size: 13px; }
+  .js .pin { opacity: 0; transform: translateY(8px); transition: opacity .8s var(--out) 1.6s, transform .8s var(--out) 1.6s; }
+  .js .ready .pin, .js body.ready .pin { opacity: 1; transform: none; }
+  footer { padding-bottom: 72px !important; }
   footer { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding: 28px var(--pad) 40px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 10.5px; letter-spacing: .04em; color: var(--faint); }
   footer nav { display: flex; gap: 18px; flex-wrap: wrap; }
   footer a { transition: color .2s; }
@@ -235,7 +231,7 @@
   .js .on .rv { opacity: 1; transform: none; }
   .js td.pay i { transform: scaleX(0); transition: transform 1.6s var(--out) var(--d, 0s); }
   .js .on td.pay i { transform: scaleX(var(--w)); }
-  .still #flow, .still .tape-in { animation: none; }
+  .still #flow { animation: none; }
 
   @media (max-width: 900px) {
     :root { --pad: 16px; }
@@ -263,7 +259,6 @@
     <span class="mono">Parabola Markets</span>
     <nav class="mono dim">
       <a href="#grids">Grids</a>
-      <a href="#board">Board</a>
       <a href="#contact">Access</a>
       <a href="https://pilot.parabolamarkets.xyz">Pilot &#8599;</a>
     </nav>
@@ -278,7 +273,6 @@
       <div class="big fade" style="--d:.9s">
         <div class="n" id="s-big" aria-live="polite">7.4%</div>
         <div class="mono dim">chance the price clears <span id="k-big">$250</span></div>
-        <div class="fv">$<span id="k-fv">250</span>&ndash;$500 call spread &middot; fair value <b id="fv">$0.00</b> / MWh</div>
       </div>
     </div>
 
@@ -348,20 +342,18 @@
       </svg>
     </a>
   </div>
-      <a class="u copy" href="mailto:founders@parabolamarkets.xyz">founders@parabolamarkets.xyz</a>
     </div>
   </div>
 </div>
 
-<div class="tape" aria-hidden="true"><div class="tape-in" id="tape"></div></div>
 
 <main>
 
 <section id="how">
   <div class="cols">
-    <div><span class="k">01</span><h3>Hedge</h3><p>Cap what power can cost you, hour by hour.</p></div>
-    <div><span class="k">02</span><h3>Trade</h3><p>Take a view on price and volatility, grid by grid.</p></div>
-    <div><span class="k">03</span><h3>Settle</h3><p>Fully collateralized, cash-settled on the operator's published price.</p></div>
+    <div><h3>Hedge</h3><p>Cap what power can cost you, hour by hour.</p></div>
+    <div><h3>Trade</h3><p>Take a view on price and volatility, grid by grid.</p></div>
+    <div><h3>Settle</h3><p>Fully collateralized, cash-settled on the operator's published price.</p></div>
   </div>
 </section>
 
@@ -369,21 +361,20 @@
   <div class="lhs">
     <div class="mono dim">Grids</div>
     <h2>One contract, any grid.</h2>
-    <p class="copy dim">The same contracts on every grid we list. A grid lists once its reference curve passes five public tests.</p>
+    <p class="copy dim">The same contracts on every grid we list. A grid lists once its price model passes public tests.</p>
     <div class="list">
       <div><b>PJM</b> <span class="hot">live</span></div>
-      <div><b>MISO &middot; DE-LU</b> pass all five</div>
-      <div><b>ERCOT &middot; CAISO</b> pass four</div>
-      <div><b><a class="u" href="https://pilot.parabolamarkets.xyz/india">IEX India</a></b> recording</div>
+      <div><b>MISO &middot; Germany &middot; ERCOT &middot; CAISO</b> next</div>
+      <div><b><a class="u" href="https://pilot.parabolamarkets.xyz/india">India</a></b> in pilot</div>
     </div>
   </div>
   <div class="rhs">
     <div class="gridmap" id="gridmap" role="img" aria-label="Animated map of the power grids Parabola lists, with flows between them: US hubs, Germany-Luxembourg, Great Britain and India with their cross-border interconnectors.">
       <div class="gm-tabs" role="tablist" aria-label="Region">
-        <button type="button" role="tab" data-v="us" aria-selected="true">USA <small>7 ISOs</small><i></i></button>
-        <button type="button" role="tab" data-v="de" aria-selected="false">Germany <small>DE-LU</small><i></i></button>
-        <button type="button" role="tab" data-v="gb" aria-selected="false">UK <small>GB</small><i></i></button>
-        <button type="button" role="tab" data-v="in" aria-selected="false">India <small>IEX</small><i></i></button>
+        <button type="button" role="tab" data-v="us" aria-selected="true">USA<i></i></button>
+        <button type="button" role="tab" data-v="de" aria-selected="false">Germany<i></i></button>
+        <button type="button" role="tab" data-v="gb" aria-selected="false">UK<i></i></button>
+        <button type="button" role="tab" data-v="in" aria-selected="false">India<i></i></button>
       </div>
       <canvas></canvas>
       <div class="gm-foot">
@@ -404,33 +395,6 @@
   </div>
 </section>
 
-<section id="board">
-  <div class="lhs">
-    <div class="mono dim">Board</div>
-    <div class="scroll">
-      <table>
-        <thead><tr><th>Strike</th><th>1 pm</th><th>6 pm</th><th>9 pm</th></tr></thead>
-        <tbody>
-          <tr><td>$125</td><td data-count>$11.51</td><td class="hot" data-count>$40.77</td><td data-count>$20.87</td></tr>
-          <tr><td>$150</td><td data-count>$10.31</td><td class="hot" data-count>$33.80</td><td data-count>$16.49</td></tr>
-          <tr><td>$200</td><td data-count>$9.18</td><td class="hot" data-count>$24.50</td><td data-count>$10.92</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="cap">Premium per MWh, PJM Western Hub, month-end, marked 2026-09-22. Indicative.</p>
-  </div>
-  <div class="rhs" id="record">
-    <div class="mono dim" style="margin-bottom:22px">Reference curve, scored daily</div>
-    <div class="stats" id="proof">
-      <div><div class="v" data-k="skill" data-count>0.186</div><div class="l">CRPS skill</div></div>
-      <div><div class="v" data-k="cov" data-count>96.4%</div><div class="l">inside 95% band</div></div>
-      <div><div class="v" data-k="ks" data-count>0.056</div><div class="l">PIT KS</div></div>
-      <div><div class="v" data-k="brier" data-count>0.064</div><div class="l" data-k="brierlabel">spike Brier</div></div>
-    </div>
-    <p class="cap"><span id="rec-summary">Published before the price is known; a failed gate means no publish.</span> Chain head <span id="rec-head">&hellip;</span></p>
-  </div>
-</section>
-
 <section id="contact">
   <div class="full-h"><div class="mono dim" style="margin-bottom:22px">Access</div><h2>Hedge or trade power.</h2></div>
   <form class="inline" style="grid-column:1 / -1" name="desk" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/?submitted=1">
@@ -445,13 +409,14 @@
 
 </main>
 
+<a class="pin u" href="mailto:founders@parabolamarkets.xyz">founders@parabolamarkets.xyz</a>
+
 <footer>
   <span>&copy; 2026 Parabola Markets &middot; Pilot, paper trading. Nothing here is an offer.</span>
   <nav>
     <a href="https://pilot.parabolamarkets.xyz/?view=hedge">Hedge</a>
     <a href="https://pilot.parabolamarkets.xyz/?view=index">Index</a>
     <a href="docs.html">API</a>
-    <a href="mailto:founders@parabolamarkets.xyz">founders@parabolamarkets.xyz</a>
   </nav>
 </footer>
 
@@ -605,8 +570,6 @@
     lab.style.transform = KDRAW > XMAX * .85 ? 'translateX(calc(-100% - 6px))' : 'translateX(6px)';
     $('k-big').textContent = '$' + k;
     $('s-big').textContent = pct(S(KDRAW));
-    var fv = 0; for (var v = KDRAW; v < XMAX; v += 1) fv += (S(v) + S(Math.min(v + 1, XMAX))) / 2 * Math.min(1, XMAX - v);
-    $('k-fv').textContent = k; $('fv').textContent = '$' + fv.toFixed(2);
   }
 
   var ticks = $('ticks');
@@ -644,7 +607,7 @@
   if (MOTION) {
     KDRAW = 10; paint();
     $('reveal-r').setAttribute('width', 0);
-    requestAnimationFrame(function () { hero.classList.add('on'); });
+    requestAnimationFrame(function () { hero.classList.add('on'); document.body.classList.add('ready'); });
     var t0 = null;
     requestAnimationFrame(function step(now) {
       if (t0 === null) t0 = now;
@@ -662,7 +625,6 @@
   }
 
   /* daily curve first, then the grid table's quantiles */
-  var tape = [];
   fetch('./curve.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (c) {
     if (!c || !c.exceedance || !c.exceedance.values) throw 0;
     S = fromTable(c.exceedance); curveReady = true; label(c, c.hub || 'PJM Western Hub');
@@ -674,34 +636,7 @@
     g.grids.forEach(function (x) {
       var c = x.curve; if (!c) return;
       if (x.iso === 'pjm' && !curveReady) { S = fromQuantiles(c); label(c, x.hub); if (introDone) paint(); }
-      var cur = x.currency === 'EUR' ? '€' : x.currency === 'INR' ? 'Rs ' : '$';
-      tape.push('<span><b>' + x.hub + '</b> &nbsp;median ' + cur + Math.round(c.median) + ' &nbsp;5–95% ' + cur + Math.round(c.p5) + '–' + cur + Math.round(c.p95) +
-        ' &nbsp;P&gt;' + cur + '250 <em>' + (c.p_above_250 * 100).toFixed(1) + '%</em> &nbsp;' + (x.status === 'live' ? 'live' : x.gates_passed + '/5 gates') + '</span>');
     });
-    var t = $('tape'); t.innerHTML = tape.join('') + tape.join('');
-  }).catch(function () {});
-
-  /* ---------- gate metrics ---------- */
-  fetch('./validation.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (val) {
-    var bt = val && val.backtests && val.backtests.h1_last_365d;
-    if (!bt) return;
-    var set = function (k, v) { var el = document.querySelector('#proof [data-k="' + k + '"]'); if (el) { el.dataset.final = v; el.textContent = v; } };
-    set('skill', bt.crps_skill_vs_climatology.toFixed(3));
-    set('cov', (bt.coverage_95 * 100).toFixed(1) + '%');
-    set('ks', bt.pit_ks_distance.toFixed(3));
-    set('brier', bt.spike_250_brier.toFixed(3));
-    set('brierlabel', 'spike Brier vs ' + bt.spike_250_brier_climatology.toFixed(3));
-  }).catch(function () {});
-
-  /* ---------- the record (hash-chained run ledger) ---------- */
-  fetch('./record.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (rec) {
-    if (!rec || !rec.rows) return;
-    $('rec-summary').textContent = rec.days + ' days, ' + rec.runs + ' runs, ' + rec.revisions + ' revisions.';
-    $('rec-head').textContent = rec.chain_head.slice(0, 16) + '…';
-    if (!MOTION) return;
-    var sec = $('board'), go = function () { scramble($('rec-head'), 900); };
-    if (sec.classList.contains('on')) go();
-    else new MutationObserver(function (_, mo) { if (sec.classList.contains('on')) { mo.disconnect(); go(); } }).observe(sec, { attributes: true, attributeFilter: ['class'] });
   }).catch(function () {});
 })();
 </script>
