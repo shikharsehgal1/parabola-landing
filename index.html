@@ -4,10 +4,10 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Parabola Markets · Derivatives on electricity prices</title>
-<meta name="description" content="Every business that runs on electricity is exposed to its price. Parabola publishes a tested probability curve per grid and sells capped cover that settles on the grid operator's own price." />
+<meta name="description" content="Parabola builds and lists derivatives on the price of electricity, for hedging power risk and for trading it." />
 <meta property="og:site_name" content="Parabola Markets" />
 <meta property="og:title" content="Parabola Markets · The derivatives exchange for electricity prices" />
-<meta property="og:description" content="A tested probability curve per grid, published daily, and capped cover that settles on the operator's price." />
+<meta property="og:description" content="Derivatives on the price of electricity, for hedging and trading power risk." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://parabolamarkets.xyz" />
 <meta property="og:image" content="https://raw.githubusercontent.com/shikharsehgal1/parabola-landing/main/og-image.png" />
@@ -20,7 +20,7 @@
 <meta name="twitter:site" content="@parabolamarkets" />
 <meta name="twitter:creator" content="@parabolamarkets" />
 <meta name="twitter:title" content="Parabola Markets · The derivatives exchange for electricity prices" />
-<meta name="twitter:description" content="A tested probability curve per grid, published daily, and capped cover that settles on the operator's price." />
+<meta name="twitter:description" content="Derivatives on the price of electricity, for hedging and trading power risk." />
 <meta name="twitter:image" content="https://raw.githubusercontent.com/shikharsehgal1/parabola-landing/main/og-image.png" />
 <meta name="twitter:image:alt" content="Parabola Markets" />
 <script>
@@ -132,7 +132,18 @@
   .tape:hover .tape-in { animation-play-state: paused; }
 
   /* sections */
-  section { position: relative; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 24px; padding: 88px var(--pad); }
+  section { position: relative; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 24px; padding: 64px var(--pad); }
+  .cols { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(var(--n, 3), 1fr); column-gap: 24px; }
+  .cols > div { padding-top: 16px; border-top: 1px solid var(--line); }
+  .cols h3 { margin: 0 0 8px; font-family: var(--serif); font-weight: 400; font-size: 28px; line-height: 1.05; }
+  .cols p { color: var(--dim); font-size: 14px; max-width: 34ch; }
+  .cols .k { display: block; margin-bottom: 14px; font-family: var(--mono); font-size: 11px; color: var(--accent); }
+  .full-h { grid-column: 1 / -1; margin-bottom: 36px; }
+  .full-h h2 { max-width: 22ch; margin: 0; }
+  .list { margin-top: 28px; font-family: var(--mono); font-size: 12px; line-height: 2; color: var(--dim); }
+  .list b { font-weight: 400; color: var(--ink); }
+  .list .hot { color: var(--accent); }
+  .inline { display: grid; grid-template-columns: 1.4fr 1fr 1fr auto; column-gap: 20px; align-items: end; }
   section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--line); transform-origin: left; }
   .lhs { grid-column: 1 / span 5; }
   .rhs { grid-column: 7 / span 6; }
@@ -239,7 +250,9 @@
     .stats { grid-template-columns: repeat(2, 1fr); row-gap: 28px; }
     .who > div { grid-template-columns: 1fr; gap: 6px; }
     dl > div { grid-template-columns: 100px 1fr; }
-    form { grid-template-columns: 1fr; }
+    form, .inline { grid-template-columns: 1fr; row-gap: 22px; }
+    .cols { --n: 1 !important; row-gap: 28px; }
+    .full-h { margin-bottom: 28px; }
   }
 </style>
 </head>
@@ -249,11 +262,9 @@
   <header class="bar fade" style="--d:.1s">
     <span class="mono">Parabola Markets</span>
     <nav class="mono dim">
-      <a href="#contracts">Contracts</a>
+      <a href="#grids">Grids</a>
       <a href="#board">Board</a>
-      <a href="#clearing">Clearing</a>
-      <a href="#record">Reference</a>
-      <a href="#grids">Listings</a>
+      <a href="#contact">Access</a>
       <a href="https://pilot.parabolamarkets.xyz">Pilot &#8599;</a>
     </nav>
   </header>
@@ -295,8 +306,7 @@
 
   <div class="hero-foot">
     <div>
-      <p class="copy fade" style="--d:1.2s">Parabola lists options on the hourly price of electricity, grid by grid, and settles them on the grid operator's own published price.</p>
-      <p class="copy dim fade" style="--d:1.35s">Every contract is fully collateralized when it is signed. No margin calls, no counterparty risk.</p>
+      <p class="copy fade" style="--d:1.2s">Parabola builds and lists derivatives on the price of electricity, for hedging power risk and for trading it.</p>
     </div>
     <div class="right fade" style="--d:1.5s">
       <span class="mono faint status"><i></i>Pilot &middot; paper trading &middot; nothing here is an offer</span>
@@ -347,136 +357,28 @@
 
 <main>
 
-<section id="contracts">
-  <div class="lhs">
-    <div class="mono dim">Contracts</div>
-    <h2>Listed, capped, cash-settled.</h2>
-    <p class="copy dim">Standard contracts on each grid's settleable price. A buyer can lose the premium and no more; a writer can lose the cap less the premium and no more. Both numbers are fixed on the day the trade is signed.</p>
-  </div>
-  <div class="rhs">
-    <dl>
-      <div><dt>Underlying</dt><dd>PJM Western Hub day-ahead LMP, pnode 51288</dd></div>
-      <div><dt>Contract</dt><dd>Capped call strip over chosen hours</dd></div>
-      <div><dt>Quoted</dt><dd>Premium per MWh; sized in MWh per hour</dd></div>
-      <div><dt>Strike, cap</dt><dd>Set per listing</dd></div>
-      <div><dt>Settlement</dt><dd>Cash, monthly, on the operator's published price</dd></div>
-      <div><dt>Collateral</dt><dd>Full, in escrow at signing</dd></div>
-    </dl>
-    <div class="scroll" style="margin-top:36px">
-      <table>
-        <thead><tr><th>Payoff at settlement</th><th>Buyer receives</th></tr></thead>
-        <tbody>
-          <tr><td class="pay">Mild summer<i style="--w:0"></i></td><td data-count>$0</td></tr>
-          <tr><td class="pay">60 h above $150, averaging $300<i style="--w:.1125"></i></td><td data-count>$45,000</td></tr>
-          <tr><td class="pay">200 h at $1,000<i style="--w:1"></i></td><td class="hot"><span data-count>$400,000</span> &middot; cap</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="cap">Worked example: 5 MWh an hour, 4 to 10 pm, July and August, strike $150, cap $400,000, premium $38,000. PJM lists the capped call strip; the IEX India pilot also carries floors, collars, swaps, spreads and digitals.</p>
-  </div>
-</section>
-
-<section id="board">
-  <div class="lhs">
-    <div class="mono dim">Board</div>
-    <h2>Today's board.</h2>
-    <p class="copy dim">Reference premiums per MWh for cover from the strike up to $500 above it, marked off the published curve. Writers quote against them.</p>
-  </div>
-  <div class="rhs">
-    <div class="scroll">
-      <table>
-        <thead><tr><th>Strike</th><th>Tomorrow<br>daily avg</th><th>Month-end<br>1 pm</th><th>Month-end<br>6 pm</th><th>Month-end<br>9 pm</th></tr></thead>
-        <tbody>
-          <tr><td>$125</td><td data-count>$4.99</td><td data-count>$11.51</td><td class="hot" data-count>$40.77</td><td data-count>$20.87</td></tr>
-          <tr><td>$150</td><td data-count>$4.15</td><td data-count>$10.31</td><td class="hot" data-count>$33.80</td><td data-count>$16.49</td></tr>
-          <tr><td>$200</td><td data-count>$3.05</td><td data-count>$9.18</td><td class="hot" data-count>$24.50</td><td data-count>$10.92</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="cap">PJM Western Hub day-ahead, marked 2026-09-22. Indicative, with a 25% loading. Validated one day ahead; longer terms are reference marks.</p>
-  </div>
-</section>
-
-<section id="clearing">
-  <div class="lhs">
-    <div class="mono dim">Clearing</div>
-    <h2>No margin calls. No counterparty risk.</h2>
-    <p class="copy dim">Both sides post their maximum loss into escrow when they sign, so settlement is a transfer, not a collection.</p>
-  </div>
-  <div class="rhs">
-    <div class="who steps">
-      <div><h3><span class="n">01</span>Mark</h3><p>Each order is marked against the published curve: expected payout, plus spread.</p></div>
-      <div><h3><span class="n">02</span>Match</h3><p>Standard strikes clear in a daily auction at one price. One-off requests go to a sealed quote auction among writers.</p></div>
-      <div><h3><span class="n">03</span>Escrow</h3><p>The buyer posts the premium. The writer posts the cap less the premium. Together they fund the largest possible payout.</p></div>
-      <div><h3><span class="n">04</span>Settle</h3><p>Monthly, on the grid operator's published price. The cap bounds every payout.</p></div>
-    </div>
-    <div class="escrow">
-      <div class="track"><span class="buy"></span><span class="wri"></span></div>
-      <div class="legend"><span>Buyer posts <b data-count>$38,000</b></span><span>Writer posts <b data-count>$362,000</b></span><span>Escrow <b data-count>$400,000</b> = cap</span></div>
-    </div>
-    <p class="cap">The pilot desk matches by request today; the daily auction is designed and not yet running.</p>
-  </div>
-</section>
-
-<section id="who">
-  <div class="lhs">
-    <div class="mono dim">Participants</div>
-    <h2>Someone already holds the other side.</h2>
-    <p class="copy dim">Every trade pairs a party that needs protection with one whose business gains from writing it.</p>
-  </div>
-  <div class="rhs who">
-    <div><h3>Buyers</h3><p>Suppliers, co-ops, data centres and large loads that buy power by the hour and sell it at a fixed price.</p></div>
-    <div><h3>Writers</h3><p>Batteries, peakers and demand response. They already earn in the spike; writing options turns it into premium today.</p></div>
-    <div><h3>Allocators</h3><p>Weather and insurance-linked capital that wants power volatility on a public print, with no claims process.</p></div>
-    <div><h3>Brokers</h3><p>Sell an index plan with a ceiling and hedge the ceiling on Parabola.</p></div>
-  </div>
-</section>
-
-<section id="record">
-  <div class="lhs">
-    <div class="mono dim">Reference</div>
-    <h2>A reference price, scored daily.</h2>
-    <p class="copy dim">The curve goes out before the price is known and is scored against it the next day. If a run fails any of the five gates, nothing is published.</p>
-  </div>
-  <div class="rhs">
-    <div class="stats" id="proof">
-      <div><div class="v" data-k="skill" data-count>0.186</div><div class="l">CRPS skill vs climatology</div></div>
-      <div><div class="v" data-k="cov" data-count>96.4%</div><div class="l">outcomes inside the 95% band</div></div>
-      <div><div class="v" data-k="ks" data-count>0.056</div><div class="l">PIT KS distance</div></div>
-      <div><div class="v" data-k="brier" data-count>0.064</div><div class="l" data-k="brierlabel">spike Brier, vs 0.071 climatology</div></div>
-    </div>
-    <div class="scroll">
-      <table id="rec-table">
-        <thead><tr><th>Run</th><th>Gates</th><th>CRPS skill</th><th>95% cov.</th><th>Spike Brier</th><th>Chain</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <p class="cap"><span id="rec-summary">365-day walk-forward, re-run on every publish.</span> Rows are hash-chained; head <span id="rec-head">&hellip;</span></p>
+<section id="how">
+  <div class="cols">
+    <div><span class="k">01</span><h3>Hedge</h3><p>Cap what power can cost you, hour by hour.</p></div>
+    <div><span class="k">02</span><h3>Trade</h3><p>Take a view on price and volatility, grid by grid.</p></div>
+    <div><span class="k">03</span><h3>Settle</h3><p>Fully collateralized, cash-settled on the operator's published price.</p></div>
   </div>
 </section>
 
 <section id="grids">
   <div class="lhs">
-    <div class="mono dim">Listings</div>
+    <div class="mono dim">Grids</div>
     <h2>One contract, any grid.</h2>
-    <p class="copy dim">A grid lists when its reference curve passes the same five tests. Collateral can back contracts on any listed grid.</p>
-    <div class="scroll" style="margin-top:36px">
-      <table>
-        <thead><tr><th>Hub</th><th>Gates</th><th>Listing</th></tr></thead>
-        <tbody>
-          <tr><td>PJM Western Hub</td><td>5 / 5</td><td class="hot">Live</td></tr>
-          <tr><td>MISO Indiana Hub</td><td>5 / 5</td><td>Passes</td></tr>
-          <tr><td>Germany-Luxembourg</td><td>5 / 5</td><td>Passes</td></tr>
-          <tr><td>ERCOT North Hub</td><td>4 / 5</td><td class="dim">Gated</td></tr>
-          <tr><td>CAISO SP15</td><td>4 / 5</td><td class="dim">Gated</td></tr>
-          <tr><td><a class="u" href="https://pilot.parabolamarkets.xyz/india">IEX India</a></td><td class="dim">own model</td><td class="dim">Recording</td></tr>
-        </tbody>
-      </table>
+    <p class="copy dim">The same contracts on every grid we list. A grid lists once its reference curve passes five public tests.</p>
+    <div class="list">
+      <div><b>PJM</b> <span class="hot">live</span></div>
+      <div><b>MISO &middot; DE-LU</b> pass all five</div>
+      <div><b>ERCOT &middot; CAISO</b> pass four</div>
+      <div><b><a class="u" href="https://pilot.parabolamarkets.xyz/india">IEX India</a></b> recording</div>
     </div>
-    <p class="cap">Public prints, not yet run: NYISO &middot; ISO-NE &middot; SPP &middot; GB &middot; Nord Pool &middot; JEPX &middot; AEMO</p>
   </div>
   <div class="rhs">
-    <div class="gridmap" id="gridmap" role="img" aria-label="Animated map of power grids linked by flows of buyers and writers: US hubs, Germany-Luxembourg, Great Britain and India with their cross-border interconnectors.">
+    <div class="gridmap" id="gridmap" role="img" aria-label="Animated map of the power grids Parabola lists, with flows between them: US hubs, Germany-Luxembourg, Great Britain and India with their cross-border interconnectors.">
       <div class="gm-tabs" role="tablist" aria-label="Region">
         <button type="button" role="tab" data-v="us" aria-selected="true">USA <small>7 ISOs</small><i></i></button>
         <button type="button" role="tab" data-v="de" aria-selected="false">Germany <small>DE-LU</small><i></i></button>
@@ -486,30 +388,59 @@
       <canvas></canvas>
       <div class="gm-foot">
         <span class="gm-ticker" id="gm-ticker">&nbsp;</span>
-        <span class="gm-legend"><span><i style="background:#e8553a"></i>Buyers</span><span><i style="background:#fff"></i>Writers</span></span>
+        <span class="gm-legend"><span><i style="background:#e8553a"></i>Hedges</span><span><i style="background:#fff"></i>Trades</span></span>
       </div>
     </div>
   </div>
 </section>
 
-<section id="contact">
+<section id="who">
+  <div class="full-h"><h2>For everyone exposed to the price of power.</h2></div>
+  <div class="cols" style="--n:4">
+    <div><h3>Producers</h3><p>Generators, storage and renewables.</p></div>
+    <div><h3>Consumers</h3><p>Data centres, industry and large loads.</p></div>
+    <div><h3>Retailers</h3><p>Suppliers, co-ops and brokers.</p></div>
+    <div><h3>Traders</h3><p>Funds and desks trading power volatility.</p></div>
+  </div>
+</section>
+
+<section id="board">
   <div class="lhs">
-    <div class="mono dim">Access</div>
-    <h2>Trade, write or list a grid.</h2>
-    <p class="copy dim">Pilot access is by request. Send the hours you need covered and a fixed premium comes back the same business day.</p>
+    <div class="mono dim">Board</div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Strike</th><th>1 pm</th><th>6 pm</th><th>9 pm</th></tr></thead>
+        <tbody>
+          <tr><td>$125</td><td data-count>$11.51</td><td class="hot" data-count>$40.77</td><td data-count>$20.87</td></tr>
+          <tr><td>$150</td><td data-count>$10.31</td><td class="hot" data-count>$33.80</td><td data-count>$16.49</td></tr>
+          <tr><td>$200</td><td data-count>$9.18</td><td class="hot" data-count>$24.50</td><td data-count>$10.92</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cap">Premium per MWh, PJM Western Hub, month-end, marked 2026-09-22. Indicative.</p>
   </div>
-  <div class="rhs">
-    <form name="desk" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/?submitted=1">
-      <input type="hidden" name="form-name" value="desk" />
-      <p class="hp"><label>Don't fill this out: <input name="bot-field" /></label></p>
-      <label>Name<input name="name" autocomplete="name" required /></label>
-      <label>Company<input name="company" autocomplete="organization" required /></label>
-      <label>Email<input type="email" name="email" autocomplete="email" required /></label>
-      <label>You are<select name="role"><option>Buyer</option><option>Writer</option><option>Allocator</option><option>Supplier or broker</option><option>Other</option></select></label>
-      <label class="full">What do you need covered?<textarea name="request" rows="2" placeholder="5 MWh an hour above $150, 4 to 10 pm, July and August, cap $400k"></textarea></label>
-      <button type="submit" class="u">Get a price <span>&rarr;</span></button>
-    </form>
+  <div class="rhs" id="record">
+    <div class="mono dim" style="margin-bottom:22px">Reference curve, scored daily</div>
+    <div class="stats" id="proof">
+      <div><div class="v" data-k="skill" data-count>0.186</div><div class="l">CRPS skill</div></div>
+      <div><div class="v" data-k="cov" data-count>96.4%</div><div class="l">inside 95% band</div></div>
+      <div><div class="v" data-k="ks" data-count>0.056</div><div class="l">PIT KS</div></div>
+      <div><div class="v" data-k="brier" data-count>0.064</div><div class="l" data-k="brierlabel">spike Brier</div></div>
+    </div>
+    <p class="cap"><span id="rec-summary">Published before the price is known; a failed gate means no publish.</span> Chain head <span id="rec-head">&hellip;</span></p>
   </div>
+</section>
+
+<section id="contact">
+  <div class="full-h"><div class="mono dim" style="margin-bottom:22px">Access</div><h2>Hedge or trade power.</h2></div>
+  <form class="inline" style="grid-column:1 / -1" name="desk" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/?submitted=1">
+    <input type="hidden" name="form-name" value="desk" />
+    <p class="hp"><label>Don't fill this out: <input name="bot-field" /></label></p>
+    <label>Email<input type="email" name="email" autocomplete="email" required /></label>
+    <label>Company<input name="company" autocomplete="organization" required /></label>
+    <label>You are<select name="role"><option>Hedger</option><option>Trader</option><option>Producer</option><option>Supplier or broker</option><option>Other</option></select></label>
+    <button type="submit" class="u">Request access <span>&rarr;</span></button>
+  </form>
 </section>
 
 </main>
@@ -580,7 +511,7 @@
     var lhs = sec.querySelector('.lhs'), rhs = sec.querySelector('.rhs');
     [lhs, rhs].forEach(function (col, c) {
       if (!col) return;
-      var list = col.querySelectorAll(':scope > .mono, :scope > .copy, :scope > .cap, :scope > .u, dl > div, thead tr, tbody tr, .who > div, .stats > div, .escrow, form > label, form > button, .gridmap');
+      var list = col.querySelectorAll(':scope > .mono, :scope > .copy, :scope > .cap, :scope > .u, dl > div, thead tr, tbody tr, .who > div, .stats > div, .cols > div, .list, form > label, form > button, .gridmap');
       Array.prototype.forEach.call(list, function (el, i) {
         el.classList.add('rv');
         el.style.setProperty('--d', Math.min(1.4, (c ? 0.25 : 0) + i * 0.06).toFixed(2) + 's');
@@ -759,27 +690,16 @@
     set('cov', (bt.coverage_95 * 100).toFixed(1) + '%');
     set('ks', bt.pit_ks_distance.toFixed(3));
     set('brier', bt.spike_250_brier.toFixed(3));
-    set('brierlabel', 'spike Brier, vs ' + bt.spike_250_brier_climatology.toFixed(3) + ' climatology');
+    set('brierlabel', 'spike Brier vs ' + bt.spike_250_brier_climatology.toFixed(3));
   }).catch(function () {});
 
   /* ---------- the record (hash-chained run ledger) ---------- */
   fetch('./record.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (rec) {
     if (!rec || !rec.rows) return;
-    $('rec-summary').textContent = rec.days + ' days, ' + rec.runs + ' runs, ' + Math.round(rec.gate_pass_rate * 100) + '% of gates passed, ' + rec.revisions + ' revisions.';
+    $('rec-summary').textContent = rec.days + ' days, ' + rec.runs + ' runs, ' + rec.revisions + ' revisions.';
     $('rec-head').textContent = rec.chain_head.slice(0, 16) + '…';
-    var tb = document.querySelector('#rec-table tbody');
-    tb.innerHTML = rec.rows.slice(-6).reverse().map(function (r) {
-      return '<tr><td>' + r.date + ' #' + r.run_number + '</td>' +
-        '<td class="' + (r.gates_pass ? 'ok' : 'no') + '">' + (r.gates_pass ? 'pass' : 'fail') + '</td>' +
-        '<td>' + r.crps_skill.toFixed(3) + '</td><td>' + (r.coverage_95 * 100).toFixed(1) + '%</td>' +
-        '<td>' + r.spike_brier.toFixed(3) + '</td><td class="faint hash">' + r.chain_hash.slice(0, 8) + '</td></tr>';
-    }).join('');
     if (!MOTION) return;
-    var sec = $('record'), rows = tb.querySelectorAll('tr');
-    Array.prototype.forEach.call(rows, function (tr, i) { tr.classList.add('rv'); tr.style.setProperty('--d', (0.5 + i * 0.09).toFixed(2) + 's'); });
-    var go = function () {
-      Array.prototype.forEach.call(tb.querySelectorAll('.hash'), function (el, i) { scramble(el, 600 + i * 90); });
-    };
+    var sec = $('board'), go = function () { scramble($('rec-head'), 900); };
     if (sec.classList.contains('on')) go();
     else new MutationObserver(function (_, mo) { if (sec.classList.contains('on')) { mo.disconnect(); go(); } }).observe(sec, { attributes: true, attributeFilter: ['class'] });
   }).catch(function () {});
@@ -805,7 +725,7 @@ window.addEventListener('DOMContentLoaded', function () {
         hub('MISO', [-86.2, 39.8], 'pass', 0, -12), hub('PJM', [-77.4, 39.6], 'live', 0, 19), hub('NYISO', [-74.2, 42.7], 'off', -9, -9, 'right'),
         hub('ISO-NE', [-71.1, 42.4], 'off', 8, 12, 'left'), hub('DE-LU', null, 'pass', 0, 19, 'right')],
       edges: [['PJM','MISO'],['PJM','ERCOT'],['PJM','CAISO'],['PJM','DE-LU'],['ERCOT','MISO'],['ERCOT','CAISO'],['PJM','NYISO'],['NYISO','ISO-NE'],['MISO','SPP'],['SPP','ERCOT'],['SPP','CAISO'],['ISO-NE','DE-LU']],
-      pairs: [['PJM','MISO','one shared cap across both \u00b7 17% cheaper than two'], ['PJM','DE-LU','one shared cap across both \u00b7 9% cheaper than two'], ['ERCOT','MISO','one shared cap across both \u00b7 4% cheaper than two']]
+      pairs: [['PJM','MISO','one basket across both grids'], ['PJM','DE-LU','the same contract on two continents'], ['ERCOT','MISO','a spread between two hubs']]
     },
     de: {
       origin: 'DE-LU', focusIds: ['276', '442'], rot: -10, par: [45, 58],
