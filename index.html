@@ -588,7 +588,7 @@
   }
   var plot = $('plot'), introDone = !MOTION;
   /* when nobody is dragging, the strike sweeps along the curve and back */
-  var auto = MOTION, ph = 0, last = null, resumeT = 0, heroOn = true, MID = 250, AMP = 210, PERIOD = 9;
+  var auto = MOTION, ph = 0, last = null, resumeT = 0, heroOn = true, MID = 250, AMP = 210, PERIOD = 20;
   function sweep(now) {
     requestAnimationFrame(sweep);
     if (!auto || !introDone || !heroOn || glide) { last = null; return; }
