@@ -927,8 +927,8 @@ window.addEventListener('DOMContentLoaded', function () {
 </script>
 <script>
 /* ---------- the exchange, scrubbed by scroll ----------
-   #how pins for a few screens while ~1,800 particles move from the price
-   curve to a capped price wave (request), an order book (quote), a network
+   #how pins for a few screens while ~1,800 particles gather from a faint
+   cloud into a capped price wave (request), an order book (quote), a network
    of grids (match) and a transmission tower (settle). Everything is a
    function of scroll position, so scrolling back up plays it backwards. */
 (function () {
@@ -960,11 +960,6 @@ window.addEventListener('DOMContentLoaded', function () {
   function lerp(a, b, t) { return a + (b - a) * t; }
 
   /* shapes: normalized x in [-1, 1], y in [-0.62, 0.62], y up. Each writes o.x, o.y, o.hot, o.al */
-  function curve(p, t, o) {
-    var u = p.a, v = u * 500;
-    var s = 0.86 / (1 + Math.exp((v - 90) / 30)) + 0.14 * Math.exp(-v / 160);
-    o.x = -1 + 2 * u; o.y = -0.55 + 1.1 * s + p.g * 0.006; o.hot = v > 250; o.al = 0.85;
-  }
   var CAP = 0.26;
   function request(p, t, o) {
     if (p.b < 0.16) { o.x = -1.05 + 2.1 * frac(p.a + t * 0.02); o.y = CAP; o.hot = false; o.al = 0.95; return; }
@@ -1010,10 +1005,10 @@ window.addEventListener('DOMContentLoaded', function () {
   function cloud(p, t, o) {
     o.x = p.g * 0.42 + Math.sin(t * 0.4 + p.a * 6.28) * 0.02; o.y = p.h * 0.24; o.hot = p.c < 0.12; o.al = 0.35 + 0.4 * p.c;
   }
-  var SHAPES = [curve, request, book, match, settle, cloud];
+  var SHAPES = [cloud, request, book, match, settle];
   /* keyframes along the pinned scroll: [progress, shape] — holds between pairs */
-  var KEYS = [[0, 5], [0.04, 5], [0.12, 0], [0.16, 0], [0.24, 1], [0.34, 1], [0.44, 2], [0.56, 2], [0.66, 3], [0.78, 3], [0.88, 4], [1, 4]];
-  var CENTERS = [0.29, 0.5, 0.72, 0.94];
+  var KEYS = [[0, 0], [0.04, 0], [0.18, 1], [0.34, 1], [0.44, 2], [0.56, 2], [0.66, 3], [0.78, 3], [0.88, 4], [1, 4]];
+  var CENTERS = [0.27, 0.5, 0.72, 0.94];
 
   var W = 0, H = 0, dpr = 1;
   function size() {
