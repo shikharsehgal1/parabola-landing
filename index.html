@@ -1007,10 +1007,13 @@ window.addEventListener('DOMContentLoaded', function () {
     o.y = lerp(g.ay, g.by, s) - (g.w ? 0.09 * Math.sin(Math.PI * s) : 0) + p.h * 0.003;
     o.hot = !!g.w; o.al = g.w ? 0.9 : 0.75;
   }
-  var SHAPES = [curve, request, book, match, settle];
+  function cloud(p, t, o) {
+    o.x = p.g * 0.42 + Math.sin(t * 0.4 + p.a * 6.28) * 0.02; o.y = p.h * 0.24; o.hot = p.c < 0.12; o.al = 0.35 + 0.4 * p.c;
+  }
+  var SHAPES = [curve, request, book, match, settle, cloud];
   /* keyframes along the pinned scroll: [progress, shape] — holds between pairs */
-  var KEYS = [[0, 0], [0.1, 0], [0.22, 1], [0.34, 1], [0.44, 2], [0.56, 2], [0.66, 3], [0.78, 3], [0.88, 4], [1, 4]];
-  var CENTERS = [0.28, 0.5, 0.72, 0.94];
+  var KEYS = [[0, 5], [0.04, 5], [0.12, 0], [0.16, 0], [0.24, 1], [0.34, 1], [0.44, 2], [0.56, 2], [0.66, 3], [0.78, 3], [0.88, 4], [1, 4]];
+  var CENTERS = [0.29, 0.5, 0.72, 0.94];
 
   var W = 0, H = 0, dpr = 1;
   function size() {
@@ -1032,8 +1035,8 @@ window.addEventListener('DOMContentLoaded', function () {
     /* the hero drifts up slower than the page and fades as the scene takes over */
     var y = window.scrollY, hh = hero.offsetHeight;
     if (y < hh * 1.2) {
-      hero.style.transform = y > 0 ? 'translate3d(0,' + (y * 0.35).toFixed(1) + 'px,0)' : '';
-      hero.style.opacity = Math.max(0, 1 - y / (hh * 0.85)).toFixed(3);
+      hero.style.transform = y > 0 ? 'translate3d(0,' + (y * 0.25).toFixed(1) + 'px,0)' : '';
+      hero.style.opacity = Math.min(1, Math.max(0, 1 - (y - hh * 0.3) / (hh * 0.55))).toFixed(3);
     }
     /* section headings brighten at the middle of the screen and dim as they leave */
     var vh = window.innerHeight;
@@ -1049,6 +1052,8 @@ window.addEventListener('DOMContentLoaded', function () {
     scrollFx();
     if (!on) return;
     var t = now / 1000, goal = target();
+    var top = sec.getBoundingClientRect().top / window.innerHeight;
+    cv.style.opacity = top <= 0 ? '1' : Math.max(0, 1 - top / 0.6).toFixed(3);
     prog += (goal - prog) * 0.09;
     if (Math.abs(goal - prog) < 0.0004) prog = goal;
     var p = prog;
